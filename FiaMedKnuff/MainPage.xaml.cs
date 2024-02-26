@@ -31,6 +31,7 @@ namespace FiaMedKnuff
             populateBoard();
         }
 
+        //add tiles and colorings to the board
         private void populateBoard() 
         {
             Board.RowDefinitions.Clear();
@@ -77,34 +78,50 @@ namespace FiaMedKnuff
                 addellipse(7, i, Colors.White);
             }
             //add middle tiles
-            {
-                addellipse(5, 5, Colors.White);
-                addellipse(5, 7, Colors.White);
-                addellipse(7, 5, Colors.White);
-                addellipse(7, 7, Colors.White);
-                addellipse(6, 6, Colors.Black);
-                addellipse(5, 6, Colors.Red);
-                addellipse(6, 5, Colors.Blue);
-                addellipse(6, 7, Colors.Green);
-                addellipse(7, 6, Colors.Yellow);
-            }
-
+            addellipse(5, 5, Colors.White);
+            addellipse(5, 7, Colors.White);
+            addellipse(7, 5, Colors.White);
+            addellipse(7, 7, Colors.White);
+            addellipse(6, 6, Colors.Black);
+            addellipse(5, 6, Colors.Red);
+            addellipse(6, 5, Colors.Blue);
+            addellipse(6, 7, Colors.Green);
+            addellipse(7, 6, Colors.Yellow);
+            //add Player Pawn tiles
+            addspawntile(0, 0, Colors.Blue);
+            addspawntile(0, 11, Colors.Red);
+            addspawntile(11, 0, Colors.Yellow);
+            addspawntile(11, 11, Colors.Green);
         }
 
+        //add ellipse to the board
         private void addellipse(int row , int column, Color color)
         {
-            Ellipse ellipse = createElipse(color);
+            Ellipse ellipse = createElipse(color,40);
             Grid.SetRow(ellipse, row);
             Grid.SetColumn(ellipse, column);
             Board.Children.Add(ellipse);
         }
 
-        private Ellipse createElipse(Color color)
+        //add player pawn tile
+        private void addspawntile(int row , int column,Color color) 
+        {
+            Ellipse ellipse = createElipse(color,90);
+            Grid.SetRowSpan(ellipse, 2);
+            Grid.SetColumnSpan(ellipse, 2);
+            Grid.SetRow(ellipse, row);
+            Grid.SetColumn(ellipse, column);
+            Board.Children.Add(ellipse);
+
+        }
+
+        //create an ellipse of specific color
+        private Ellipse createElipse(Color color,int size)
         {
             Ellipse ellipse = new Ellipse
             {
-                Width = 40,
-                Height = 40,
+                Width = size,
+                Height = size,
                 Fill = new SolidColorBrush(color),
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Black),
