@@ -12,7 +12,10 @@
         <Grid.Background>
             <ImageBrush ImageSource="/Assets/Background.png"></ImageBrush>
         </Grid.Background>
-        <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
+
+        <Grid x:Name="mainMenu" Visibility="Visible">
+            <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
     </Grid>
 </Page>

@@ -1,0 +1,22 @@
+﻿<UserControl
+    x:Class="FiaMedKnuff.MainMenu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FiaMedKnuff"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="500"
+    d:DesignWidth="600">
+    <Grid Width="600" Height="500" Background="#AA000000">
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock FontFamily="Showcard Gothic" FontSize="64" Foreground="#FFF" TextAlignment="Center" Margin="0,0,0,90">Fia med knuff</TextBlock>
+            <Button Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <TextBlock FontSize="64" VerticalAlignment="Center" FontFamily="Showcard Gothic">Start</TextBlock>
+            </Button>
+            <Button Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center">
+                <TextBlock FontFamily="Showcard Gothic" FontSize="64" VerticalAlignment="Center">Highscore</TextBlock>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
