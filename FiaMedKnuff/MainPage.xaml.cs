@@ -84,13 +84,30 @@ namespace FiaMedKnuff
                 addellipse(6, i, Colors.Green);
                 addellipse(7, i, Colors.White);
             }
-            //add end tiles
+            //add end tiles and start positions
             for(int i = 5;i < 8; i++)
             {
-                addellipse(1, i, Colors.White);
-                addellipse(11, i, Colors.White);
-                addellipse(i, 1, Colors.White);
-                addellipse(i, 11, Colors.White);
+                if(i == 5) 
+                {
+                    addellipse(1, i, Colors.White);
+                    addellipse(11, i, Windows.UI.Color.FromArgb(100, 255, 255, 0));
+                    addellipse(i, 1, Windows.UI.Color.FromArgb(100, 0, 0, 255));
+                    addellipse(i, 11, Colors.White);
+                }
+                else if(i == 7)
+                {
+                    addellipse(1, i, Windows.UI.Color.FromArgb(100, 255, 0, 0));
+                    addellipse(11, i, Colors.White);
+                    addellipse(i, 1, Colors.White);
+                    addellipse(i, 11, Windows.UI.Color.FromArgb(100, 0, 255, 0));
+                }
+                else 
+                {
+                    addellipse(1, i, Colors.White);
+                    addellipse(11, i, Colors.White);
+                    addellipse(i, 1, Colors.White);
+                    addellipse(i, 11, Colors.White);
+                }
             }
             //add middle tiles
             addellipse(5, 5, Colors.White);
@@ -166,7 +183,7 @@ namespace FiaMedKnuff
             boardPath.Add(36, (9, 7));
             boardPath.Add(37, (10, 7));
             boardPath.Add(38, (11, 7));
-            boardPath.Add(38, (11, 6));
+            boardPath.Add(39, (11, 6));
 
         }
 

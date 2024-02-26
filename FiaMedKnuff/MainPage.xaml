@@ -14,7 +14,7 @@
         </Grid.Background>
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
-        <Grid x:Name="mainMenu" Visibility="Visible">
+        <Grid x:Name="mainMenu" Visibility="Collapsed">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
     </Grid>
