@@ -1,0 +1,22 @@
+﻿<UserControl
+    x:Class="FiaMedKnuff.MainMenu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FiaMedKnuff"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="500"
+    d:DesignWidth="600">
+    <Grid Width="600" Height="500" Background="#AA000000">
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" Foreground="#FFF" TextAlignment="Center" Margin="0,0,0,90">Fia med knuff</TextBlock>
+            <Grid x:Name="startButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,0,0,20" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault">
+                <TextBlock x:Name="startButtonText" FontSize="64" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
+            </Grid>
+            <Grid x:Name="highScoreButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault">
+                <TextBlock x:Name="highScoreButtonText" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" VerticalAlignment="Center">Highscore</TextBlock>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>
