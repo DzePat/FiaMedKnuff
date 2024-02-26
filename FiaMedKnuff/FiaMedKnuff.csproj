@@ -11,7 +11,7 @@
     <AssemblyName>FiaMedKnuff</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -134,7 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Background.png" />
+    <Content Include="Assets\Blå.png" />
+    <Content Include="Assets\Grön.png" />
+    <Content Include="Assets\Gul.png" />
     <Content Include="Assets\logo.png" />
+    <Content Include="Assets\Röd.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-125.png" />
     <Content Include="Assets\SplashScreen.scale-150.png" />
