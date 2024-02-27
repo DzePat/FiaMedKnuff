@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Background.png" />
+    <Content Include="Assets\bgfuamedknuff1500.png" />
     <Content Include="Assets\Blå.png" />
     <Content Include="Assets\dice-1.png" />
     <Content Include="Assets\dice-2.png" />

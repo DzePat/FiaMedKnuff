@@ -10,7 +10,7 @@
 
     <Grid Name="mainGrid">
         <Grid.Background>
-            <ImageBrush ImageSource="/Assets/Background.png"></ImageBrush>
+            <ImageBrush ImageSource="/Assets/bgfuamedknuff1500.png"></ImageBrush>
         </Grid.Background>
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
