@@ -340,6 +340,14 @@ namespace FiaMedKnuff
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
 
+            //Add a sound when dice is rolled
+            var element = new MediaElement();
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+            var file = await folder.GetFileAsync("dice-sound.mp3");
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            element.SetSource(stream, "");
+            element.Play();
+
             // Vänta lite för att simulera "snurr"
             await Task.Delay(1000);
 

@@ -147,6 +147,7 @@
     <Content Include="Assets\dice-6.png" />
     <Content Include="Assets\dice-despeed.gif" />
     <Content Include="Assets\dice-fast.gif" />
+    <Content Include="Assets\dice-sound.mp3" />
     <Content Include="Assets\Grön.png" />
     <Content Include="Assets\Gul.png" />
     <Content Include="Assets\logo.png" />
