@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -24,6 +25,10 @@ namespace FiaMedKnuff
         {
             this.InitializeComponent();
         }
+
+        /// <summary>
+        /// Changes the background color of the button to a darker color when the user hovers over it.
+        /// </summary>
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
         {
             Grid grid = (Grid)sender;
@@ -35,6 +40,9 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Changes the background color of the button back to the default color when the user stops hovering over it.
+        /// </summary>
         private void ChangeBackColorToDefault(object sender, PointerRoutedEventArgs e)
         {
             Grid grid = (Grid)sender;
@@ -46,6 +54,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Creates a SolidColorBrush from a hex code. The hex code can be either 6 or 8 characters long. If it's 6 characters long, the alpha value is set to 255.
+        /// </summary>
+        /// <param name="hexCode">A hexcode with or without alpha value</param>
+        /// <returns><see cref="SolidColorBrush"/> that matches the given hexcode</returns>
         public SolidColorBrush CreateSolidColorBrushFromHex(string hexCode)
         {
             if (hexCode.Length == 7)
@@ -59,8 +72,17 @@ namespace FiaMedKnuff
             );
 
             SolidColorBrush solidColorBrush = new SolidColorBrush(color);
-
+            Debug.WriteLine(hexCode);
+            Debug.WriteLine(solidColorBrush.Color);
             return solidColorBrush;
+        }
+
+        /// <summary>
+        /// Starts a new game session when the user clicks the button. The main menu is hidden and the <see cref="SelectPlayersPage"/> is shown.
+        /// </summary>
+        private void StartNewGameSession(object sender, PointerRoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Collapsed;
         }
     }
 }
