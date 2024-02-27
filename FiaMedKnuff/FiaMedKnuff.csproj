@@ -137,7 +137,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Background.png" />
+    <Content Include="Assets\bgfuamedknuff1500.png" />
     <Content Include="Assets\Blå.png" />
+    <Content Include="Assets\dice-1.png" />
+    <Content Include="Assets\dice-2.png" />
+    <Content Include="Assets\dice-3.png" />
+    <Content Include="Assets\dice-4.png" />
+    <Content Include="Assets\dice-5.png" />
+    <Content Include="Assets\dice-6.png" />
+    <Content Include="Assets\dice-despeed.gif" />
+    <Content Include="Assets\dice-fast.gif" />
     <Content Include="Assets\Grön.png" />
     <Content Include="Assets\Gul.png" />
     <Content Include="Assets\logo.png" />
