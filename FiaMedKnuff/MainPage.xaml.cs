@@ -126,13 +126,13 @@ namespace FiaMedKnuff
             addspawntile(11, 11, Colors.Green);
             //add Player Pawns
             //player 1
-            addPlayerPawns(11, 0, 1);
+            addPlayerPawns(11, 0, 1,"Gul");
             //player 2
-            addPlayerPawns(0, 0, 2);
+            addPlayerPawns(0, 0, 2, "Blå");
             //player 3
-            addPlayerPawns(0, 11, 3);
+            addPlayerPawns(0, 11, 3, "Röd");
             //player 4
-            addPlayerPawns(11, 11, 4);
+            addPlayerPawns(11, 11, 4,"Grön");
 
         }
 
@@ -188,7 +188,7 @@ namespace FiaMedKnuff
         }
 
         //add all player pawns
-        private void addPlayerPawns(int row, int column,int playerID) 
+        private void addPlayerPawns(int row, int column,int playerID,string nameID) 
         {
             string[] pawnPaths = new string[] {
                 "/Assets/Gul.png",
@@ -198,14 +198,14 @@ namespace FiaMedKnuff
             };
 
             string workingdirectory = Directory.GetCurrentDirectory();
-            addPawn(row, column, workingdirectory + pawnPaths[playerID-1],HorizontalAlignment.Right,VerticalAlignment.Bottom);
-            addPawn(row, column+1, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Left, VerticalAlignment.Bottom);
-            addPawn(row+1, column, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Right, VerticalAlignment.Top);
-            addPawn(row+1, column+1, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Left, VerticalAlignment.Top);
+            addPawn(row, column, workingdirectory + pawnPaths[playerID-1],HorizontalAlignment.Right,VerticalAlignment.Bottom,nameID+1);
+            addPawn(row, column+1, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Left, VerticalAlignment.Bottom, nameID + 2);
+            addPawn(row+1, column, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Right, VerticalAlignment.Top, nameID + 3);
+            addPawn(row+1, column+1, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID + 4);
         }
 
         //add Pawn to the Board
-        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment,string NameID)
         {
             Rectangle rectangle = new Rectangle
             {
@@ -214,8 +214,6 @@ namespace FiaMedKnuff
             };
 
             rectangle.PointerPressed += Pawn_Clicked;
-
-
             ImageBrush imageBrush = new ImageBrush();
             imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
 
@@ -223,6 +221,7 @@ namespace FiaMedKnuff
 
             rectangle.HorizontalAlignment = horizontalAlignment;
             rectangle.VerticalAlignment = verticalAlignment;
+            rectangle.Name = NameID;
             Grid.SetRow(rectangle, row);
             Grid.SetColumn(rectangle, column);
             Board.Children.Add(rectangle);
@@ -234,17 +233,42 @@ namespace FiaMedKnuff
             {
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
+                int foundKey;
 
-                if (boardPath.ContainsKey(0)) 
+                if(boardPath.ContainsValue((currentRow, currentColumn))) 
                 {
-                    (int row, int column) = boardPath[0];
+                    foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow,currentColumn)).Key;
+                    if (boardPath.ContainsKey((int)foundKey + 1)) 
+                    {
+                        (int row, int column) = boardPath[foundKey+1];
+                        Grid.SetRow(rectangle, row);
+                        Grid.SetColumn(rectangle, column);
+                    }
+                }
+                else
+                {
+                    int startingposition;
+                    if(rectangle.Name.Contains("Gul"))
+                    {
+                        startingposition = 0;
+                    }
+                    else if (rectangle.Name.Contains("Blå")) 
+                    {
+                        startingposition = 10;
+                    }
+                    else if (rectangle.Name.Contains("Röd"))
+                    {
+                        startingposition = 20;
+                    }
+                    else
+                    {
+                          startingposition = 30;
+                    }
+                    (int row, int column) = boardPath[startingposition];
                     Grid.SetRow(rectangle, row);
                     Grid.SetColumn(rectangle, column);
                     rectangle.HorizontalAlignment = HorizontalAlignment.Center;
                     rectangle.VerticalAlignment = VerticalAlignment.Center;
-
-                    var dialog = new MessageDialog("Moved to a new position");
-                    dialog.ShowAsync();
                 }
                 
             }
