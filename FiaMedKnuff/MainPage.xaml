@@ -10,12 +10,18 @@
 
     <Grid Name="mainGrid">
         <Grid.Background>
-            <ImageBrush ImageSource="/Assets/Background.png"></ImageBrush>
+            <ImageBrush ImageSource="/Assets/bgfuamedknuff1500.png"></ImageBrush>
         </Grid.Background>
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
         <Grid x:Name="mainMenu" Visibility="Collapsed">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
+        <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0">
+            <Image.Source>
+                <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
+            </Image.Source>
+        </Image>
+
     </Grid>
 </Page>
