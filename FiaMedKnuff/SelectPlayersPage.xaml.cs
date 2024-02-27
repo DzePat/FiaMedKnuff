@@ -70,7 +70,7 @@ namespace FiaMedKnuff
         }
 
         ///<summary>
-        ///Creates a new button displaying a number to be used for selecting the number of players.
+        ///Creates a new button for toggling AI on and off.
         ///</summary>
         ///
         /// <return>
@@ -93,7 +93,10 @@ namespace FiaMedKnuff
             button.Click += AIButton_Click; ;
             return button;
         }
-
+        ///<summary>
+        ///Event function when AI butotns are clicked
+        ///toggles the button on and off when clicking
+        ///</summary>
         private void AIButton_Click(object sender, RoutedEventArgs e)
         {
             int num = aiButtons.IndexOf((Button)sender);
@@ -109,7 +112,7 @@ namespace FiaMedKnuff
         }
 
         ///<summary>
-        ///Event function when butotns are clicked
+        ///Event function when player butotns are clicked
         ///</summary>
         private void SelectPlayerClick(object sender, RoutedEventArgs e)
         {
