@@ -9,10 +9,11 @@
     Background="#7F000000" d:DesignHeight="360" d:DesignWidth="600">
 
     <StackPanel Name="pageStackPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock HorizontalAlignment="Center" FontSize="37" FontFamily="Bodoni MT Black" Margin="0,0,0,35">Välj antal spelare</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontSize="37" FontFamily="Bodoni MT Black" Margin="0,0,0,35">Choose number of players</TextBlock>
         <StackPanel Name="playerButtonStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-
         </StackPanel>
+        <Grid x:Name="startButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,40,0,20">
+            <TextBlock x:Name="startButtonText" FontSize="64" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
+        </Grid>
     </StackPanel>
 </Page>
