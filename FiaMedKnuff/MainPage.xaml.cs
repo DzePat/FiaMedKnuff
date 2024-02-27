@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -24,6 +26,7 @@ namespace FiaMedKnuff
     {
         public Dictionary<int, (int, int)> boardPath = new Dictionary<int, (int, int)>();
         private DispatcherTimer _animationTimer;
+        private Random random = new Random();
 
         public MainPage()
         {
@@ -35,7 +38,7 @@ namespace FiaMedKnuff
         private void InitializeAnimationTimer()
         {
             _animationTimer = new DispatcherTimer();
-            _animationTimer.Interval = TimeSpan.FromSeconds(1);
+            _animationTimer.Interval = TimeSpan.FromSeconds(2);
             _animationTimer.Tick += AnimationTimer_Tick;
         }
 
@@ -321,21 +324,33 @@ namespace FiaMedKnuff
         }
         private void AnimationTimer_Tick(object sender, object e)
         {
-            //TODO: När randomfunktionen har genererat en siffra så ska den siffran visas över denna gif animationen. 
+
             _animationTimer.Stop();
 
 
-            var newImageSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-fast.gif")) { AutoPlay = false };
+            var newImageSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif")) { AutoPlay = false };
             imageSource.Source = newImageSource;
         }
 
-        private void Image_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            // Starta GIF-animationen
+            var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
+            imageSource.Source = gifSource;
+            ((BitmapImage)imageSource.Source).AutoPlay = true;
+            ((BitmapImage)imageSource.Source).Play();
 
-            var bitmapImage = new BitmapImage(new Uri("ms-appx:///Assets/dice-fast.gif")) { AutoPlay = true };
-            imageSource.Source = bitmapImage;
+            // Vänta lite för att simulera "snurr"
+            await Task.Delay(1000);
 
-            _animationTimer.Start();
+            // Slumpa fram ett tärningsresultat och visa den statiska bilden
+            int result = random.Next(1, 7);
+            var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
+            imageSource.Source = staticImageSource;
+
+            //Test av random och att rätt bild visas.
+            MessageDialog dialog = new MessageDialog($"Du slog {result}");
+            await dialog.ShowAsync();
         }
 
     }

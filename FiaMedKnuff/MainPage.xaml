@@ -19,7 +19,7 @@
         </Grid>
         <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0">
             <Image.Source>
-                <BitmapImage UriSource="Assets/dice-fast.gif"  AutoPlay="False"/>
+                <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
             </Image.Source>
         </Image>
 
