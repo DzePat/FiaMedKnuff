@@ -38,7 +38,9 @@ namespace FiaMedKnuff
             generatePath();
         }
 
-        //add tiles and colorings to the board
+        /// <summary>
+        /// Populate the board with tiles and pawns
+        /// </summary>
         private void populateBoard() 
         {
             Board.RowDefinitions.Clear();
@@ -136,7 +138,9 @@ namespace FiaMedKnuff
 
         }
 
-        //Create a path on the board
+        /// <summary>
+        /// Generate path for the board
+        /// </summary>
         private void generatePath() 
         {
             //Yellow Start to left
@@ -187,7 +191,13 @@ namespace FiaMedKnuff
 
         }
 
-        //add all player pawns
+        /// <summary>
+        /// Adds all 4 player pawns from the top left position
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="playerID"></param>
+        /// <param name="nameID"></param>
         private void addPlayerPawns(int row, int column,int playerID,string nameID) 
         {
             string[] pawnPaths = new string[] {
@@ -204,7 +214,15 @@ namespace FiaMedKnuff
             addPawn(row+1, column+1, workingdirectory + pawnPaths[playerID-1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID + 4);
         }
 
-        //add Pawn to the Board
+        /// <summary>
+        /// adds a Pawn to the Board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="imagePath"></param>
+        /// <param name="horizontalAlignment"></param>
+        /// <param name="verticalAlignment"></param>
+        /// <param name="NameID"></param>
         private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment,string NameID)
         {
             Rectangle rectangle = new Rectangle
@@ -227,6 +245,11 @@ namespace FiaMedKnuff
             Board.Children.Add(rectangle);
         }
 
+        /// <summary>
+        /// Click event handler for pawns on the board
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
             if(sender is Rectangle rectangle)
@@ -274,8 +297,12 @@ namespace FiaMedKnuff
             }
         }
 
-
-        //add ellipse to the board
+        /// <summary>
+        /// add ellipse to the board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
         private void addellipse(int row , int column, Color color)
         {
             Ellipse ellipse = createElipse(color,40);
@@ -284,7 +311,12 @@ namespace FiaMedKnuff
             Board.Children.Add(ellipse);
         }
 
-        //add player pawn Spawns
+        /// <summary>
+        /// add player pawn Spawn tiles on the board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
         private void addspawntile(int row , int column,Color color) 
         {
             Ellipse ellipse = createElipse(color,100);
@@ -296,7 +328,12 @@ namespace FiaMedKnuff
 
         }
 
-        //create an ellipse of specific color
+        /// <summary>
+        /// Create Ellipse UI element of specific size and color
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         private Ellipse createElipse(Color color,int size)
         {
             Ellipse ellipse = new Ellipse
