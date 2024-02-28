@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Windows.UI.Xaml.Input;
 
 namespace FiaMedKnuff
 {
@@ -134,6 +135,16 @@ namespace FiaMedKnuff
 
             Playerbuttons[selectedNumber-1].BorderBrush= new SolidColorBrush(Colors.White);
 
+        }
+
+        private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
+        {
+            Design.ChangeButtonColorOnHover(sender);
+        }
+
+        private void ChangeBackColorToDefault(object sender, PointerRoutedEventArgs e)
+        {
+            Design.ChangeButtonColorBackToDefault(sender);
         }
     }
 }

@@ -41,7 +41,8 @@ namespace FiaMedKnuff
         /// </summary>
         private void StartNewGameSession(object sender, PointerRoutedEventArgs e)
         {
-            this.Visibility = Visibility.Collapsed;
+            mainMenuContent.Visibility = Visibility.Collapsed;
+            selectPlayerMenu.Visibility = Visibility.Visible;
         }
     }
 }
