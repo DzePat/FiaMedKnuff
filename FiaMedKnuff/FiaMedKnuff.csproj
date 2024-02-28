@@ -149,10 +149,13 @@
     <Content Include="Assets\dice-despeed.gif" />
     <Content Include="Assets\dice-fast.gif" />
     <Content Include="Assets\dice-sound.mp3" />
+    <Content Include="Assets\eatPlayerSound.mp3" />
     <Content Include="Assets\Grön.png" />
     <Content Include="Assets\Gul.png" />
     <Content Include="Assets\logo.png" />
     <Content Include="Assets\Röd.png" />
+    <Content Include="Assets\soundoff.png" />
+    <Content Include="Assets\soundon.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-125.png" />
     <Content Include="Assets\SplashScreen.scale-150.png" />
@@ -175,6 +178,7 @@
     <Content Include="Assets\Square44x44Logo.targetsize-256.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-32.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\winSound.mp3" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

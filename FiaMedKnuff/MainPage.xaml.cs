@@ -30,6 +30,7 @@ namespace FiaMedKnuff
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int DiceRoll;
+        private bool isSoundOn = true; //sound is on by default
 
         public MainPage()
         {
@@ -470,7 +471,16 @@ namespace FiaMedKnuff
             };
             return ellipse;
         }
-
+        /// <summary>
+        /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the event.</param>
+        /// <remarks>
+        /// This method checks if the AutoPlay property is present for the BitmapImage class. If present, it attempts to get
+        /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
+        /// the playback of GIF animations manually.
+        /// </remarks>
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -481,6 +491,16 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Stops an animation timer and sets a new GIF image source with AutoPlay disabled.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the tick event.</param>
+        /// <remarks>
+        /// This method is typically called on a timer tick to stop the timer and update the image source to a new GIF file.
+        /// The new GIF image has its AutoPlay property set to false to allow for manual control of the animation playback.
+        /// This method assumes that the new GIF image is located in the application's Assets folder.
+        /// </remarks>
         private void AnimationTimer_Tick(object sender, object e)
         {
 
@@ -491,35 +511,86 @@ namespace FiaMedKnuff
             imageSource.Source = newImageSource;
         }
 
+        /// <summary>
+        /// Handles the tap event on an image to start a GIF animation, play a sound, simulate a dice roll, and display the result.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the tap event.</param>
+        /// <remarks>
+        /// This method performs the following actions:
+        /// - Starts a GIF animation of a dice roll.
+        /// - Plays a dice rolling sound.
+        /// - Waits briefly to simulate the dice roll.
+        /// - Randomly selects a dice result between 1 and 6.
+        /// - Displays a static image corresponding to the dice result.
+        /// - Shows a message dialog with the dice result.
+        /// Note: This method assumes the presence of specific assets in the application's Assets folder.
+        /// </remarks>
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            // Starta GIF-animationen
+            // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
 
-            //Add a sound when dice is rolled
-            var element = new MediaElement();
-            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-            var file = await folder.GetFileAsync("dice-sound.mp3");
-            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            element.SetSource(stream, "");
-            element.Play();
+            // Add a sound when dice is rolled
+            if (isSoundOn == true)
+            {
+                var element = new MediaElement();
+                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+                var file = await folder.GetFileAsync("dice-sound.mp3");
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, "");
 
-            // Vänta lite för att simulera "snurr"
+                element.Play();
+                MessageDialog dialog = new MessageDialog("Ljudet är på");
+            }
+
+            // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
 
-            // Slumpa fram ett tärningsresultat och visa den statiska bilden
+            // Randomly generate a dice result and display the static image
             int result = random.Next(1, 7);
             DiceRoll = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
 
-            //Test av random och att rätt bild visas.
+            //Test of random and correct image display
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
         }
 
+
+        /// <summary>
+        /// Handles the toggling of the sound icon based on user interaction.
+        /// This method toggles the image resource for an Image control between sound-on and sound-off icons,
+        /// depending on the current sound state. The sound state is tracked by a boolean variable <c>isSoundOn</c>.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically an Image control.</param>
+        /// <param name="e">Event data that contains information about the event that was triggered.</param>
+        /// <remarks>
+        /// This method uses isSoundOn to track and toggle the sound state.
+        /// The visual state of the sound (on/off) is represented by switching the icon on the Image control.
+        /// </remarks>
+
+
+        private void soundImageSource_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+
+            // Sedan, i din händelsehanterare:
+            if (!isSoundOn)
+            {
+                soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundon.png"));
+                isSoundOn = true;
+            }
+            else
+            {
+                soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundoff.png"));
+                isSoundOn = false;
+            }
+
+        }
     }
 }
