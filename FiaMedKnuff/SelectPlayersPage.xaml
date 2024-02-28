@@ -1,4 +1,4 @@
-﻿<Page
+﻿<UserControl
     x:Class="FiaMedKnuff.SelectPlayersPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -16,4 +16,4 @@
             <TextBlock x:Name="startButtonText" FontSize="64" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
         </Grid>
     </StackPanel>
-</Page>
+</UserControl>

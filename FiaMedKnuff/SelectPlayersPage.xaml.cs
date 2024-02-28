@@ -12,7 +12,7 @@ using System.Reflection;
 namespace FiaMedKnuff
 {
 
-    public sealed partial class SelectPlayersPage : Page
+    public sealed partial class SelectPlayersPage : UserControl
     {
         private int selectedNumber = 2;
         private bool[] AI = new bool[4];
