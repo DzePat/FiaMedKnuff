@@ -27,6 +27,7 @@ namespace FiaMedKnuff
         public Dictionary<int, (int, int)> boardPath = new Dictionary<int, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
+        private bool isSoundOn = true; //sound is on by default
 
         public MainPage()
         {
@@ -414,12 +415,17 @@ namespace FiaMedKnuff
             ((BitmapImage)imageSource.Source).Play();
 
             // Add a sound when dice is rolled
-            var element = new MediaElement();
-            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-            var file = await folder.GetFileAsync("dice-sound.mp3");
-            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            element.SetSource(stream, "");
-            element.Play();
+            if (isSoundOn == true)
+            {
+                var element = new MediaElement();
+                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+                var file = await folder.GetFileAsync("dice-sound.mp3");
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, "");
+
+                element.Play();
+                MessageDialog dialog = new MessageDialog("Ljudet är på");
+            }
 
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
@@ -430,9 +436,40 @@ namespace FiaMedKnuff
             imageSource.Source = staticImageSource;
 
             //Test of random and correct image display
-            MessageDialog dialog = new MessageDialog($"Du slog {result}");
-            await dialog.ShowAsync();
+            //MessageDialog dialog = new MessageDialog($"Du slog {result}");
+            //await dialog.ShowAsync();
         }
 
+
+        /// <summary>
+        /// Handles the toggling of the sound icon based on user interaction.
+        /// This method toggles the image resource for an Image control between sound-on and sound-off icons,
+        /// depending on the current sound state. The sound state is tracked by a boolean variable <c>isSoundOn</c>.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically an Image control.</param>
+        /// <param name="e">Event data that contains information about the event that was triggered.</param>
+        /// <remarks>
+        /// This method uses isSoundOn to track and toggle the sound state.
+        /// The visual state of the sound (on/off) is represented by switching the icon on the Image control.
+        /// </remarks>
+
+
+        private void soundImageSource_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+
+            // Sedan, i din händelsehanterare:
+            if (!isSoundOn)
+            {
+                soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundon.png"));
+                isSoundOn = true;
+            }
+            else
+            {
+                soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundoff.png"));
+                isSoundOn = false;
+            }
+
+        }
     }
 }
