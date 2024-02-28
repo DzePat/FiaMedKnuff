@@ -42,8 +42,10 @@ namespace FiaMedKnuff
             _animationTimer.Tick += AnimationTimer_Tick;
         }
 
-        //add tiles and colorings to the board
-        private void populateBoard()
+        /// <summary>
+        /// Populate the board with tiles and pawns
+        /// </summary>
+        private void populateBoard() 
         {
             Board.RowDefinitions.Clear();
             Board.ColumnDefinitions.Clear();
@@ -140,8 +142,10 @@ namespace FiaMedKnuff
 
         }
 
-        //Create a path on the board
-        private void generatePath()
+        /// <summary>
+        /// Generate path for the board
+        /// </summary>
+        private void generatePath() 
         {
             //Yellow Start to left
             boardPath.Add(0, (11, 5));
@@ -191,8 +195,14 @@ namespace FiaMedKnuff
 
         }
 
-        //add all player pawns
-        private void addPlayerPawns(int row, int column, int playerID, string nameID)
+        /// <summary>
+        /// Adds all 4 player pawns from the top left position
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="playerID"></param>
+        /// <param name="nameID"></param>
+        private void addPlayerPawns(int row, int column,int playerID,string nameID) 
         {
             string[] pawnPaths = new string[] {
                 "/Assets/Gul.png",
@@ -208,8 +218,16 @@ namespace FiaMedKnuff
             addPawn(row + 1, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID + 4);
         }
 
-        //add Pawn to the Board
-        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, string NameID)
+        /// <summary>
+        /// adds a Pawn to the Board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="imagePath"></param>
+        /// <param name="horizontalAlignment"></param>
+        /// <param name="verticalAlignment"></param>
+        /// <param name="NameID"></param>
+        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment,string NameID)
         {
             Rectangle rectangle = new Rectangle
             {
@@ -231,6 +249,11 @@ namespace FiaMedKnuff
             Board.Children.Add(rectangle);
         }
 
+        /// <summary>
+        /// Click event handler for pawns on the board
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
             if (sender is Rectangle rectangle)
@@ -278,9 +301,13 @@ namespace FiaMedKnuff
             }
         }
 
-
-        //add ellipse to the board
-        private void addellipse(int row, int column, Color color)
+        /// <summary>
+        /// add ellipse to the board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
+        private void addellipse(int row , int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 40);
             Grid.SetRow(ellipse, row);
@@ -288,8 +315,13 @@ namespace FiaMedKnuff
             Board.Children.Add(ellipse);
         }
 
-        //add player pawn Spawns
-        private void addspawntile(int row, int column, Color color)
+        /// <summary>
+        /// add player pawn Spawn tiles on the board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
+        private void addspawntile(int row , int column,Color color) 
         {
             Ellipse ellipse = createElipse(color, 100);
             Grid.SetRowSpan(ellipse, 2);
@@ -300,8 +332,13 @@ namespace FiaMedKnuff
 
         }
 
-        //create an ellipse of specific color
-        private Ellipse createElipse(Color color, int size)
+        /// <summary>
+        /// Create Ellipse UI element of specific size and color
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        private Ellipse createElipse(Color color,int size)
         {
             Ellipse ellipse = new Ellipse
             {
