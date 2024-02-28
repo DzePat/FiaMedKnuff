@@ -45,7 +45,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Populate the board with tiles and pawns
         /// </summary>
-        private void populateBoard() 
+        private void populateBoard()
         {
             Board.RowDefinitions.Clear();
             Board.ColumnDefinitions.Clear();
@@ -145,7 +145,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Generate path for the board
         /// </summary>
-        private void generatePath() 
+        private void generatePath()
         {
             //Yellow Start to left
             boardPath.Add(0, (11, 5));
@@ -202,7 +202,7 @@ namespace FiaMedKnuff
         /// <param name="column"></param>
         /// <param name="playerID"></param>
         /// <param name="nameID"></param>
-        private void addPlayerPawns(int row, int column,int playerID,string nameID) 
+        private void addPlayerPawns(int row, int column, int playerID, string nameID)
         {
             string[] pawnPaths = new string[] {
                 "/Assets/Gul.png",
@@ -227,7 +227,7 @@ namespace FiaMedKnuff
         /// <param name="horizontalAlignment"></param>
         /// <param name="verticalAlignment"></param>
         /// <param name="NameID"></param>
-        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment,string NameID)
+        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, string NameID)
         {
             Rectangle rectangle = new Rectangle
             {
@@ -307,7 +307,7 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addellipse(int row , int column, Color color)
+        private void addellipse(int row, int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 40);
             Grid.SetRow(ellipse, row);
@@ -321,7 +321,7 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addspawntile(int row , int column,Color color) 
+        private void addspawntile(int row, int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 100);
             Grid.SetRowSpan(ellipse, 2);
@@ -338,7 +338,7 @@ namespace FiaMedKnuff
         /// <param name="color"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        private Ellipse createElipse(Color color,int size)
+        private Ellipse createElipse(Color color, int size)
         {
             Ellipse ellipse = new Ellipse
             {
@@ -350,6 +350,16 @@ namespace FiaMedKnuff
             };
             return ellipse;
         }
+        /// <summary>
+        /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the event.</param>
+        /// <remarks>
+        /// This method checks if the AutoPlay property is present for the BitmapImage class. If present, it attempts to get
+        /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
+        /// the playback of GIF animations manually.
+        /// </remarks>
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -359,6 +369,17 @@ namespace FiaMedKnuff
                 if (bitmapImage != null) bitmapImage.AutoPlay = false;
             }
         }
+
+        /// <summary>
+        /// Stops an animation timer and sets a new GIF image source with AutoPlay disabled.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the tick event.</param>
+        /// <remarks>
+        /// This method is typically called on a timer tick to stop the timer and update the image source to a new GIF file.
+        /// The new GIF image has its AutoPlay property set to false to allow for manual control of the animation playback.
+        /// This method assumes that the new GIF image is located in the application's Assets folder.
+        /// </remarks>
         private void AnimationTimer_Tick(object sender, object e)
         {
 
@@ -369,15 +390,30 @@ namespace FiaMedKnuff
             imageSource.Source = newImageSource;
         }
 
+        /// <summary>
+        /// Handles the tap event on an image to start a GIF animation, play a sound, simulate a dice roll, and display the result.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the tap event.</param>
+        /// <remarks>
+        /// This method performs the following actions:
+        /// - Starts a GIF animation of a dice roll.
+        /// - Plays a dice rolling sound.
+        /// - Waits briefly to simulate the dice roll.
+        /// - Randomly selects a dice result between 1 and 6.
+        /// - Displays a static image corresponding to the dice result.
+        /// - Shows a message dialog with the dice result.
+        /// Note: This method assumes the presence of specific assets in the application's Assets folder.
+        /// </remarks>
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            // Starta GIF-animationen
+            // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
 
-            //Add a sound when dice is rolled
+            // Add a sound when dice is rolled
             var element = new MediaElement();
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
             var file = await folder.GetFileAsync("dice-sound.mp3");
@@ -385,15 +421,15 @@ namespace FiaMedKnuff
             element.SetSource(stream, "");
             element.Play();
 
-            // Vänta lite för att simulera "snurr"
+            // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
 
-            // Slumpa fram ett tärningsresultat och visa den statiska bilden
+            // Randomly generate a dice result and display the static image
             int result = random.Next(1, 7);
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
 
-            //Test av random och att rätt bild visas.
+            //Test of random and correct image display
             MessageDialog dialog = new MessageDialog($"Du slog {result}");
             await dialog.ShowAsync();
         }
