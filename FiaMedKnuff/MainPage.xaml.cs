@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Context;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -201,6 +202,9 @@ namespace FiaMedKnuff
 
         }
 
+        /// <summary>
+        /// Generate path for the Goal tiles of corresponding colors
+        /// </summary>
         private void generateGoalPath() 
         {
             //yellow goal path
@@ -225,12 +229,15 @@ namespace FiaMedKnuff
             goalPath.Add("Grön-5", (6, 7));
         }
 
+        /// <summary>
+        /// Generate 4 tiles for transition between boardpath and goalpath
+        /// </summary>
         private void generateGoalStartTiles() 
         {
-            goalPath.Add("Gul-1", (11, 6));
-            goalPath.Add("Blå-1", (6, 1));
-            goalPath.Add("Röd-1", (1, 6));
-            goalPath.Add("Grön-1", (6, 11));
+            goalStartTile.Add("Gul-1", (11, 6));
+            goalStartTile.Add("Blå-1", (6, 1));
+            goalStartTile.Add("Röd-1", (1, 6));
+            goalStartTile.Add("Grön-1", (6, 11));
         }
 
         /// <summary>
@@ -299,23 +306,7 @@ namespace FiaMedKnuff
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
                 int foundKey;
-                if (goalPath.ContainsValue((currentRow,currentColumn)))
-                {
-                    while(DiceRoll != 0 & DiceRoll != null)
-                    {
-                        currentRow = Grid.GetRow(rectangle);
-                        currentColumn = Grid.GetColumn(rectangle);
-                        if (goalReached.ContainsValue((currentRow,currentColumn)))
-                        {
-                            DiceRoll = 0; 
-                        }
-                        else 
-                        {
-                            await reachedGoalTileAsync(rectangle);
-                        }
-                    }
-                }
-                if (boardPath.ContainsValue((currentRow, currentColumn)))
+                if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
                     
                     while (DiceRoll != null & DiceRoll != 0) 
@@ -325,26 +316,14 @@ namespace FiaMedKnuff
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         if (goalStartTile[rectangle.Name+"-1"] == (currentRow,currentColumn))
                         {
-                             (int row, int column) = goalPath[rectangle.Name+"-1"];
+                             (int row, int column) = goalPath[rectangle.Name+"-2"];
                              Grid.SetRow(rectangle, row);
                              Grid.SetColumn(rectangle, column);
                              DiceRoll -= 1;
                         }
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
-                            while (DiceRoll != 0 & DiceRoll != null)
-                            {
-                                currentRow = Grid.GetRow(rectangle);
-                                currentColumn = Grid.GetColumn(rectangle);
-                                if (goalReached.ContainsValue((currentRow, currentColumn)))
-                                {
-                                    DiceRoll = 0;
-                                }
-                                else
-                                {
-                                    await reachedGoalTileAsync(rectangle);
-                                }
-                            }
+                            moveOneGoalTile(rectangle);
                         }
                         else if (boardPath.ContainsKey((int)foundKey + 1))
                         {
@@ -354,82 +333,93 @@ namespace FiaMedKnuff
                             foundKey += 1;
                             DiceRoll -= 1;
                         }
-                        else 
+                        else
                         {
-                            (int row, int column) = boardPath[0];
-                            Grid.SetRow(rectangle, row);
-                            Grid.SetColumn(rectangle, column);
-                            DiceRoll -= 1;
+                            linkEndToStartPath(rectangle);
                         }
-                        /*MessageDialog dialog = new MessageDialog($"Current Dice = {DiceRoll}\n current row{Grid.GetRow(rectangle)}\n current column = {Grid.GetColumn(rectangle)}");
-                        await dialog.ShowAsync();*/
                     }
                 }
                 else if(DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow,currentColumn)))
                 {
-                    int startingposition;
-                    if (rectangle.Name.Contains("Gul"))
-                    {
-                        startingposition = 0;
-                    }
-                    else if (rectangle.Name.Contains("Blå"))
-                    {
-                        startingposition = 10;
-                    }
-                    else if (rectangle.Name.Contains("Röd"))
-                    {
-                        startingposition = 20;
-                    }
-                    else
-                    {
-                        startingposition = 30;
-                    }
-                    (int row, int column) = boardPath[startingposition];
-                    Grid.SetRow(rectangle, row);
-                    Grid.SetColumn(rectangle, column);
-                    rectangle.HorizontalAlignment = HorizontalAlignment.Center;
-                    rectangle.VerticalAlignment = VerticalAlignment.Center;
-                    DiceRoll = 0;
+                    placepawnOnTheBoard(rectangle);
                 }
 
             }
         }
 
-        private async Task<bool> reachedGoalTileAsync(Rectangle rectangle)
+        /// <summary>
+        /// sets rectangle position to first tile of the path dictionary
+        /// </summary>
+        /// <param name="rectangle"></param>
+        private void linkEndToStartPath(Rectangle rectangle)
         {
-            int currentRow = Grid.GetRow(rectangle);
-            int currentColumn = Grid.GetColumn(rectangle);
-            if (goalPath.ContainsValue((currentRow, currentColumn)))
+            (int row, int column) = boardPath[0];
+            Grid.SetRow(rectangle, row);
+            Grid.SetColumn(rectangle, column);
+            DiceRoll -= 1;
+        }
+
+        /// <summary>
+        /// Places a pawn from the spawn point to the starting position depending on its color
+        /// </summary>
+        /// <param name="rectangle"></param>
+        private void placepawnOnTheBoard(Rectangle rectangle)
+        {
+            int startingposition;
+            if (rectangle.Name.Contains("Gul"))
             {
-                string[] foundKey = (goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key).Split('-');
-                string newkey = $"{foundKey[0]}-{int.Parse(foundKey[1]) + 1}";
-                (int row, int column) = goalPath[newkey];
-                if (rectangle.Name.Contains(foundKey[0]) && !goalReached.ContainsValue((row, column)))
-                {
-                    Grid.SetRow(rectangle, row);
-                    Grid.SetColumn(rectangle, column);
-                    if (!goalPath.ContainsKey(foundKey[0] +"-"+ (int.Parse(foundKey[1])+2)) | goalReached.ContainsKey(foundKey[0] + "-" + (int.Parse(foundKey[1]) + 2)))
-                    {
-                        MessageDialog dialog = new MessageDialog($"contains key? {goalReached.ContainsKey(foundKey[0] + "-" + (int.Parse(foundKey[1]) + 2))}\n key added = {newkey}");
-                        await dialog.ShowAsync();
-                        goalReached.Add(newkey, goalPath[newkey]);
-                        rectangle.PointerPressed -= Pawn_Clicked;
-                        DiceRoll = 0;
-                    }
-                    else
-                    {
-                        DiceRoll -= 1;
-                    }
-                    return true;
-                }
-                else 
-                {
-                    return false;
-                }
+                startingposition = 0;
+            }
+            else if (rectangle.Name.Contains("Blå"))
+            {
+                startingposition = 10;
+            }
+            else if (rectangle.Name.Contains("Röd"))
+            {
+                startingposition = 20;
             }
             else
             {
-                return false;
+                startingposition = 30;
+            }
+            (int row, int column) = boardPath[startingposition];
+            Grid.SetRow(rectangle, row);
+            Grid.SetColumn(rectangle, column);
+            rectangle.HorizontalAlignment = HorizontalAlignment.Center;
+            rectangle.VerticalAlignment = VerticalAlignment.Center;
+            DiceRoll = 0;
+        }
+
+        /// <summary>
+        /// Moves a single tile in goalpath if all tiles infront is occupied then it occupies the current tile
+        /// </summary>
+        /// <param name="rectangle"></param>
+        private async void moveOneGoalTile(Rectangle rectangle) 
+        {
+            int currentRow = Grid.GetRow(rectangle);
+            int currentColumn = Grid.GetColumn(rectangle);
+            string currentKey = goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
+            string[] currentKeySplit = currentKey.Split('-'); //returns "[color,index]"
+            string newkey = $"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 1}";
+            if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false) 
+            { 
+                (int newRow,int newColumn) = goalPath[newkey];
+                Grid.SetRow(rectangle, newRow);
+                Grid.SetColumn(rectangle, newColumn);
+                DiceRoll -= 1;
+                //check if the current position is last in the goal tiles
+                if (goalReached.ContainsKey($"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 2}")) 
+                {
+                    goalReached.Add(newkey, goalPath[newkey]);
+                    rectangle.PointerPressed -= Pawn_Clicked;
+                    DiceRoll = 0;
+                }
+            }
+            else 
+            {
+                goalReached.Add(currentKey, goalPath[currentKey]);
+                rectangle.PointerPressed -= Pawn_Clicked;
+                DiceRoll = 0;
             }
         }
 
@@ -482,6 +472,7 @@ namespace FiaMedKnuff
             };
             return ellipse;
         }
+
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -491,6 +482,7 @@ namespace FiaMedKnuff
                 if (bitmapImage != null) bitmapImage.AutoPlay = false;
             }
         }
+
         private void AnimationTimer_Tick(object sender, object e)
         {
 
@@ -513,7 +505,7 @@ namespace FiaMedKnuff
             await Task.Delay(1000);
 
             // Slumpa fram ett tärningsresultat och visa den statiska bilden
-            int result = random.Next(6, 7);
+            int result = random.Next(1, 7);
             DiceRoll = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
