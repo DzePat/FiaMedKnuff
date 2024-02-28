@@ -544,7 +544,7 @@ namespace FiaMedKnuff
                 element.SetSource(stream, "");
 
                 element.Play();
-                MessageDialog dialog = new MessageDialog("Ljudet är på");
+                //MessageDialog dialog = new MessageDialog("Ljudet är på");
             }
 
             // Wait a bit to simulate "spinning"
