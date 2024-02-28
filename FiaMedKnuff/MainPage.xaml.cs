@@ -25,14 +25,20 @@ namespace FiaMedKnuff
     public sealed partial class MainPage : Page
     {
         public Dictionary<int, (int, int)> boardPath = new Dictionary<int, (int, int)>();
+        public Dictionary<string, (int, int)> goalPath = new Dictionary<string, (int, int)>();
+        public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
+        public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
-
+        private int DiceRoll;
+            
         public MainPage()
         {
             this.InitializeComponent();
             populateBoard();
             generatePath();
+            generateGoalPath();
+            generateGoalStartTiles();
             InitializeAnimationTimer();
         }
         private void InitializeAnimationTimer()
@@ -195,6 +201,38 @@ namespace FiaMedKnuff
 
         }
 
+        private void generateGoalPath() 
+        {
+            //yellow goal path
+            goalPath.Add("Gul-2", (10, 6));
+            goalPath.Add("Gul-3", (9, 6));
+            goalPath.Add("Gul-4", (8, 6));
+            goalPath.Add("Gul-5", (7, 6));
+            //blue goal path 
+            goalPath.Add("Blå-2", (6, 2));
+            goalPath.Add("Blå-3", (6, 3));
+            goalPath.Add("Blå-4", (6, 4));
+            goalPath.Add("Blå-5", (6, 5));
+            //red goal path  
+            goalPath.Add("Röd-2", (2, 6));
+            goalPath.Add("Röd-3", (3, 6));
+            goalPath.Add("Röd-4", (4, 6));
+            goalPath.Add("Röd-5", (5, 6));
+            //green goal path
+            goalPath.Add("Grön-2", (6, 10));
+            goalPath.Add("Grön-3", (6, 9));
+            goalPath.Add("Grön-4", (6, 8));
+            goalPath.Add("Grön-5", (6, 7));
+        }
+
+        private void generateGoalStartTiles() 
+        {
+            goalPath.Add("Gul-1", (11, 6));
+            goalPath.Add("Blå-1", (6, 1));
+            goalPath.Add("Röd-1", (1, 6));
+            goalPath.Add("Grön-1", (6, 11));
+        }
+
         /// <summary>
         /// Adds all 4 player pawns from the top left position
         /// </summary>
@@ -212,10 +250,10 @@ namespace FiaMedKnuff
             };
 
             string workingdirectory = Directory.GetCurrentDirectory();
-            addPawn(row, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Bottom, nameID + 1);
-            addPawn(row, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Bottom, nameID + 2);
-            addPawn(row + 1, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Top, nameID + 3);
-            addPawn(row + 1, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID + 4);
+            addPawn(row, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Bottom, nameID);
+            addPawn(row, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Bottom, nameID);
+            addPawn(row + 1, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Top, nameID);
+            addPawn(row + 1, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID);
         }
 
         /// <summary>
@@ -254,25 +292,80 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
+        private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
             if (sender is Rectangle rectangle)
             {
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
                 int foundKey;
-
-                if (boardPath.ContainsValue((currentRow, currentColumn)))
+                if (goalPath.ContainsValue((currentRow,currentColumn)))
                 {
-                    foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
-                    if (boardPath.ContainsKey((int)foundKey + 1))
+                    while(DiceRoll != 0 & DiceRoll != null)
                     {
-                        (int row, int column) = boardPath[foundKey + 1];
-                        Grid.SetRow(rectangle, row);
-                        Grid.SetColumn(rectangle, column);
+                        currentRow = Grid.GetRow(rectangle);
+                        currentColumn = Grid.GetColumn(rectangle);
+                        if (goalReached.ContainsValue((currentRow,currentColumn)))
+                        {
+                            DiceRoll = 0; 
+                        }
+                        else 
+                        {
+                            await reachedGoalTileAsync(rectangle);
+                        }
                     }
                 }
-                else
+                if (boardPath.ContainsValue((currentRow, currentColumn)))
+                {
+                    
+                    while (DiceRoll != null & DiceRoll != 0) 
+                    {
+                        currentRow = Grid.GetRow(rectangle);
+                        currentColumn = Grid.GetColumn(rectangle);
+                        foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
+                        if (goalStartTile[rectangle.Name+"-1"] == (currentRow,currentColumn))
+                        {
+                             (int row, int column) = goalPath[rectangle.Name+"-1"];
+                             Grid.SetRow(rectangle, row);
+                             Grid.SetColumn(rectangle, column);
+                             DiceRoll -= 1;
+                        }
+                        else if (goalPath.ContainsValue((currentRow, currentColumn)))
+                        {
+                            while (DiceRoll != 0 & DiceRoll != null)
+                            {
+                                currentRow = Grid.GetRow(rectangle);
+                                currentColumn = Grid.GetColumn(rectangle);
+                                if (goalReached.ContainsValue((currentRow, currentColumn)))
+                                {
+                                    DiceRoll = 0;
+                                }
+                                else
+                                {
+                                    await reachedGoalTileAsync(rectangle);
+                                }
+                            }
+                        }
+                        else if (boardPath.ContainsKey((int)foundKey + 1))
+                        {
+                            (int row, int column) = boardPath[foundKey + 1];
+                            Grid.SetRow(rectangle, row);
+                            Grid.SetColumn(rectangle, column);
+                            foundKey += 1;
+                            DiceRoll -= 1;
+                        }
+                        else 
+                        {
+                            (int row, int column) = boardPath[0];
+                            Grid.SetRow(rectangle, row);
+                            Grid.SetColumn(rectangle, column);
+                            DiceRoll -= 1;
+                        }
+                        /*MessageDialog dialog = new MessageDialog($"Current Dice = {DiceRoll}\n current row{Grid.GetRow(rectangle)}\n current column = {Grid.GetColumn(rectangle)}");
+                        await dialog.ShowAsync();*/
+                    }
+                }
+                else if(DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow,currentColumn)))
                 {
                     int startingposition;
                     if (rectangle.Name.Contains("Gul"))
@@ -296,8 +389,47 @@ namespace FiaMedKnuff
                     Grid.SetColumn(rectangle, column);
                     rectangle.HorizontalAlignment = HorizontalAlignment.Center;
                     rectangle.VerticalAlignment = VerticalAlignment.Center;
+                    DiceRoll = 0;
                 }
 
+            }
+        }
+
+        private async Task<bool> reachedGoalTileAsync(Rectangle rectangle)
+        {
+            int currentRow = Grid.GetRow(rectangle);
+            int currentColumn = Grid.GetColumn(rectangle);
+            if (goalPath.ContainsValue((currentRow, currentColumn)))
+            {
+                string[] foundKey = (goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key).Split('-');
+                string newkey = $"{foundKey[0]}-{int.Parse(foundKey[1]) + 1}";
+                (int row, int column) = goalPath[newkey];
+                if (rectangle.Name.Contains(foundKey[0]) && !goalReached.ContainsValue((row, column)))
+                {
+                    Grid.SetRow(rectangle, row);
+                    Grid.SetColumn(rectangle, column);
+                    if (!goalPath.ContainsKey(foundKey[0] +"-"+ (int.Parse(foundKey[1])+2)) | goalReached.ContainsKey(foundKey[0] + "-" + (int.Parse(foundKey[1]) + 2)))
+                    {
+                        MessageDialog dialog = new MessageDialog($"contains key? {goalReached.ContainsKey(foundKey[0] + "-" + (int.Parse(foundKey[1]) + 2))}\n key added = {newkey}");
+                        await dialog.ShowAsync();
+                        goalReached.Add(newkey, goalPath[newkey]);
+                        rectangle.PointerPressed -= Pawn_Clicked;
+                        DiceRoll = 0;
+                    }
+                    else
+                    {
+                        DiceRoll -= 1;
+                    }
+                    return true;
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -381,7 +513,8 @@ namespace FiaMedKnuff
             await Task.Delay(1000);
 
             // Slumpa fram ett tärningsresultat och visa den statiska bilden
-            int result = random.Next(1, 7);
+            int result = random.Next(6, 7);
+            DiceRoll = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
 
