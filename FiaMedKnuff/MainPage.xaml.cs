@@ -523,5 +523,12 @@ namespace FiaMedKnuff
             await dialog.ShowAsync();
         }
 
+        /// <summary>
+        /// Changes the visibility of the about view when the user clicks on the questionmark
+        /// </summary>
+        private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 }

@@ -33,8 +33,6 @@ namespace FiaMedKnuff
             );
 
             SolidColorBrush solidColorBrush = new SolidColorBrush(color);
-            Debug.WriteLine(hexCode);
-            Debug.WriteLine(solidColorBrush.Color);
             return solidColorBrush;
         }
 
