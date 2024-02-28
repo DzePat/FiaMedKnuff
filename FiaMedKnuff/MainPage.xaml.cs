@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Context;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -32,7 +30,7 @@ namespace FiaMedKnuff
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int DiceRoll;
-            
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -52,7 +50,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Populate the board with tiles and pawns
         /// </summary>
-        private void populateBoard() 
+        private void populateBoard()
         {
             Board.RowDefinitions.Clear();
             Board.ColumnDefinitions.Clear();
@@ -152,7 +150,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Generate path for the board
         /// </summary>
-        private void generatePath() 
+        private void generatePath()
         {
             //Yellow Start to left
             boardPath.Add(0, (11, 5));
@@ -205,7 +203,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Generate path for the Goal tiles of corresponding colors
         /// </summary>
-        private void generateGoalPath() 
+        private void generateGoalPath()
         {
             //yellow goal path
             goalPath.Add("Gul-2", (10, 6));
@@ -232,7 +230,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Generate 4 tiles for transition between boardpath and goalpath
         /// </summary>
-        private void generateGoalStartTiles() 
+        private void generateGoalStartTiles()
         {
             goalStartTile.Add("Gul-1", (11, 6));
             goalStartTile.Add("Blå-1", (6, 1));
@@ -247,7 +245,7 @@ namespace FiaMedKnuff
         /// <param name="column"></param>
         /// <param name="playerID"></param>
         /// <param name="nameID"></param>
-        private void addPlayerPawns(int row, int column,int playerID,string nameID) 
+        private void addPlayerPawns(int row, int column, int playerID, string nameID)
         {
             string[] pawnPaths = new string[] {
                 "/Assets/Gul.png",
@@ -272,7 +270,7 @@ namespace FiaMedKnuff
         /// <param name="horizontalAlignment"></param>
         /// <param name="verticalAlignment"></param>
         /// <param name="NameID"></param>
-        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment,string NameID)
+        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, string NameID)
         {
             Rectangle rectangle = new Rectangle
             {
@@ -308,18 +306,18 @@ namespace FiaMedKnuff
                 int foundKey;
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    
-                    while (DiceRoll != null & DiceRoll != 0) 
+
+                    while (DiceRoll != null & DiceRoll != 0)
                     {
                         currentRow = Grid.GetRow(rectangle);
                         currentColumn = Grid.GetColumn(rectangle);
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
-                        if (goalStartTile[rectangle.Name+"-1"] == (currentRow,currentColumn))
+                        if (goalStartTile[rectangle.Name + "-1"] == (currentRow, currentColumn))
                         {
-                             (int row, int column) = goalPath[rectangle.Name+"-2"];
-                             Grid.SetRow(rectangle, row);
-                             Grid.SetColumn(rectangle, column);
-                             DiceRoll -= 1;
+                            (int row, int column) = goalPath[rectangle.Name + "-2"];
+                            Grid.SetRow(rectangle, row);
+                            Grid.SetColumn(rectangle, column);
+                            DiceRoll -= 1;
                         }
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
@@ -339,7 +337,7 @@ namespace FiaMedKnuff
                         }
                     }
                 }
-                else if(DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow,currentColumn)))
+                else if (DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
                     placepawnOnTheBoard(rectangle);
                 }
@@ -394,28 +392,28 @@ namespace FiaMedKnuff
         /// Moves a single tile in goalpath if all tiles infront is occupied then it occupies the current tile
         /// </summary>
         /// <param name="rectangle"></param>
-        private async void moveOneGoalTile(Rectangle rectangle) 
+        private async void moveOneGoalTile(Rectangle rectangle)
         {
             int currentRow = Grid.GetRow(rectangle);
             int currentColumn = Grid.GetColumn(rectangle);
             string currentKey = goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
             string[] currentKeySplit = currentKey.Split('-'); //returns "[color,index]"
             string newkey = $"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 1}";
-            if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false) 
-            { 
-                (int newRow,int newColumn) = goalPath[newkey];
+            if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false)
+            {
+                (int newRow, int newColumn) = goalPath[newkey];
                 Grid.SetRow(rectangle, newRow);
                 Grid.SetColumn(rectangle, newColumn);
                 DiceRoll -= 1;
                 //check if the current position is last in the goal tiles
-                if (goalReached.ContainsKey($"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 2}")) 
+                if (goalReached.ContainsKey($"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 2}"))
                 {
                     goalReached.Add(newkey, goalPath[newkey]);
                     rectangle.PointerPressed -= Pawn_Clicked;
                     DiceRoll = 0;
                 }
             }
-            else 
+            else
             {
                 goalReached.Add(currentKey, goalPath[currentKey]);
                 rectangle.PointerPressed -= Pawn_Clicked;
@@ -429,7 +427,7 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addellipse(int row , int column, Color color)
+        private void addellipse(int row, int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 40);
             Grid.SetRow(ellipse, row);
@@ -443,7 +441,7 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addspawntile(int row , int column,Color color) 
+        private void addspawntile(int row, int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 100);
             Grid.SetRowSpan(ellipse, 2);
@@ -460,7 +458,7 @@ namespace FiaMedKnuff
         /// <param name="color"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        private Ellipse createElipse(Color color,int size)
+        private Ellipse createElipse(Color color, int size)
         {
             Ellipse ellipse = new Ellipse
             {
@@ -519,8 +517,8 @@ namespace FiaMedKnuff
             imageSource.Source = staticImageSource;
 
             //Test av random och att rätt bild visas.
-            MessageDialog dialog = new MessageDialog($"Du slog {result}");
-            await dialog.ShowAsync();
+            //MessageDialog dialog = new MessageDialog($"Du slog {result}");
+            //await dialog.ShowAsync();
         }
 
     }
