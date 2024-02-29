@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Reflection.Context;
@@ -8,6 +9,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -29,6 +31,7 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalPath = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
+        public Dictionary<string, (int,int)> spawnTiles = new Dictionary<string, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int DiceRoll;
@@ -40,6 +43,7 @@ namespace FiaMedKnuff
             generatePath();
             generateGoalPath();
             generateGoalStartTiles();
+            generateSpawnTiles();
             InitializeAnimationTimer();
         }
         private void InitializeAnimationTimer()
@@ -202,6 +206,30 @@ namespace FiaMedKnuff
 
         }
 
+        private void generateSpawnTiles() 
+        {
+            //yellow spawn tiles
+            spawnTiles.Add("Gul-1", (11, 0));
+            spawnTiles.Add("Gul-2", (11, 1));
+            spawnTiles.Add("Gul-3", (12, 0));
+            spawnTiles.Add("Gul-4", (12, 1));
+            //Blue spawn tiles
+            spawnTiles.Add("Blå-1", (0, 0));
+            spawnTiles.Add("Blå-2", (0, 1));
+            spawnTiles.Add("Blå-3", (1, 0));
+            spawnTiles.Add("Blå-4", (1, 1));
+            //Red spawn tiles 
+            spawnTiles.Add("Röd-1", (0, 11));
+            spawnTiles.Add("Röd-2", (0, 12));
+            spawnTiles.Add("Röd-3", (1, 11));
+            spawnTiles.Add("Röd-4", (1, 12));
+            //Green spawn tiles
+            spawnTiles.Add("Grön-1", (11, 11));
+            spawnTiles.Add("Grön-2", (11, 12));
+            spawnTiles.Add("Grön-3", (12, 11));
+            spawnTiles.Add("Grön-4", (12, 12));
+        }
+
         /// <summary>
         /// Generate path for the Goal tiles of corresponding colors
         /// </summary>
@@ -293,7 +321,73 @@ namespace FiaMedKnuff
             Grid.SetColumn(rectangle, column);
             Board.Children.Add(rectangle);
         }
+        
 
+        private async Task checkForEnemyPawns(int row, int column,string color) 
+        { 
+            foreach(object child in Board.Children) 
+            { 
+                if(child is Rectangle pawn) 
+                {
+                    if (pawn.Name != color && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                    {
+                        await resetPawn(pawn);
+                    }
+                }
+                
+            }
+        }
+
+
+        private async Task resetPawn(Rectangle rect)
+        {
+            int index = 1;
+            while(index < 5) 
+            {
+                (int row, int column) = spawnTiles[rect.Name + $"-{index}"];
+                if (tileIsEmpty(row, column))
+                {
+                    switch (index)
+                    {
+                        case 1:
+                            rect.HorizontalAlignment = HorizontalAlignment.Right;
+                            rect.VerticalAlignment = VerticalAlignment.Bottom;
+                            break;
+                        case 2:
+                            rect.HorizontalAlignment = HorizontalAlignment.Left;
+                            rect.VerticalAlignment = VerticalAlignment.Bottom;
+                            break;
+                        case 3:
+                            rect.HorizontalAlignment = HorizontalAlignment.Right;
+                            rect.VerticalAlignment = VerticalAlignment.Top;
+                            break;
+                        case 4:
+                            rect.HorizontalAlignment = HorizontalAlignment.Left;
+                            rect.VerticalAlignment = VerticalAlignment.Top;
+                            break;
+                    }
+                    Grid.SetRow(rect, row);
+                    Grid.SetColumn(rect, column);
+                    break;
+                }
+                index++;
+            }
+        }
+
+        private bool tileIsEmpty(int row,int column) 
+        {
+            foreach (object child in Board.Children)
+            {
+                if(child is Rectangle pawn) 
+                {
+                    if (Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                    {
+                        return false;
+                    }
+                }           
+            }
+            return true;
+        }
         /// <summary>
         /// Click event handler for pawns on the board
         /// </summary>
@@ -332,6 +426,10 @@ namespace FiaMedKnuff
                             Grid.SetColumn(rectangle, column);
                             foundKey += 1;
                             DiceRoll -= 1;
+                            if(DiceRoll == 0) 
+                            { 
+                                await checkForEnemyPawns(row, column,rectangle.Name);
+                            }
                         }
                         else
                         {
@@ -342,6 +440,10 @@ namespace FiaMedKnuff
                 else if(DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow,currentColumn)))
                 {
                     placepawnOnTheBoard(rectangle);
+                    if (DiceRoll == 0)
+                    {
+                        await checkForEnemyPawns(Grid.GetRow(rectangle),Grid.GetColumn(rectangle), rectangle.Name);
+                    }
                 }
 
             }
@@ -351,12 +453,16 @@ namespace FiaMedKnuff
         /// sets rectangle position to first tile of the path dictionary
         /// </summary>
         /// <param name="rectangle"></param>
-        private void linkEndToStartPath(Rectangle rectangle)
+        private async Task linkEndToStartPath(Rectangle rectangle)
         {
             (int row, int column) = boardPath[0];
             Grid.SetRow(rectangle, row);
             Grid.SetColumn(rectangle, column);
             DiceRoll -= 1;
+            if (DiceRoll == 0)
+            {
+                await checkForEnemyPawns(row, column, rectangle.Name);
+            }
         }
 
         /// <summary>
@@ -460,6 +566,7 @@ namespace FiaMedKnuff
         /// <param name="color"></param>
         /// <param name="size"></param>
         /// <returns></returns>
+        /// 
         private Ellipse createElipse(Color color,int size)
         {
             Ellipse ellipse = new Ellipse
@@ -513,7 +620,7 @@ namespace FiaMedKnuff
             await Task.Delay(1000);
 
             // Slumpa fram ett tärningsresultat och visa den statiska bilden
-            int result = random.Next(1, 7);
+            int result = random.Next(1, 2);
             DiceRoll = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
