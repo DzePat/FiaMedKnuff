@@ -17,11 +17,25 @@
         <Grid x:Name="mainMenu" Visibility="Visible">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
+        <Grid x:Name="aboutView" Visibility="Collapsed">
+            <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Grid>
+        <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">
+            <Image.Source>
+                <BitmapImage UriSource="Assets/soundon.png"/>
+            </Image.Source>
+        </Image>
         <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0">
             <Image.Source>
                 <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
             </Image.Source>
         </Image>
+        <Grid Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="5" PointerReleased="Grid_PointerReleased">
+            <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
+            <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
+               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
+        </Grid>
+
 
     </Grid>
 </Page>
