@@ -595,12 +595,49 @@ namespace FiaMedKnuff
         /// <summary>
         /// Changes the visibility of the about view when the user clicks on the questionmark
         /// </summary>
+        //private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+
+        //    aboutIn.Begin();
+        //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    imageSource.Visibility = Visibility.Collapsed;
+
+
+        //}
+
+        private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
+
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            if (isAboutVisible)
+            {
+                // Starta aboutOut animationen
+                aboutOut.Begin();
+                aboutOut.Completed += (s, args) =>
+                {
+                    // Dölj aboutView när animationen är klar
+                    aboutView.Visibility = Visibility.Collapsed;
+                };
+                isAboutVisible = false;
+            }
+            else
+            {
+                // Visa aboutView och starta aboutIn animationen
+                aboutView.Visibility = Visibility.Visible;
+                aboutIn.Begin();
+                isAboutVisible = true;
+            }
+
+            // Uppdatera synligheten för mainMenu och imageSource
             mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
             imageSource.Visibility = Visibility.Collapsed;
-
         }
+
+
+
+
+
+
     }
 }

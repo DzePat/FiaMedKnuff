@@ -7,6 +7,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Storyboard
+    x:Name="aboutIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="aboutView" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-701.385">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1.385">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard
+x:Name="aboutOut">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="aboutView" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1.385"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="-701.385"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
 
     <Grid Name="mainGrid">
         <Grid.Background>
@@ -17,7 +41,10 @@
         <Grid x:Name="mainMenu" Visibility="Visible">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
-        <Grid x:Name="aboutView" Visibility="Collapsed">
+        <Grid x:Name="aboutView" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <CompositeTransform/>
+            </Grid.RenderTransform>
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
         <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">
