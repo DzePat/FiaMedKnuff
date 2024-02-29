@@ -145,6 +145,7 @@ namespace FiaMedKnuff
             addPlayerPawns(0, 11, 3, "Röd");
             //player 4
             addPlayerPawns(11, 11, 4, "Grön");
+            imageSource.Visibility = Visibility.Collapsed;
 
         }
 
@@ -597,6 +598,9 @@ namespace FiaMedKnuff
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            imageSource.Visibility = Visibility.Collapsed;
+
         }
     }
 }
