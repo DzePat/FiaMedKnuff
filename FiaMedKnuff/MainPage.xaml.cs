@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -306,30 +307,38 @@ namespace FiaMedKnuff
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
                 int foundKey;
+                // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-
                     while (DiceRoll != null & DiceRoll != 0)
                     {
+                        // get the pawn position
                         currentRow = Grid.GetRow(rectangle);
                         currentColumn = Grid.GetColumn(rectangle);
+                        // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
+                        // if the pawn is on the last tile of the boardpath
                         if (goalStartTile[rectangle.Name + "-1"] == (currentRow, currentColumn))
                         {
+                            // move the pawn to the next position in the goalpath
                             (int row, int column) = goalPath[rectangle.Name + "-2"];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
                             DiceRoll -= 1;
                         }
+                        // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
                             moveOneGoalTile(rectangle);
                         }
+                        // if the boardpath contains the next position of the clicked pawn
                         else if (boardPath.ContainsKey((int)foundKey + 1))
                         {
+                            // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
+                            // update 'foundKey' to the new current position number
                             foundKey += 1;
                             DiceRoll -= 1;
                         }
@@ -339,6 +348,7 @@ namespace FiaMedKnuff
                         }
                     }
                 }
+                // place the pawn on the board if the clicked pawn is in the nest
                 else if (DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
                     placepawnOnTheBoard(rectangle);
@@ -398,9 +408,12 @@ namespace FiaMedKnuff
         {
             int currentRow = Grid.GetRow(rectangle);
             int currentColumn = Grid.GetColumn(rectangle);
+            // get the current position of the clicked pawn
             string currentKey = goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
             string[] currentKeySplit = currentKey.Split('-'); //returns "[color,index]"
+            // get the next position of the clicked pawn
             string newkey = $"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 1}";
+            // if the next position of the clicked pawn is not occupied
             if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false)
             {
                 (int newRow, int newColumn) = goalPath[newkey];
