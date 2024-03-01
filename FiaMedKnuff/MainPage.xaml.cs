@@ -595,12 +595,61 @@ namespace FiaMedKnuff
         /// <summary>
         /// Changes the visibility of the about view when the user clicks on the questionmark
         /// </summary>
+        //private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+
+        //    aboutIn.Begin();
+        //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    imageSource.Visibility = Visibility.Collapsed;
+
+
+        //}
+
+        private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
+        ///<summary>
+        ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
+        ///aboutView depending on its current state.If the aboutView is visible, it starts the aboutOut animation 
+        ///to hide it.If the aboutView is not visible, it makes it visible and starts the aboutIn animation.Additionally, 
+        ///it updates the visibility of the mainMenu and imageSource elements.
+        ///</summary>
+        ///<param name = "sender" > The source of the event.</param>
+        ///<param name="e">A PointerRoutedEventArgs that contains the event data.</param>
+        ///<remarks>
+        ///The method checks if isAboutVisible is true. If so, it starts the aboutOut animation and sets the visibility of aboutView to Collapsed once the animation completes. If isAboutVisible is false, it sets the visibility of aboutView to Visible, starts the aboutIn animation, and updates isAboutVisible to true. It also toggles the visibility of the mainMenu and sets the visibility of imageSource to Collapsed.
+        ///</remarks>
+
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-            imageSource.Visibility = Visibility.Collapsed;
+            if (isAboutVisible)
+            {
+                // Start aboutOut animation
+                aboutOut.Begin();
+                aboutOut.Completed += (s, args) =>
+                {
+                    // Hide aboutView when animation is complete
+                    aboutView.Visibility = Visibility.Collapsed;
+                };
+                isAboutVisible = false;
+            }
+            else
+            {
+                // Show aboutView and start aboutIn animation
+                aboutView.Visibility = Visibility.Visible;
+                aboutIn.Begin();
+                isAboutVisible = true;
+            }
 
+            // Update visability for mainMenu and imageSource
+            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            FadeinMainMenu.Begin();
+            imageSource.Visibility = Visibility.Collapsed;
         }
+
+
+
+
+
+
     }
 }

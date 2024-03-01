@@ -11,6 +11,7 @@ namespace FiaMedKnuff
         public MainMenu()
         {
             this.InitializeComponent();
+            FadeinMainMenu.Begin();
         }
 
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
