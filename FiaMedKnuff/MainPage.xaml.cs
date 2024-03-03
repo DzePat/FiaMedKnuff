@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -400,30 +401,38 @@ namespace FiaMedKnuff
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
                 int foundKey;
+                // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-
                     while (DiceRoll != null & DiceRoll != 0)
                     {
+                        // get the pawn position
                         currentRow = Grid.GetRow(rectangle);
                         currentColumn = Grid.GetColumn(rectangle);
+                        // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
+                        // if the pawn is on the last tile of the boardpath
                         if (goalStartTile[rectangle.Name + "-1"] == (currentRow, currentColumn))
                         {
+                            // move the pawn to the next position in the goalpath
                             (int row, int column) = goalPath[rectangle.Name + "-2"];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
                             DiceRoll -= 1;
                         }
+                        // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
                             moveOneGoalTile(rectangle);
                         }
+                        // if the boardpath contains the next position of the clicked pawn
                         else if (boardPath.ContainsKey((int)foundKey + 1))
                         {
+                            // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
+                            // update 'foundKey' to the new current position number
                             foundKey += 1;
                             DiceRoll -= 1;
                             if(DiceRoll == 0) 
@@ -437,6 +446,7 @@ namespace FiaMedKnuff
                         }
                     }
                 }
+                // place the pawn on the board if the clicked pawn is in the nest
                 else if (DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
                     placepawnOnTheBoard(rectangle);
@@ -504,9 +514,12 @@ namespace FiaMedKnuff
         {
             int currentRow = Grid.GetRow(rectangle);
             int currentColumn = Grid.GetColumn(rectangle);
+            // get the current position of the clicked pawn
             string currentKey = goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
             string[] currentKeySplit = currentKey.Split('-'); //returns "[color,index]"
+            // get the next position of the clicked pawn
             string newkey = $"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 1}";
+            // if the next position of the clicked pawn is not occupied
             if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false)
             {
                 (int newRow, int newColumn) = goalPath[newkey];
@@ -701,12 +714,61 @@ namespace FiaMedKnuff
         /// <summary>
         /// Changes the visibility of the about view when the user clicks on the questionmark
         /// </summary>
+        //private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+
+        //    aboutIn.Begin();
+        //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    imageSource.Visibility = Visibility.Collapsed;
+
+
+        //}
+
+        private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
+        ///<summary>
+        ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
+        ///aboutView depending on its current state.If the aboutView is visible, it starts the aboutOut animation 
+        ///to hide it.If the aboutView is not visible, it makes it visible and starts the aboutIn animation.Additionally, 
+        ///it updates the visibility of the mainMenu and imageSource elements.
+        ///</summary>
+        ///<param name = "sender" > The source of the event.</param>
+        ///<param name="e">A PointerRoutedEventArgs that contains the event data.</param>
+        ///<remarks>
+        ///The method checks if isAboutVisible is true. If so, it starts the aboutOut animation and sets the visibility of aboutView to Collapsed once the animation completes. If isAboutVisible is false, it sets the visibility of aboutView to Visible, starts the aboutIn animation, and updates isAboutVisible to true. It also toggles the visibility of the mainMenu and sets the visibility of imageSource to Collapsed.
+        ///</remarks>
+
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-            imageSource.Visibility = Visibility.Collapsed;
+            if (isAboutVisible)
+            {
+                // Start aboutOut animation
+                aboutOut.Begin();
+                aboutOut.Completed += (s, args) =>
+                {
+                    // Hide aboutView when animation is complete
+                    aboutView.Visibility = Visibility.Collapsed;
+                };
+                isAboutVisible = false;
+            }
+            else
+            {
+                // Show aboutView and start aboutIn animation
+                aboutView.Visibility = Visibility.Visible;
+                aboutIn.Begin();
+                isAboutVisible = true;
+            }
 
+            // Update visability for mainMenu and imageSource
+            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            FadeinMainMenu.Begin();
+            imageSource.Visibility = Visibility.Collapsed;
         }
+
+
+
+
+
+
     }
 }

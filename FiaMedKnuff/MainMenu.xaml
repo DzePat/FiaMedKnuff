@@ -8,7 +8,15 @@
     mc:Ignorable="d"
     d:DesignHeight="500"
     d:DesignWidth="600">
-    <Grid Width="600" Height="500" Background="#AA000000">
+    <UserControl.Resources>
+        <Storyboard x:Name="FadeinMainMenu">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="grid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid x:Name="grid" Width="600" Height="500" Background="#AA000000">
         <StackPanel x:Name="mainMenuContent" VerticalAlignment="Center" Visibility="Visible">
             <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" Foreground="#FFF" TextAlignment="Center" Margin="0,0,0,90">Fia med knuff</TextBlock>
             <Grid x:Name="startButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,0,0,20" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerReleased="StartNewGameSession">
