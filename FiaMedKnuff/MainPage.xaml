@@ -45,7 +45,7 @@ x:Name="aboutOut">
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
         <Grid x:Name="mainMenu" Visibility="Visible">
-            <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
         <Grid x:Name="aboutView" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>

@@ -36,9 +36,13 @@ namespace FiaMedKnuff
         private int DiceRoll;
         private bool isSoundOn = true; //sound is on by default
 
+        public static MainPage Instance { get; private set; }
+        public Image ImageSource { get { return imageSource; } }
+
         public MainPage()
         {
             this.InitializeComponent();
+            Instance = this;
             populateBoard();
             generatePath();
             generateGoalPath();
@@ -323,7 +327,13 @@ namespace FiaMedKnuff
             Board.Children.Add(rectangle);
         }
         
-
+        /// <summary>
+        /// Checks if there is an enemy pawns on the tile your pawn stands
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
         private async Task checkForEnemyPawns(int row, int column,string color) 
         { 
             foreach(object child in Board.Children) 
@@ -332,18 +342,22 @@ namespace FiaMedKnuff
                 {
                     if (pawn.Name != color && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
                     {
-                        await resetPawn(pawn);
+                        resetPawn(pawn);
                     }
                 }
                 
             }
         }
 
-
-        private async Task resetPawn(Rectangle rect)
+        /// <summary>
+        /// Move a pawn from its current position to a corresponding color spawn position
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        private void resetPawn(Rectangle rect)
         {
             int index = 1;
-            while(index < 5) 
+            while (index < 5)
             {
                 (int row, int column) = spawnTiles[rect.Name + $"-{index}"];
                 if (tileIsEmpty(row, column))
@@ -375,6 +389,12 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// checks if there is any pawns on the tile
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
         private bool tileIsEmpty(int row,int column) 
         {
             foreach (object child in Board.Children)
@@ -764,11 +784,5 @@ namespace FiaMedKnuff
             FadeinMainMenu.Begin();
             imageSource.Visibility = Visibility.Collapsed;
         }
-
-
-
-
-
-
     }
 }
