@@ -23,6 +23,7 @@ namespace FiaMedKnuff
         private readonly int buttonSize = 64;
         private List<Button> Playerbuttons = new List<Button>();
         private List<Button> aiButtons = new List<Button>();
+        public Dictionary<int,string> Players = new Dictionary<int,string>();
 
         public static SelectPlayersPage Instance { get; private set; }
         public StackPanel selectPlayersPage { get { return pageStackPanel;} }
@@ -37,7 +38,7 @@ namespace FiaMedKnuff
             {
                 Button playerButton = CreatePlayerButton(i + 1, colors[i]);
                 Playerbuttons.Add(playerButton);
-                Button aiButton = createAIButton();
+                Button aiButton = createAIButton(i+1);
                 aiButtons.Add(aiButton);
                 StackPanel panel = new StackPanel();
                 panel.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -84,9 +85,10 @@ namespace FiaMedKnuff
         /// <return>
         /// the new button
         /// </return>
-        private Button createAIButton()
+        private Button createAIButton(int AInum)
         {
             Button button = new Button();
+            button.Name = "AI" + AInum + "Button";
             button.Content = "AI";
             button.Width = buttonSize*0.7;
             button.Height = buttonSize*0.7;
@@ -117,6 +119,7 @@ namespace FiaMedKnuff
                 AI[num] = true;
                 aiButtons[num].Background= new SolidColorBrush(Colors.White);
             }
+            addPlayer(num + 1, "AI");
         }
 
         ///<summary>
@@ -151,6 +154,23 @@ namespace FiaMedKnuff
         private void ChangeBackColorToDefault(object sender, PointerRoutedEventArgs e)
         {
             Design.ChangeButtonColorBackToDefault(sender);
+        }
+
+        /// <summary>
+        /// add a player or Ai to the dictionary
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="identity"></param>
+        private void addPlayer(int number , string identity) 
+        { 
+            if(Players.ContainsKey(number))
+            {
+                Players[number] = identity;
+            }
+            else 
+            { 
+                Players.Add(number, identity);
+            }
         }
 
         /// <summary>
