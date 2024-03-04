@@ -16,6 +16,7 @@ using System.Text;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Input;
 
 namespace FiaMedKnuff
 {
@@ -50,7 +51,6 @@ namespace FiaMedKnuff
 
             //executableDirectory=Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             //tryAddRecord("hej1", 2);
-            SaveHighscoreToFile();
             loadHighscoreFromFile();
             loadPage();
 
@@ -181,13 +181,15 @@ namespace FiaMedKnuff
             TextBlock nameTextBlock = new TextBlock
             {
                 Text = record.name,
-                HorizontalAlignment = HorizontalAlignment.Left
+                HorizontalAlignment = HorizontalAlignment.Left,
+                FontSize = 24
             };
 
             TextBlock movesTextBlock = new TextBlock
             {
                 Text = ""+ record.moves,
-                HorizontalAlignment = HorizontalAlignment.Right
+                HorizontalAlignment = HorizontalAlignment.Right,
+                FontSize = 24
             };
 
             Grid.SetColumn(nameTextBlock, 0);
@@ -198,5 +200,20 @@ namespace FiaMedKnuff
 
             entriesPanel.Children.Add(entry);
         }
+
+        private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
+        {
+            Design.ChangeButtonColorOnHover(sender);
+        }
+
+        private void ChangeBackColorToDefault(object sender, PointerRoutedEventArgs e)
+        {
+            Design.ChangeButtonColorBackToDefault(sender);
+        }
+        private void BackToMenu(object sender, PointerRoutedEventArgs e)
+        {
+            
+        }
+
     }
 }

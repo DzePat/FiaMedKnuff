@@ -37,5 +37,24 @@ namespace FiaMedKnuff
             selectPlayerMenu.Visibility = Visibility.Visible;
 
         }
+
+        /// <summary>
+        /// shows the highscore session when the user clicks the button. The main menu is hidden and the <see cref="HighscorePage"/> is shown.
+        /// </summary>
+        private void ShowHighscore(object sender, PointerRoutedEventArgs e)
+        {
+            mainMenuContent.Visibility = Visibility.Collapsed;
+            highscoreMenu.Visibility = Visibility.Visible;
+
+        }
+        /// <summary>
+        /// shows the main menu view and hides all the others.
+        /// </summary>
+        public void ShowMainMenu()
+        {
+            mainMenuContent.Visibility = Visibility.Visible;
+            highscoreMenu.Visibility = Visibility.Collapsed;
+            selectPlayerMenu.Visibility = Visibility.Collapsed;
+        }
     }
 }
