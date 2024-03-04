@@ -8,11 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Windows.UI.Xaml.Input;
 
 namespace FiaMedKnuff
 {
 
-    public sealed partial class SelectPlayersPage : Page
+    public sealed partial class SelectPlayersPage : UserControl
     {
         private int selectedNumber = 2;
         private bool[] AI = new bool[4];
@@ -134,6 +135,28 @@ namespace FiaMedKnuff
 
             Playerbuttons[selectedNumber-1].BorderBrush= new SolidColorBrush(Colors.White);
 
+        }
+
+        private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
+        {
+            Design.ChangeButtonColorOnHover(sender);
+        }
+
+        private void ChangeBackColorToDefault(object sender, PointerRoutedEventArgs e)
+        {
+            Design.ChangeButtonColorBackToDefault(sender);
+        }
+
+        /// <summary>
+        /// Starts the game after selecting the players
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// TBD add actual selection as of right now it just launches the game with all 4 players selected
+        private void startButtonSelect(object sender, PointerRoutedEventArgs e)
+        {
+            MainMenu.Instance.Visibility = Visibility.Collapsed;
+            MainPage.Instance.ImageSource.Visibility = Visibility.Visible; 
         }
     }
 }

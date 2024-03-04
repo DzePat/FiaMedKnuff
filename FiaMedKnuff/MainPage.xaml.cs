@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Context;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -29,19 +27,27 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalPath = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
+        public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
-        private int DiceRoll;
-            
+        private int stepCount;
+        private bool isSoundOn = true; //sound is on by default
+
+        public static MainPage Instance { get; private set; }
+        public Image ImageSource { get { return imageSource; } }
+
         public MainPage()
         {
             this.InitializeComponent();
+            Instance = this;
             populateBoard();
             generatePath();
             generateGoalPath();
             generateGoalStartTiles();
+            generateSpawnTiles();
             InitializeAnimationTimer();
         }
+
         private void InitializeAnimationTimer()
         {
             _animationTimer = new DispatcherTimer();
@@ -52,7 +58,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Populate the board with tiles and pawns
         /// </summary>
-        private void populateBoard() 
+        private void populateBoard()
         {
             Board.RowDefinitions.Clear();
             Board.ColumnDefinitions.Clear();
@@ -146,13 +152,14 @@ namespace FiaMedKnuff
             addPlayerPawns(0, 11, 3, "Röd");
             //player 4
             addPlayerPawns(11, 11, 4, "Grön");
+            imageSource.Visibility = Visibility.Collapsed;
 
         }
 
         /// <summary>
         /// Generate path for the board
         /// </summary>
-        private void generatePath() 
+        private void generatePath()
         {
             //Yellow Start to left
             boardPath.Add(0, (11, 5));
@@ -202,10 +209,34 @@ namespace FiaMedKnuff
 
         }
 
+        private void generateSpawnTiles()
+        {
+            //yellow spawn tiles
+            spawnTiles.Add("Gul-1", (11, 0));
+            spawnTiles.Add("Gul-2", (11, 1));
+            spawnTiles.Add("Gul-3", (12, 0));
+            spawnTiles.Add("Gul-4", (12, 1));
+            //Blue spawn tiles
+            spawnTiles.Add("Blå-1", (0, 0));
+            spawnTiles.Add("Blå-2", (0, 1));
+            spawnTiles.Add("Blå-3", (1, 0));
+            spawnTiles.Add("Blå-4", (1, 1));
+            //Red spawn tiles 
+            spawnTiles.Add("Röd-1", (0, 11));
+            spawnTiles.Add("Röd-2", (0, 12));
+            spawnTiles.Add("Röd-3", (1, 11));
+            spawnTiles.Add("Röd-4", (1, 12));
+            //Green spawn tiles
+            spawnTiles.Add("Grön-1", (11, 11));
+            spawnTiles.Add("Grön-2", (11, 12));
+            spawnTiles.Add("Grön-3", (12, 11));
+            spawnTiles.Add("Grön-4", (12, 12));
+        }
+
         /// <summary>
         /// Generate path for the Goal tiles of corresponding colors
         /// </summary>
-        private void generateGoalPath() 
+        private void generateGoalPath()
         {
             //yellow goal path
             goalPath.Add("Gul-2", (10, 6));
@@ -232,7 +263,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Generate 4 tiles for transition between boardpath and goalpath
         /// </summary>
-        private void generateGoalStartTiles() 
+        private void generateGoalStartTiles()
         {
             goalStartTile.Add("Gul-1", (11, 6));
             goalStartTile.Add("Blå-1", (6, 1));
@@ -247,7 +278,7 @@ namespace FiaMedKnuff
         /// <param name="column"></param>
         /// <param name="playerID"></param>
         /// <param name="nameID"></param>
-        private void addPlayerPawns(int row, int column,int playerID,string nameID) 
+        private void addPlayerPawns(int row, int column, int playerID, string nameID)
         {
             string[] pawnPaths = new string[] {
                 "/Assets/Gul.png",
@@ -272,7 +303,7 @@ namespace FiaMedKnuff
         /// <param name="horizontalAlignment"></param>
         /// <param name="verticalAlignment"></param>
         /// <param name="NameID"></param>
-        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment,string NameID)
+        private void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, string NameID)
         {
             Rectangle rectangle = new Rectangle
             {
@@ -295,6 +326,88 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
+        /// Checks if there is an enemy pawns on the tile your pawn stands
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        private async Task checkForEnemyPawns(int row, int column, string color)
+        {
+            foreach (object child in Board.Children)
+            {
+                if (child is Rectangle pawn)
+                {
+                    if (pawn.Name != color && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                    {
+                        resetPawn(pawn);
+                    }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Move a pawn from its current position to a corresponding color spawn position
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        private void resetPawn(Rectangle rect)
+        {
+            int index = 1;
+            while (index < 5)
+            {
+                (int row, int column) = spawnTiles[rect.Name + $"-{index}"];
+                if (tileIsEmpty(row, column))
+                {
+                    switch (index)
+                    {
+                        case 1:
+                            rect.HorizontalAlignment = HorizontalAlignment.Right;
+                            rect.VerticalAlignment = VerticalAlignment.Bottom;
+                            break;
+                        case 2:
+                            rect.HorizontalAlignment = HorizontalAlignment.Left;
+                            rect.VerticalAlignment = VerticalAlignment.Bottom;
+                            break;
+                        case 3:
+                            rect.HorizontalAlignment = HorizontalAlignment.Right;
+                            rect.VerticalAlignment = VerticalAlignment.Top;
+                            break;
+                        case 4:
+                            rect.HorizontalAlignment = HorizontalAlignment.Left;
+                            rect.VerticalAlignment = VerticalAlignment.Top;
+                            break;
+                    }
+                    Grid.SetRow(rect, row);
+                    Grid.SetColumn(rect, column);
+                    break;
+                }
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// checks if there is any pawns on the tile
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        private bool tileIsEmpty(int row, int column)
+        {
+            foreach (object child in Board.Children)
+            {
+                if (child is Rectangle pawn)
+                {
+                    if (Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        /// <summary>
         /// Click event handler for pawns on the board
         /// </summary>
         /// <param name="sender"></param>
@@ -306,64 +419,86 @@ namespace FiaMedKnuff
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
                 int foundKey;
+                // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    
-                    while (DiceRoll != null & DiceRoll != 0) 
+                    while (stepCount != null & stepCount != 0)
                     {
+                        // get the pawn position
                         currentRow = Grid.GetRow(rectangle);
                         currentColumn = Grid.GetColumn(rectangle);
+                        // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
-                        if (goalStartTile[rectangle.Name+"-1"] == (currentRow,currentColumn))
+                        // if the pawn is on the last tile of the boardpath
+                        if (goalStartTile[rectangle.Name + "-1"] == (currentRow, currentColumn))
                         {
-                             (int row, int column) = goalPath[rectangle.Name+"-2"];
-                             Grid.SetRow(rectangle, row);
-                             Grid.SetColumn(rectangle, column);
-                             DiceRoll -= 1;
+                            // move the pawn to the next position in the goalpath
+                            moveToGoalTile(rectangle);
                         }
+                        // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
                             moveOneGoalTile(rectangle);
                         }
-                        else if (boardPath.ContainsKey((int)foundKey + 1))
+                        // if the boardpath contains the next position of the clicked pawn
+                        else if (boardPath.ContainsKey(foundKey + 1))
                         {
+                            // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
+                            stepCount -= 1;
+                            // update 'foundKey' to the new current position number
                             foundKey += 1;
-                            DiceRoll -= 1;
+                            if(stepCount == 0) 
+                            { 
+                                await checkForEnemyPawns(row, column,rectangle.Name);
+                            }
                         }
                         else
                         {
-                            linkEndToStartPath(rectangle);
+                            await linkEndToStartPath(rectangle);
                         }
                     }
                 }
-                else if(DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow,currentColumn)))
+                // place the pawn on the board if the clicked pawn is in the nest
+                else if (stepCount == 6 || stepCount == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    placepawnOnTheBoard(rectangle);
+                    await placepawnOnTheBoardAsync(rectangle);
                 }
 
             }
+        }
+
+        private void moveToGoalTile(Rectangle rectangle)
+        {
+            (int row, int column) = goalPath[rectangle.Name + "-2"];
+            Grid.SetRow(rectangle, row);
+            Grid.SetColumn(rectangle, column);
+            stepCount -= 1;
         }
 
         /// <summary>
         /// sets rectangle position to first tile of the path dictionary
         /// </summary>
         /// <param name="rectangle"></param>
-        private void linkEndToStartPath(Rectangle rectangle)
+        private async Task linkEndToStartPath(Rectangle rectangle)
         {
             (int row, int column) = boardPath[0];
             Grid.SetRow(rectangle, row);
             Grid.SetColumn(rectangle, column);
-            DiceRoll -= 1;
+            stepCount -= 1;
+            if (stepCount == 0)
+            {
+                await checkForEnemyPawns(row, column, rectangle.Name);
+            }
         }
 
         /// <summary>
         /// Places a pawn from the spawn point to the starting position depending on its color
         /// </summary>
         /// <param name="rectangle"></param>
-        private void placepawnOnTheBoard(Rectangle rectangle)
+        private async Task placepawnOnTheBoardAsync(Rectangle rectangle)
         {
             int startingposition;
             if (rectangle.Name.Contains("Gul"))
@@ -387,39 +522,46 @@ namespace FiaMedKnuff
             Grid.SetColumn(rectangle, column);
             rectangle.HorizontalAlignment = HorizontalAlignment.Center;
             rectangle.VerticalAlignment = VerticalAlignment.Center;
-            DiceRoll = 0;
+            stepCount = 0;
+            if (stepCount == 0)
+            {
+                await checkForEnemyPawns(row, column, rectangle.Name);
+            }
         }
 
         /// <summary>
         /// Moves a single tile in goalpath if all tiles infront is occupied then it occupies the current tile
         /// </summary>
         /// <param name="rectangle"></param>
-        private async void moveOneGoalTile(Rectangle rectangle) 
+        private async void moveOneGoalTile(Rectangle rectangle)
         {
             int currentRow = Grid.GetRow(rectangle);
             int currentColumn = Grid.GetColumn(rectangle);
+            // get the current position of the clicked pawn
             string currentKey = goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
             string[] currentKeySplit = currentKey.Split('-'); //returns "[color,index]"
+            // get the next position of the clicked pawn
             string newkey = $"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 1}";
-            if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false) 
-            { 
-                (int newRow,int newColumn) = goalPath[newkey];
+            // if the next position of the clicked pawn is not occupied
+            if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false)
+            {
+                (int newRow, int newColumn) = goalPath[newkey];
                 Grid.SetRow(rectangle, newRow);
                 Grid.SetColumn(rectangle, newColumn);
-                DiceRoll -= 1;
+                stepCount -= 1;
                 //check if the current position is last in the goal tiles
-                if (goalReached.ContainsKey($"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 2}")) 
+                if (goalReached.ContainsKey($"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 2}"))
                 {
                     goalReached.Add(newkey, goalPath[newkey]);
                     rectangle.PointerPressed -= Pawn_Clicked;
-                    DiceRoll = 0;
+                    stepCount = 0;
                 }
             }
-            else 
+            else
             {
                 goalReached.Add(currentKey, goalPath[currentKey]);
                 rectangle.PointerPressed -= Pawn_Clicked;
-                DiceRoll = 0;
+                stepCount = 0;
             }
         }
 
@@ -429,7 +571,7 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addellipse(int row , int column, Color color)
+        private void addellipse(int row, int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 40);
             Grid.SetRow(ellipse, row);
@@ -443,7 +585,7 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addspawntile(int row , int column,Color color) 
+        private void addspawntile(int row, int column, Color color)
         {
             Ellipse ellipse = createElipse(color, 100);
             Grid.SetRowSpan(ellipse, 2);
@@ -460,7 +602,7 @@ namespace FiaMedKnuff
         /// <param name="color"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        private Ellipse createElipse(Color color,int size)
+        private Ellipse createElipse(Color color, int size)
         {
             Ellipse ellipse = new Ellipse
             {
@@ -472,7 +614,16 @@ namespace FiaMedKnuff
             };
             return ellipse;
         }
-
+        /// <summary>
+        /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the event.</param>
+        /// <remarks>
+        /// This method checks if the AutoPlay property is present for the BitmapImage class. If present, it attempts to get
+        /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
+        /// the playback of GIF animations manually.
+        /// </remarks>
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -483,6 +634,16 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Stops an animation timer and sets a new GIF image source with AutoPlay disabled.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the tick event.</param>
+        /// <remarks>
+        /// This method is typically called on a timer tick to stop the timer and update the image source to a new GIF file.
+        /// The new GIF image has its AutoPlay property set to false to allow for manual control of the animation playback.
+        /// This method assumes that the new GIF image is located in the application's Assets folder.
+        /// </remarks>
         private void AnimationTimer_Tick(object sender, object e)
         {
 
@@ -493,27 +654,138 @@ namespace FiaMedKnuff
             imageSource.Source = newImageSource;
         }
 
+        /// <summary>
+        /// Handles the tap event on an image to start a GIF animation, play a sound, simulate a dice roll, and display the result.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">Event data that provides information about the tap event.</param>
+        /// <remarks>
+        /// This method performs the following actions:
+        /// - Starts a GIF animation of a dice roll.
+        /// - Plays a dice rolling sound.
+        /// - Waits briefly to simulate the dice roll.
+        /// - Randomly selects a dice result between 1 and 6.
+        /// - Displays a static image corresponding to the dice result.
+        /// - Shows a message dialog with the dice result.
+        /// Note: This method assumes the presence of specific assets in the application's Assets folder.
+        /// </remarks>
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            // Starta GIF-animationen
+            // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
 
-            // Vänta lite för att simulera "snurr"
+            // Add a sound when dice is rolled
+            if (isSoundOn == true)
+            {
+                var element = new MediaElement();
+                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+                var file = await folder.GetFileAsync("dice-sound.mp3");
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, "");
+
+                element.Play();
+                //MessageDialog dialog = new MessageDialog("Ljudet är på");
+            }
+
+            // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
 
-            // Slumpa fram ett tärningsresultat och visa den statiska bilden
+            // Randomly generate a dice result and display the static image
             int result = random.Next(1, 7);
-            DiceRoll = result;
+            stepCount = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
 
-            //Test av random och att rätt bild visas.
-            MessageDialog dialog = new MessageDialog($"Du slog {result}");
-            await dialog.ShowAsync();
+            //Test of random and correct image display
+            //MessageDialog dialog = new MessageDialog($"Du slog {result}");
+            //await dialog.ShowAsync();
         }
 
+
+        /// <summary>
+        /// Handles the toggling of the sound icon based on user interaction.
+        /// This method toggles the image resource for an Image control between sound-on and sound-off icons,
+        /// depending on the current sound state. The sound state is tracked by a boolean variable <c>isSoundOn</c>.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically an Image control.</param>
+        /// <param name="e">Event data that contains information about the event that was triggered.</param>
+        /// <remarks>
+        /// This method uses isSoundOn to track and toggle the sound state.
+        /// The visual state of the sound (on/off) is represented by switching the icon on the Image control.
+        /// </remarks>
+
+
+        private void soundImageSource_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+
+            // Sedan, i din händelsehanterare:
+            if (!isSoundOn)
+            {
+                soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundon.png"));
+                isSoundOn = true;
+            }
+            else
+            {
+                soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundoff.png"));
+                isSoundOn = false;
+            }
+        }
+        /// <summary>
+        /// Changes the visibility of the about view when the user clicks on the questionmark
+        /// </summary>
+        //private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+
+        //    aboutIn.Begin();
+        //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    imageSource.Visibility = Visibility.Collapsed;
+
+
+        //}
+
+        private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
+        ///<summary>
+        ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
+        ///aboutView depending on its current state.If the aboutView is visible, it starts the aboutOut animation 
+        ///to hide it.If the aboutView is not visible, it makes it visible and starts the aboutIn animation.Additionally, 
+        ///it updates the visibility of the mainMenu and imageSource elements.
+        ///</summary>
+        ///<param name = "sender" > The source of the event.</param>
+        ///<param name="e">A PointerRoutedEventArgs that contains the event data.</param>
+        ///<remarks>
+        ///The method checks if isAboutVisible is true. If so, it starts the aboutOut animation and sets the visibility of aboutView to Collapsed once the animation completes. If isAboutVisible is false, it sets the visibility of aboutView to Visible, starts the aboutIn animation, and updates isAboutVisible to true. It also toggles the visibility of the mainMenu and sets the visibility of imageSource to Collapsed.
+        ///</remarks>
+
+        private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (isAboutVisible)
+            {
+                // Start aboutOut animation
+                aboutOut.Begin();
+                aboutOut.Completed += (s, args) =>
+                {
+                    // Hide aboutView when animation is complete
+                    aboutView.Visibility = Visibility.Collapsed;
+                };
+                isAboutVisible = false;
+            }
+            else
+            {
+                // Show aboutView and start aboutIn animation
+                aboutView.Visibility = Visibility.Visible;
+                aboutIn.Begin();
+                isAboutVisible = true;
+            }
+
+            // Update visability for mainMenu and imageSource
+            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            FadeinMainMenu.Begin();
+            imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 }

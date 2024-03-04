@@ -7,6 +7,36 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Storyboard
+    x:Name="aboutIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="aboutView" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-701.385">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1.385">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard
+x:Name="aboutOut">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="aboutView" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1.385"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="-701.385"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="FadeinMainMenu">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="mainMenu" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
 
     <Grid Name="mainGrid">
         <Grid.Background>
@@ -14,14 +44,31 @@
         </Grid.Background>
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
-        <Grid x:Name="mainMenu" Visibility="Collapsed">
-            <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Grid x:Name="mainMenu" Visibility="Visible">
+            <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
+        <Grid x:Name="aboutView" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <CompositeTransform/>
+            </Grid.RenderTransform>
+            <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Grid>
+        <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">
+            <Image.Source>
+                <BitmapImage UriSource="Assets/soundon.png"/>
+            </Image.Source>
+        </Image>
         <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0">
             <Image.Source>
                 <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
             </Image.Source>
         </Image>
+        <Grid Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="5" PointerReleased="Grid_PointerReleased">
+            <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
+            <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
+               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
+        </Grid>
+
 
     </Grid>
 </Page>
