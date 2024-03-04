@@ -382,6 +382,7 @@ namespace FiaMedKnuff
                     }
                     Grid.SetRow(rect, row);
                     Grid.SetColumn(rect, column);
+                    PlaySound("eat");
                     break;
                 }
                 index++;
@@ -431,10 +432,10 @@ namespace FiaMedKnuff
                         // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
+                        //Ljud
                         PlaySound("walk");
                         await Task.Delay(300);
 
-                        //Ljud
                         if (goalStartTile[pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
                             // move the pawn to the next position in the goalpath
