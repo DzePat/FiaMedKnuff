@@ -8,15 +8,15 @@
     mc:Ignorable="d" d:DesignHeight="360" d:DesignWidth="600">
 
     <StackPanel Name="pageStackPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock HorizontalAlignment="Center" FontSize="37" FontFamily="Bodoni MT Black" Margin="0,0,0,35">Choose number of players</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontSize="37" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="0,0,0,35" Foreground="White">Choose number of players</TextBlock>
         <StackPanel Name="playerButtonStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
         </StackPanel>
         <Grid>
             <Grid x:Name="startButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="200,40,0,20" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="startButtonSelect">
-                <TextBlock x:Name="startButtonText" FontSize="64" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
+                <TextBlock x:Name="startButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
             </Grid>
             <Grid x:Name="backButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,40,200,20" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="backButtonSelect">
-                <TextBlock x:Name="backButtonText" FontSize="64" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Back</TextBlock>
+                <TextBlock x:Name="backButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Back</TextBlock>
             </Grid>
         </Grid>
     </StackPanel>

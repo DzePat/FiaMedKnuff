@@ -22,7 +22,7 @@
         </Grid>
         <StackPanel Name="entriesPanel" Orientation="Vertical" VerticalAlignment="Center"/>
         <Grid x:Name="highScoreButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerReleased="BackToMenu" Margin="0,35,0,0">
-            <TextBlock x:Name="highScoreButtonText" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" VerticalAlignment="Center">Back</TextBlock>
+            <TextBlock x:Name="highScoreButtonText" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" VerticalAlignment="Center" Foreground="#000">Back</TextBlock>
         </Grid>
     </StackPanel>
 </Page>
