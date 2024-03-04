@@ -1,21 +1,13 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
-using System.Runtime.ConstrainedExecution;
-using Windows.Perception.Spatial.Preview;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
-
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using Windows.Storage;
 using System.Text;
-using Windows.Storage.Streams;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Shapes;
+using Windows.Storage;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 
 namespace FiaMedKnuff
@@ -43,7 +35,7 @@ namespace FiaMedKnuff
             }
         }
 
-            
+
         public HighscorePage()
         {
             this.InitializeComponent();
@@ -51,6 +43,7 @@ namespace FiaMedKnuff
 
             //executableDirectory=Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             //tryAddRecord("hej1", 2);
+            SaveHighscoreToFile();
             loadHighscoreFromFile();
             loadPage();
 
@@ -64,7 +57,7 @@ namespace FiaMedKnuff
             //clear all previous listings
             entriesPanel.Children.Clear();
 
-           foreach (Record record in recordList)
+            foreach (Record record in recordList)
             {
                 addEntryToGUI(record);
             }
@@ -94,7 +87,8 @@ namespace FiaMedKnuff
                     recordList.Add(new Record(name, moves));
                     added = true;
                 }
-            } else //else we just add it
+            }
+            else //else we just add it
             {
                 recordList.Add(new Record(name, moves));
                 added = true;
@@ -105,7 +99,8 @@ namespace FiaMedKnuff
                 //sort the whole list
                 recordList.Sort((record1, record2) => record1.moves.CompareTo(record2.moves));
                 return true;
-            } else //did not add any new record
+            }
+            else //did not add any new record
             {
                 return false;
             }
@@ -187,7 +182,7 @@ namespace FiaMedKnuff
 
             TextBlock movesTextBlock = new TextBlock
             {
-                Text = ""+ record.moves,
+                Text = "" + record.moves,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 FontSize = 24
             };
