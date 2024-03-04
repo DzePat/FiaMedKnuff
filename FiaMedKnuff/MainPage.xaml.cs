@@ -30,7 +30,7 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
-        private int DiceRoll;
+        private int stepCount;
         private bool isSoundOn = true; //sound is on by default
 
         public static MainPage Instance { get; private set; }
@@ -47,6 +47,7 @@ namespace FiaMedKnuff
             generateSpawnTiles();
             InitializeAnimationTimer();
         }
+
         private void InitializeAnimationTimer()
         {
             _animationTimer = new DispatcherTimer();
@@ -421,7 +422,7 @@ namespace FiaMedKnuff
                 // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    while (DiceRoll != null & DiceRoll != 0)
+                    while (stepCount != null & stepCount != 0)
                     {
                         // get the pawn position
                         currentRow = Grid.GetRow(Pawn);
@@ -434,10 +435,7 @@ namespace FiaMedKnuff
                         if (goalStartTile[Pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
                             // move the pawn to the next position in the goalpath
-                            (int row, int column) = goalPath[Pawn.Name + "-2"];
-                            Grid.SetRow(Pawn, row);
-                            Grid.SetColumn(Pawn, column);
-                            DiceRoll -= 1;
+                            moveToGoalTile(rectangle);
                         }
                         // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
@@ -445,37 +443,41 @@ namespace FiaMedKnuff
                             moveOneGoalTile(Pawn);
                         }
                         // if the boardpath contains the next position of the clicked pawn
-                        else if (boardPath.ContainsKey((int)foundKey + 1))
+                        else if (boardPath.ContainsKey(foundKey + 1))
                         {
                             // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
-                            Grid.SetRow(Pawn, row);
-                            Grid.SetColumn(Pawn, column);
+                            Grid.SetRow(rectangle, row);
+                            Grid.SetColumn(rectangle, column);
+                            stepCount -= 1;
                             // update 'foundKey' to the new current position number
                             foundKey += 1;
-                            DiceRoll -= 1;
-                            if (DiceRoll == 0)
-                            {
-                                await checkForEnemyPawns(row, column, Pawn.Name);
+                            if(stepCount == 0) 
+                            { 
+                                await checkForEnemyPawns(row, column,rectangle.Name);
                             }
                         }
                         else
                         {
-                            linkEndToStartPath(Pawn);
+                            await linkEndToStartPath(rectangle);
                         }
                     }
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
-                else if (DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
+                else if (stepCount == 6 || stepCount == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    placepawnOnTheBoard(Pawn);
-                    if (DiceRoll == 0)
-                    {
-                        await checkForEnemyPawns(Grid.GetRow(Pawn), Grid.GetColumn(Pawn), Pawn.Name);
-                    }
+                    await placepawnOnTheBoardAsync(rectangle);
                 }
 
             }
+        }
+
+        private void moveToGoalTile(Rectangle rectangle)
+        {
+            (int row, int column) = goalPath[rectangle.Name + "-2"];
+            Grid.SetRow(rectangle, row);
+            Grid.SetColumn(rectangle, column);
+            stepCount -= 1;
         }
 
         /// <summary>
@@ -487,8 +489,8 @@ namespace FiaMedKnuff
             (int row, int column) = boardPath[0];
             Grid.SetRow(rectangle, row);
             Grid.SetColumn(rectangle, column);
-            DiceRoll -= 1;
-            if (DiceRoll == 0)
+            stepCount -= 1;
+            if (stepCount == 0)
             {
                 await checkForEnemyPawns(row, column, rectangle.Name);
             }
@@ -498,7 +500,7 @@ namespace FiaMedKnuff
         /// Places a pawn from the spawn point to the starting position depending on its color
         /// </summary>
         /// <param name="rectangle"></param>
-        private void placepawnOnTheBoard(Rectangle rectangle)
+        private async Task placepawnOnTheBoardAsync(Rectangle rectangle)
         {
             int startingposition;
             if (rectangle.Name.Contains("Gul"))
@@ -522,7 +524,11 @@ namespace FiaMedKnuff
             Grid.SetColumn(rectangle, column);
             rectangle.HorizontalAlignment = HorizontalAlignment.Center;
             rectangle.VerticalAlignment = VerticalAlignment.Center;
-            DiceRoll = 0;
+            stepCount = 0;
+            if (stepCount == 0)
+            {
+                await checkForEnemyPawns(row, column, rectangle.Name);
+            }
         }
 
         /// <summary>
@@ -544,20 +550,20 @@ namespace FiaMedKnuff
                 (int newRow, int newColumn) = goalPath[newkey];
                 Grid.SetRow(rectangle, newRow);
                 Grid.SetColumn(rectangle, newColumn);
-                DiceRoll -= 1;
+                stepCount -= 1;
                 //check if the current position is last in the goal tiles
                 if (goalReached.ContainsKey($"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 2}"))
                 {
                     goalReached.Add(newkey, goalPath[newkey]);
                     rectangle.PointerPressed -= Pawn_Clicked;
-                    DiceRoll = 0;
+                    stepCount = 0;
                 }
             }
             else
             {
                 goalReached.Add(currentKey, goalPath[currentKey]);
                 rectangle.PointerPressed -= Pawn_Clicked;
-                DiceRoll = 0;
+                stepCount = 0;
             }
         }
 
@@ -691,7 +697,7 @@ namespace FiaMedKnuff
 
             // Randomly generate a dice result and display the static image
             int result = random.Next(1, 7);
-            DiceRoll = result;
+            stepCount = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
 
