@@ -414,10 +414,10 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Rectangle Pawn)
+            if (sender is Rectangle pawn)
             {
-                int currentRow = Grid.GetRow(Pawn);
-                int currentColumn = Grid.GetColumn(Pawn);
+                int currentRow = Grid.GetRow(pawn);
+                int currentColumn = Grid.GetColumn(pawn);
                 int foundKey;
                 // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
@@ -425,48 +425,48 @@ namespace FiaMedKnuff
                     while (stepCount != null & stepCount != 0)
                     {
                         // get the pawn position
-                        currentRow = Grid.GetRow(Pawn);
-                        currentColumn = Grid.GetColumn(Pawn);
+                        currentRow = Grid.GetRow(pawn);
+                        currentColumn = Grid.GetColumn(pawn);
                         // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
                         await Task.Delay(200);
                         //Ljud
-                        if (goalStartTile[Pawn.Name + "-1"] == (currentRow, currentColumn))
+                        if (goalStartTile[pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
                             // move the pawn to the next position in the goalpath
-                            moveToGoalTile(rectangle);
+                            moveToGoalTile(pawn);
                         }
                         // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
-                            moveOneGoalTile(Pawn);
+                            moveOneGoalTile(pawn);
                         }
                         // if the boardpath contains the next position of the clicked pawn
                         else if (boardPath.ContainsKey(foundKey + 1))
                         {
                             // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
-                            Grid.SetRow(rectangle, row);
-                            Grid.SetColumn(rectangle, column);
+                            Grid.SetRow(pawn, row);
+                            Grid.SetColumn(pawn, column);
                             stepCount -= 1;
                             // update 'foundKey' to the new current position number
                             foundKey += 1;
-                            if(stepCount == 0) 
-                            { 
-                                await checkForEnemyPawns(row, column,rectangle.Name);
+                            if (stepCount == 0)
+                            {
+                                await checkForEnemyPawns(row, column, pawn.Name);
                             }
                         }
                         else
                         {
-                            await linkEndToStartPath(rectangle);
+                            await linkEndToStartPath(pawn);
                         }
                     }
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
                 else if (stepCount == 6 || stepCount == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    await placepawnOnTheBoardAsync(rectangle);
+                    await placepawnOnTheBoardAsync(pawn);
                 }
 
             }
