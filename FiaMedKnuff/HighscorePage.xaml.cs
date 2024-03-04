@@ -43,7 +43,8 @@ namespace FiaMedKnuff
 
             //executableDirectory=Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             //tryAddRecord("hej1", 2);
-            SaveHighscoreToFile();
+
+
             loadHighscoreFromFile();
             loadPage();
 
@@ -145,20 +146,28 @@ namespace FiaMedKnuff
         /// </summary>
         public async void loadHighscoreFromFile()
         {
-            StorageFile saveFile = await localFolder.GetFileAsync(fileName);
-
-            // Open a stream for the file
-            using (IRandomAccessStream stream = await saveFile.OpenAsync(FileAccessMode.Read))
+            try
             {
-                using (StreamReader reader = new StreamReader(stream.AsStream()))
+                StorageFile saveFile = await localFolder.GetFileAsync(fileName);
+
+                using (IRandomAccessStream stream = await saveFile.OpenAsync(FileAccessMode.Read))
                 {
-                    string line;
-                    while ((line = await reader.ReadLineAsync()) != null)
+                    using (StreamReader reader = new StreamReader(stream.AsStream()))
                     {
-                        string[] words = line.Split('|');
-                        recordList.Add(new Record(words[0], Int32.Parse(words[1])));
+                        string line;
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
+                            string[] words = line.Split('|');
+                            recordList.Add(new Record(words[0], int.Parse(words[1])));
+                        }
                     }
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                Debug.WriteLine("Highscore file not found, creating a new one.");
+                // Create a new file if it doesn't exist
+                SaveHighscoreToFile();
             }
         }
 
