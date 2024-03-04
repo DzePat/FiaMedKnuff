@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -430,7 +431,9 @@ namespace FiaMedKnuff
                         // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
-                        await Task.Delay(200);
+                        PlaySound("walk");
+                        await Task.Delay(300);
+
                         //Ljud
                         if (goalStartTile[pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
@@ -682,14 +685,8 @@ namespace FiaMedKnuff
             // Add a sound when dice is rolled
             if (isSoundOn == true)
             {
-                var element = new MediaElement();
-                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-                var file = await folder.GetFileAsync("dice-sound.mp3");
-                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                element.SetSource(stream, "");
+                await PlaySound("dice");
 
-                element.Play();
-                //MessageDialog dialog = new MessageDialog("Ljudet är på");
             }
 
             // Wait a bit to simulate "spinning"
@@ -705,6 +702,48 @@ namespace FiaMedKnuff
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
         }
+
+        //private static async Task PlaySound(string sound)
+        //{
+        //    var element = new MediaElement();
+        //    var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+        //    var file = await folder.GetFileAsync("dice-sound.mp3");
+        //    var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+        //    element.SetSource(stream, "");
+
+        //    element.Play();
+        //}
+        private static async Task PlaySound(string sound)
+        {
+            var element = new MediaElement();
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+            StorageFile file;
+
+            switch (sound)
+            {
+                case "dice":
+                    file = await folder.GetFileAsync("dice-sound.mp3");
+                    break;
+                case "win":
+                    file = await folder.GetFileAsync("winSound.mp3");
+                    break;
+                case "eat":
+                    file = await folder.GetFileAsync("eatPlayerSound.mp3");
+                    break;
+                case "walk":
+                    file = await folder.GetFileAsync("walkSound.mp3");
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported sound: {sound}");
+            }
+
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            element.SetSource(stream, file.ContentType);
+
+            element.Play();
+        }
+
 
 
         /// <summary>
