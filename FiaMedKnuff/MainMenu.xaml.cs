@@ -8,9 +8,14 @@ namespace FiaMedKnuff
 {
     public sealed partial class MainMenu : UserControl
     {
+
+        public static MainMenu Instance { get; private set; }
+
         public MainMenu()
         {
             this.InitializeComponent();
+            FadeinMainMenu.Begin();
+            Instance = this;
         }
 
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)

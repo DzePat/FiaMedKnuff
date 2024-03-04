@@ -146,5 +146,17 @@ namespace FiaMedKnuff
         {
             Design.ChangeButtonColorBackToDefault(sender);
         }
+
+        /// <summary>
+        /// Starts the game after selecting the players
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// TBD add actual selection as of right now it just launches the game with all 4 players selected
+        private void startButtonSelect(object sender, PointerRoutedEventArgs e)
+        {
+            MainMenu.Instance.Visibility = Visibility.Collapsed;
+            MainPage.Instance.ImageSource.Visibility = Visibility.Visible; 
+        }
     }
 }

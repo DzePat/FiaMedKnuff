@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -27,18 +30,24 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalPath = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
+        public Dictionary<string, (int,int)> spawnTiles = new Dictionary<string, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int DiceRoll;
         private bool isSoundOn = true; //sound is on by default
 
+        public static MainPage Instance { get; private set; }
+        public Image ImageSource { get { return imageSource; } }
+
         public MainPage()
         {
             this.InitializeComponent();
+            Instance = this;
             populateBoard();
             generatePath();
             generateGoalPath();
             generateGoalStartTiles();
+            generateSpawnTiles();
             InitializeAnimationTimer();
         }
         private void InitializeAnimationTimer()
@@ -202,6 +211,30 @@ namespace FiaMedKnuff
 
         }
 
+        private void generateSpawnTiles() 
+        {
+            //yellow spawn tiles
+            spawnTiles.Add("Gul-1", (11, 0));
+            spawnTiles.Add("Gul-2", (11, 1));
+            spawnTiles.Add("Gul-3", (12, 0));
+            spawnTiles.Add("Gul-4", (12, 1));
+            //Blue spawn tiles
+            spawnTiles.Add("Blå-1", (0, 0));
+            spawnTiles.Add("Blå-2", (0, 1));
+            spawnTiles.Add("Blå-3", (1, 0));
+            spawnTiles.Add("Blå-4", (1, 1));
+            //Red spawn tiles 
+            spawnTiles.Add("Röd-1", (0, 11));
+            spawnTiles.Add("Röd-2", (0, 12));
+            spawnTiles.Add("Röd-3", (1, 11));
+            spawnTiles.Add("Röd-4", (1, 12));
+            //Green spawn tiles
+            spawnTiles.Add("Grön-1", (11, 11));
+            spawnTiles.Add("Grön-2", (11, 12));
+            spawnTiles.Add("Grön-3", (12, 11));
+            spawnTiles.Add("Grön-4", (12, 12));
+        }
+
         /// <summary>
         /// Generate path for the Goal tiles of corresponding colors
         /// </summary>
@@ -293,7 +326,89 @@ namespace FiaMedKnuff
             Grid.SetColumn(rectangle, column);
             Board.Children.Add(rectangle);
         }
+        
+        /// <summary>
+        /// Checks if there is an enemy pawns on the tile your pawn stands
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        private async Task checkForEnemyPawns(int row, int column,string color) 
+        { 
+            foreach(object child in Board.Children) 
+            { 
+                if(child is Rectangle pawn) 
+                {
+                    if (pawn.Name != color && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                    {
+                        resetPawn(pawn);
+                    }
+                }
+                
+            }
+        }
 
+        /// <summary>
+        /// Move a pawn from its current position to a corresponding color spawn position
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        private void resetPawn(Rectangle rect)
+        {
+            int index = 1;
+            while (index < 5)
+            {
+                (int row, int column) = spawnTiles[rect.Name + $"-{index}"];
+                if (tileIsEmpty(row, column))
+                {
+                    switch (index)
+                    {
+                        case 1:
+                            rect.HorizontalAlignment = HorizontalAlignment.Right;
+                            rect.VerticalAlignment = VerticalAlignment.Bottom;
+                            break;
+                        case 2:
+                            rect.HorizontalAlignment = HorizontalAlignment.Left;
+                            rect.VerticalAlignment = VerticalAlignment.Bottom;
+                            break;
+                        case 3:
+                            rect.HorizontalAlignment = HorizontalAlignment.Right;
+                            rect.VerticalAlignment = VerticalAlignment.Top;
+                            break;
+                        case 4:
+                            rect.HorizontalAlignment = HorizontalAlignment.Left;
+                            rect.VerticalAlignment = VerticalAlignment.Top;
+                            break;
+                    }
+                    Grid.SetRow(rect, row);
+                    Grid.SetColumn(rect, column);
+                    break;
+                }
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// checks if there is any pawns on the tile
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        private bool tileIsEmpty(int row,int column) 
+        {
+            foreach (object child in Board.Children)
+            {
+                if(child is Rectangle pawn) 
+                {
+                    if (Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                    {
+                        return false;
+                    }
+                }           
+            }
+            return true;
+        }
         /// <summary>
         /// Click event handler for pawns on the board
         /// </summary>
@@ -306,32 +421,44 @@ namespace FiaMedKnuff
                 int currentRow = Grid.GetRow(rectangle);
                 int currentColumn = Grid.GetColumn(rectangle);
                 int foundKey;
+                // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-
                     while (DiceRoll != null & DiceRoll != 0)
                     {
+                        // get the pawn position
                         currentRow = Grid.GetRow(rectangle);
                         currentColumn = Grid.GetColumn(rectangle);
+                        // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
+                        // if the pawn is on the last tile of the boardpath
                         if (goalStartTile[rectangle.Name + "-1"] == (currentRow, currentColumn))
                         {
+                            // move the pawn to the next position in the goalpath
                             (int row, int column) = goalPath[rectangle.Name + "-2"];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
                             DiceRoll -= 1;
                         }
+                        // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
                             moveOneGoalTile(rectangle);
                         }
+                        // if the boardpath contains the next position of the clicked pawn
                         else if (boardPath.ContainsKey((int)foundKey + 1))
                         {
+                            // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
                             Grid.SetRow(rectangle, row);
                             Grid.SetColumn(rectangle, column);
+                            // update 'foundKey' to the new current position number
                             foundKey += 1;
                             DiceRoll -= 1;
+                            if(DiceRoll == 0) 
+                            { 
+                                await checkForEnemyPawns(row, column,rectangle.Name);
+                            }
                         }
                         else
                         {
@@ -339,9 +466,14 @@ namespace FiaMedKnuff
                         }
                     }
                 }
+                // place the pawn on the board if the clicked pawn is in the nest
                 else if (DiceRoll == 6 || DiceRoll == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
                     placepawnOnTheBoard(rectangle);
+                    if (DiceRoll == 0)
+                    {
+                        await checkForEnemyPawns(Grid.GetRow(rectangle),Grid.GetColumn(rectangle), rectangle.Name);
+                    }
                 }
 
             }
@@ -351,12 +483,16 @@ namespace FiaMedKnuff
         /// sets rectangle position to first tile of the path dictionary
         /// </summary>
         /// <param name="rectangle"></param>
-        private void linkEndToStartPath(Rectangle rectangle)
+        private async Task linkEndToStartPath(Rectangle rectangle)
         {
             (int row, int column) = boardPath[0];
             Grid.SetRow(rectangle, row);
             Grid.SetColumn(rectangle, column);
             DiceRoll -= 1;
+            if (DiceRoll == 0)
+            {
+                await checkForEnemyPawns(row, column, rectangle.Name);
+            }
         }
 
         /// <summary>
@@ -398,9 +534,12 @@ namespace FiaMedKnuff
         {
             int currentRow = Grid.GetRow(rectangle);
             int currentColumn = Grid.GetColumn(rectangle);
+            // get the current position of the clicked pawn
             string currentKey = goalPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
             string[] currentKeySplit = currentKey.Split('-'); //returns "[color,index]"
+            // get the next position of the clicked pawn
             string newkey = $"{currentKeySplit[0]}-{int.Parse(currentKeySplit[1]) + 1}";
+            // if the next position of the clicked pawn is not occupied
             if (goalPath.ContainsKey(newkey) & goalReached.ContainsKey(newkey) == false)
             {
                 (int newRow, int newColumn) = goalPath[newkey];
@@ -595,12 +734,55 @@ namespace FiaMedKnuff
         /// <summary>
         /// Changes the visibility of the about view when the user clicks on the questionmark
         /// </summary>
+        //private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+
+        //    aboutIn.Begin();
+        //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        //    imageSource.Visibility = Visibility.Collapsed;
+
+
+        //}
+
+        private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
+        ///<summary>
+        ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
+        ///aboutView depending on its current state.If the aboutView is visible, it starts the aboutOut animation 
+        ///to hide it.If the aboutView is not visible, it makes it visible and starts the aboutIn animation.Additionally, 
+        ///it updates the visibility of the mainMenu and imageSource elements.
+        ///</summary>
+        ///<param name = "sender" > The source of the event.</param>
+        ///<param name="e">A PointerRoutedEventArgs that contains the event data.</param>
+        ///<remarks>
+        ///The method checks if isAboutVisible is true. If so, it starts the aboutOut animation and sets the visibility of aboutView to Collapsed once the animation completes. If isAboutVisible is false, it sets the visibility of aboutView to Visible, starts the aboutIn animation, and updates isAboutVisible to true. It also toggles the visibility of the mainMenu and sets the visibility of imageSource to Collapsed.
+        ///</remarks>
+
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-            imageSource.Visibility = Visibility.Collapsed;
+            if (isAboutVisible)
+            {
+                // Start aboutOut animation
+                aboutOut.Begin();
+                aboutOut.Completed += (s, args) =>
+                {
+                    // Hide aboutView when animation is complete
+                    aboutView.Visibility = Visibility.Collapsed;
+                };
+                isAboutVisible = false;
+            }
+            else
+            {
+                // Show aboutView and start aboutIn animation
+                aboutView.Visibility = Visibility.Visible;
+                aboutIn.Begin();
+                isAboutVisible = true;
+            }
 
+            // Update visability for mainMenu and imageSource
+            mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            FadeinMainMenu.Begin();
+            imageSource.Visibility = Visibility.Collapsed;
         }
     }
 }
