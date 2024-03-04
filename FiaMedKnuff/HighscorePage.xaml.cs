@@ -11,6 +11,11 @@ using System.Reflection;
 
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using Windows.Storage;
+using System.Text;
+using Windows.Storage.Streams;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Shapes;
 
 namespace FiaMedKnuff
 {
@@ -20,7 +25,7 @@ namespace FiaMedKnuff
         private List<Record> recordList = new List<Record>();
         private int maxRecords = 5;
         private string fileName = "highscore.txt";
-        private string filePath;
+        private StorageFolder localFolder = ApplicationData.Current.LocalFolder;
 
         /// <summary>
         /// Interal class to keep track of records
@@ -43,12 +48,11 @@ namespace FiaMedKnuff
             this.InitializeComponent();
 
 
-            string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
             //executableDirectory=Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-            filePath = Path.Combine(executableDirectory,fileName);
-
+            //tryAddRecord("hej1", 2);
+            SaveHighscoreToFile();
             loadHighscoreFromFile();
+            loadPage();
 
         }
         /// <summary>
@@ -79,6 +83,7 @@ namespace FiaMedKnuff
         public bool tryAddRecord(string name, int moves)
         {
             Boolean added = false;
+            name.Replace("|", ""); //remove all separator characters not to corrupt the savefile later
             //check if we need to replace a record
             if (recordList.Count >= maxRecords)
             {
@@ -100,7 +105,7 @@ namespace FiaMedKnuff
                 //sort the whole list
                 recordList.Sort((record1, record2) => record1.moves.CompareTo(record2.moves));
                 return true;
-            } else
+            } else //did not add any new record
             {
                 return false;
             }
@@ -111,22 +116,55 @@ namespace FiaMedKnuff
         /// <summary>
         /// Saves the current highscore to a file on the machine.
         /// </summary>
-        public void saveHighscoreToFile()
+        public async Task SaveHighscoreToFile()
         {
-            // Check if the file exists, create it if not
-            if (!File.Exists(filePath))
+            try
             {
-                File.Create(filePath).Close();
+                StringBuilder content = new StringBuilder();
+                foreach (Record record in recordList)
+                {
+                    content.AppendLine(record.name + "|" + record.moves);
+                }
+
+                // Create (or replace existing) file in the local folder
+                StorageFile saveFile = await localFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+                // Write the content to the file
+                using (Stream stream = await saveFile.OpenStreamForWriteAsync())
+                {
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        await writer.WriteAsync(content.ToString());
+                    }
+                }
+
+                Debug.WriteLine("File write successful!");
             }
-            StreamWriter writer = new StreamWriter(filePath);
-            foreach (Record record in recordList)
+            catch (Exception ex)
             {
-                writer.WriteLine(record.name+"|"+record.moves);
+                Debug.WriteLine($"Error writing to file: {ex.Message}");
             }
         }
-
-        public void loadHighscoreFromFile()
+        /// <summary>
+        /// loads the highscore records from a saved file
+        /// </summary>
+        public async void loadHighscoreFromFile()
         {
+            StorageFile saveFile = await localFolder.GetFileAsync(fileName);
+
+            // Open a stream for the file
+            using (IRandomAccessStream stream = await saveFile.OpenAsync(FileAccessMode.Read))
+            {
+                using (StreamReader reader = new StreamReader(stream.AsStream()))
+                {
+                    string line;
+                    while ((line = await reader.ReadLineAsync()) != null)
+                    {
+                        string[] words = line.Split('|');
+                        recordList.Add(new Record(words[0], Int32.Parse(words[1])));
+                    }
+                }
+            }
         }
 
 
