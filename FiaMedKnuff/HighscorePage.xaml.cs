@@ -9,6 +9,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace FiaMedKnuff
 {
@@ -43,7 +44,8 @@ namespace FiaMedKnuff
 
             //executableDirectory=Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             //tryAddRecord("hej1", 2);
-            SaveHighscoreToFile();
+
+
             loadHighscoreFromFile();
             loadPage();
 
@@ -145,20 +147,29 @@ namespace FiaMedKnuff
         /// </summary>
         public async void loadHighscoreFromFile()
         {
-            StorageFile saveFile = await localFolder.GetFileAsync(fileName);
-
-            // Open a stream for the file
-            using (IRandomAccessStream stream = await saveFile.OpenAsync(FileAccessMode.Read))
+            try
             {
-                using (StreamReader reader = new StreamReader(stream.AsStream()))
+                StorageFile saveFile = await localFolder.GetFileAsync(fileName);
+
+                using (IRandomAccessStream stream = await saveFile.OpenAsync(FileAccessMode.Read))
                 {
-                    string line;
-                    while ((line = await reader.ReadLineAsync()) != null)
+                    using (StreamReader reader = new StreamReader(stream.AsStream()))
                     {
-                        string[] words = line.Split('|');
-                        recordList.Add(new Record(words[0], Int32.Parse(words[1])));
+                        string line;
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
+                            string[] words = line.Split('|');
+                            recordList.Add(new Record(words[0], int.Parse(words[1])));
+                            addEntryToGUI(new Record(words[0], int.Parse(words[1])));
+                        }
                     }
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                Debug.WriteLine("Highscore file not found, creating a new one.");
+                // Create a new file if it doesn't exist
+                SaveHighscoreToFile();
             }
         }
 
@@ -177,6 +188,8 @@ namespace FiaMedKnuff
             {
                 Text = record.name,
                 HorizontalAlignment = HorizontalAlignment.Left,
+                Padding = new Thickness(100, 0, 0, 0),
+                FontFamily = new FontFamily("Assets/Fonts/Kavoon-Regular.ttf#Kavoon"),
                 FontSize = 24
             };
 
@@ -184,11 +197,14 @@ namespace FiaMedKnuff
             {
                 Text = "" + record.moves,
                 HorizontalAlignment = HorizontalAlignment.Right,
+                Padding = new Thickness(0, 0, 115, 0),
+                FontFamily = new FontFamily("Assets/Fonts/Kavoon-Regular.ttf#Kavoon"),
                 FontSize = 24
             };
 
             Grid.SetColumn(nameTextBlock, 0);
             Grid.SetColumn(movesTextBlock, 1);
+
 
             entry.Children.Add(nameTextBlock);
             entry.Children.Add(movesTextBlock);
