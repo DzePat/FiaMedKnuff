@@ -5,11 +5,11 @@
     xmlns:local="using:FiaMedKnuff"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="#7F000000" d:DesignWidth="600" Height="592">
+    mc:Ignorable="d" 
+    d:DesignWidth="600" Height="592">
 
     <StackPanel Name="pageStackPanel" Orientation="Vertical">
-        <TextBlock HorizontalAlignment="Center" FontSize="64" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="0,0,0,35">Highscore</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontSize="64" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="0,0,0,35" Foreground="White">Highscore</TextBlock>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -17,8 +17,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" HorizontalAlignment="Left" TextDecorations="Underline" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="26" Margin="100,0,0,0">Name</TextBlock>
-            <TextBlock Grid.Column="1" HorizontalAlignment="Right" TextDecorations="Underline" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="26" Margin="0,0,100,0">Moves</TextBlock>
+            <TextBlock Grid.Column="0" HorizontalAlignment="Left" TextDecorations="Underline" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="26" Margin="100,0,0,0" Foreground="White">Name</TextBlock>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Right" TextDecorations="Underline" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="26" Margin="0,0,100,0" Foreground="White">Moves</TextBlock>
         </Grid>
         <StackPanel Name="entriesPanel" Orientation="Vertical" VerticalAlignment="Center"/>
         <Grid x:Name="highScoreButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerReleased="BackToMenu" Margin="0,35,0,0">
