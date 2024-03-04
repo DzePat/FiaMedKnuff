@@ -382,6 +382,7 @@ namespace FiaMedKnuff
                     }
                     Grid.SetRow(rect, row);
                     Grid.SetColumn(rect, column);
+                    PlaySound("eat");
                     break;
                 }
                 index++;
@@ -431,10 +432,10 @@ namespace FiaMedKnuff
                         // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
+                        //Ljud
                         PlaySound("walk");
                         await Task.Delay(300);
 
-                        //Ljud
                         if (goalStartTile[pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
                             // move the pawn to the next position in the goalpath
@@ -713,7 +714,7 @@ namespace FiaMedKnuff
 
         //    element.Play();
         //}
-        private static async Task PlaySound(string sound)
+        private async Task PlaySound(string sound)
         {
             var element = new MediaElement();
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
@@ -737,11 +738,14 @@ namespace FiaMedKnuff
                 default:
                     throw new ArgumentException($"Unsupported sound: {sound}");
             }
+            if (isSoundOn == true)
+            {
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, file.ContentType);
 
-            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            element.SetSource(stream, file.ContentType);
+                element.Play();
+            }
 
-            element.Play();
         }
 
 
