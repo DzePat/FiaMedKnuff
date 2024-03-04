@@ -9,6 +9,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace FiaMedKnuff
 {
@@ -159,6 +160,7 @@ namespace FiaMedKnuff
                         {
                             string[] words = line.Split('|');
                             recordList.Add(new Record(words[0], int.Parse(words[1])));
+                            addEntryToGUI(new Record(words[0], int.Parse(words[1])));
                         }
                     }
                 }
@@ -186,6 +188,8 @@ namespace FiaMedKnuff
             {
                 Text = record.name,
                 HorizontalAlignment = HorizontalAlignment.Left,
+                Padding = new Thickness(100, 0, 0, 0),
+                FontFamily = new FontFamily("Assets/Fonts/Kavoon-Regular.ttf#Kavoon"),
                 FontSize = 24
             };
 
@@ -193,11 +197,14 @@ namespace FiaMedKnuff
             {
                 Text = "" + record.moves,
                 HorizontalAlignment = HorizontalAlignment.Right,
+                Padding = new Thickness(0, 0, 115, 0),
+                FontFamily = new FontFamily("Assets/Fonts/Kavoon-Regular.ttf#Kavoon"),
                 FontSize = 24
             };
 
             Grid.SetColumn(nameTextBlock, 0);
             Grid.SetColumn(movesTextBlock, 1);
+
 
             entry.Children.Add(nameTextBlock);
             entry.Children.Add(movesTextBlock);
