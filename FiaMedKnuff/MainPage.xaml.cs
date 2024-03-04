@@ -713,7 +713,7 @@ namespace FiaMedKnuff
 
         //    element.Play();
         //}
-        private static async Task PlaySound(string sound)
+        private async Task PlaySound(string sound)
         {
             var element = new MediaElement();
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
@@ -737,11 +737,14 @@ namespace FiaMedKnuff
                 default:
                     throw new ArgumentException($"Unsupported sound: {sound}");
             }
+            if (isSoundOn == true)
+            {
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, file.ContentType);
 
-            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            element.SetSource(stream, file.ContentType);
+                element.Play();
+            }
 
-            element.Play();
         }
 
 
