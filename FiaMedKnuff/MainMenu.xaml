@@ -16,14 +16,14 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </UserControl.Resources>
-    <Grid x:Name="grid" Width="600" Height="500" Background="#AA000000">
+    <Grid x:Name="grid" Width="600" Height="500" Background="#CC000000">
         <StackPanel x:Name="mainMenuContent" VerticalAlignment="Center" Visibility="Visible">
             <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" Foreground="#FFF" TextAlignment="Center" Margin="0,0,0,90">Fia med knuff</TextBlock>
             <Grid x:Name="startButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,0,0,20" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="StartNewGameSession">
-                <TextBlock x:Name="startButtonText" FontSize="64" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
+                <TextBlock x:Name="startButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
             </Grid>
             <Grid x:Name="highScoreButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="ShowHighscore">
-                <TextBlock x:Name="highScoreButtonText" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" VerticalAlignment="Center">Highscore</TextBlock>
+                <TextBlock x:Name="highScoreButtonText" Foreground="#000" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" VerticalAlignment="Center">Highscore</TextBlock>
             </Grid>
         </StackPanel>
 

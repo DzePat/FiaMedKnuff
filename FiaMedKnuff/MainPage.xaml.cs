@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -414,10 +415,10 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Rectangle rectangle)
+            if (sender is Rectangle pawn)
             {
-                int currentRow = Grid.GetRow(rectangle);
-                int currentColumn = Grid.GetColumn(rectangle);
+                int currentRow = Grid.GetRow(pawn);
+                int currentColumn = Grid.GetColumn(pawn);
                 int foundKey;
                 // if the position of the pawn exists in the gameboard
                 if (boardPath.ContainsValue((currentRow, currentColumn)) | goalPath.ContainsValue((currentRow, currentColumn)))
@@ -425,46 +426,50 @@ namespace FiaMedKnuff
                     while (stepCount != null & stepCount != 0)
                     {
                         // get the pawn position
-                        currentRow = Grid.GetRow(rectangle);
-                        currentColumn = Grid.GetColumn(rectangle);
+                        currentRow = Grid.GetRow(pawn);
+                        currentColumn = Grid.GetColumn(pawn);
                         // 'foundKey' is the current position number on the board of the clicked pawn
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
-                        if (goalStartTile[rectangle.Name + "-1"] == (currentRow, currentColumn))
+                        PlaySound("walk");
+                        await Task.Delay(300);
+
+                        //Ljud
+                        if (goalStartTile[pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
                             // move the pawn to the next position in the goalpath
-                            moveToGoalTile(rectangle);
+                            moveToGoalTile(pawn);
                         }
                         // if the position of the clicked pawn is in the goalpath the pawn is moved within the goalpath
                         else if (goalPath.ContainsValue((currentRow, currentColumn)))
                         {
-                            moveOneGoalTile(rectangle);
+                            moveOneGoalTile(pawn);
                         }
                         // if the boardpath contains the next position of the clicked pawn
                         else if (boardPath.ContainsKey(foundKey + 1))
                         {
                             // move the pawn to the next position in the boardpath
                             (int row, int column) = boardPath[foundKey + 1];
-                            Grid.SetRow(rectangle, row);
-                            Grid.SetColumn(rectangle, column);
+                            Grid.SetRow(pawn, row);
+                            Grid.SetColumn(pawn, column);
                             stepCount -= 1;
                             // update 'foundKey' to the new current position number
                             foundKey += 1;
-                            if(stepCount == 0) 
-                            { 
-                                await checkForEnemyPawns(row, column,rectangle.Name);
+                            if (stepCount == 0)
+                            {
+                                await checkForEnemyPawns(row, column, pawn.Name);
                             }
                         }
                         else
                         {
-                            await linkEndToStartPath(rectangle);
+                            await linkEndToStartPath(pawn);
                         }
                     }
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
                 else if (stepCount == 6 || stepCount == 1 && !goalPath.ContainsValue((currentRow, currentColumn)))
                 {
-                    await placepawnOnTheBoardAsync(rectangle);
+                    await placepawnOnTheBoardAsync(pawn);
                 }
 
             }
@@ -680,14 +685,8 @@ namespace FiaMedKnuff
             // Add a sound when dice is rolled
             if (isSoundOn == true)
             {
-                var element = new MediaElement();
-                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-                var file = await folder.GetFileAsync("dice-sound.mp3");
-                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                element.SetSource(stream, "");
+                await PlaySound("dice");
 
-                element.Play();
-                //MessageDialog dialog = new MessageDialog("Ljudet är på");
             }
 
             // Wait a bit to simulate "spinning"
@@ -703,6 +702,48 @@ namespace FiaMedKnuff
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
         }
+
+        //private static async Task PlaySound(string sound)
+        //{
+        //    var element = new MediaElement();
+        //    var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+        //    var file = await folder.GetFileAsync("dice-sound.mp3");
+        //    var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+        //    element.SetSource(stream, "");
+
+        //    element.Play();
+        //}
+        private static async Task PlaySound(string sound)
+        {
+            var element = new MediaElement();
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+            StorageFile file;
+
+            switch (sound)
+            {
+                case "dice":
+                    file = await folder.GetFileAsync("dice-sound.mp3");
+                    break;
+                case "win":
+                    file = await folder.GetFileAsync("winSound.mp3");
+                    break;
+                case "eat":
+                    file = await folder.GetFileAsync("eatPlayerSound.mp3");
+                    break;
+                case "walk":
+                    file = await folder.GetFileAsync("walkSound.mp3");
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported sound: {sound}");
+            }
+
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            element.SetSource(stream, file.ContentType);
+
+            element.Play();
+        }
+
 
 
         /// <summary>
