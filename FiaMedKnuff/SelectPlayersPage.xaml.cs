@@ -12,6 +12,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Popups;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.Advertisement;
+using Windows.UI.Xaml.Controls.Primitives;
+using System.ServiceModel.Channels;
 
 namespace FiaMedKnuff
 {
@@ -100,7 +102,7 @@ namespace FiaMedKnuff
 
             button.FontFamily = new FontFamily("Arial");
             button.FontSize = 14;
-            button.Click += AIButton_Click; ;
+            button.Click += AIButton_Click;
             return button;
         }
         ///<summary>
@@ -119,7 +121,14 @@ namespace FiaMedKnuff
                 AI[num] = true;
                 aiButtons[num].Background= new SolidColorBrush(Colors.White);
             }
-            addPlayer(num + 1, "AI");
+            Players[num + 1] = "AI";
+            string test = "";
+            foreach(int key in Players.Keys) 
+            {
+                test += $"index {key} = {Players[key]}\n";
+            }
+            var dialog = new MessageDialog(test);
+            dialog.ShowAsync();
         }
 
         ///<summary>
@@ -127,16 +136,22 @@ namespace FiaMedKnuff
         ///</summary>
         private void SelectPlayerClick(object sender, RoutedEventArgs e)
         {
-            selectPlayer(Playerbuttons.IndexOf((Button)sender) + 1);
+            int players = Playerbuttons.IndexOf((Button)sender) + 1;
+            selectPlayer(players);
         }
-
 
         ///<summary>
         ///sets the selected number of players and highlights the selected buttons border.
         ///</summary>
         private void selectPlayer(int number)
         {
+            enableAllAIButtons();
             selectedNumber = number;
+            Players.Clear();
+            for (int i = 1; i <= number; i++)
+            {
+                Players.Add(i, "Player");
+            }
 
             foreach (Button button in Playerbuttons)
             {
@@ -144,7 +159,37 @@ namespace FiaMedKnuff
             }
 
             Playerbuttons[selectedNumber-1].BorderBrush= new SolidColorBrush(Colors.White);
+            disableAIButtons(selectedNumber);
         }
+        
+        /// <summary>
+        /// Disable AI buttons from given index up to 4
+        /// </summary>
+        /// <param name="from"></param>
+        private void disableAIButtons(int from) 
+        {
+            for(int i = from; i < 4; i++)
+            {
+                aiButtons[i].Opacity = 0.2;
+                aiButtons[i].IsHitTestVisible = false;
+            }
+        }
+
+        /// <summary>
+        /// enable all AI Buttons
+        /// </summary>
+        private void enableAllAIButtons() 
+        { 
+        foreach (Button aiButton in aiButtons) 
+            {
+                if(aiButton.IsHitTestVisible == false)
+                {
+                    aiButton.Opacity = 1;
+                    aiButton.IsHitTestVisible = true;
+                }
+            }
+        }
+
 
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
         {
@@ -154,23 +199,6 @@ namespace FiaMedKnuff
         private void ChangeBackColorToDefault(object sender, PointerRoutedEventArgs e)
         {
             Design.ChangeButtonColorBackToDefault(sender);
-        }
-
-        /// <summary>
-        /// add a player or Ai to the dictionary
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="identity"></param>
-        private void addPlayer(int number , string identity) 
-        { 
-            if(Players.ContainsKey(number))
-            {
-                Players[number] = identity;
-            }
-            else 
-            { 
-                Players.Add(number, identity);
-            }
         }
 
         /// <summary>
