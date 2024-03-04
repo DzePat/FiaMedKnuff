@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Popups;
+using System.Threading.Tasks;
+using Windows.Devices.Bluetooth.Advertisement;
 
 namespace FiaMedKnuff
 {
@@ -20,10 +23,14 @@ namespace FiaMedKnuff
         private readonly int buttonSize = 64;
         private List<Button> Playerbuttons = new List<Button>();
         private List<Button> aiButtons = new List<Button>();
+
+        public static SelectPlayersPage Instance { get; private set; }
+        public StackPanel selectPlayersPage { get { return pageStackPanel;} }
+
         public SelectPlayersPage()
         {
             this.InitializeComponent();
-
+            Instance = this;
             Color[] colors = {Colors.Yellow, Colors.Blue, Colors.Red, Colors.Green};
 
             for (int i = 0; i < 4; i++)
@@ -134,7 +141,6 @@ namespace FiaMedKnuff
             }
 
             Playerbuttons[selectedNumber-1].BorderBrush= new SolidColorBrush(Colors.White);
-
         }
 
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
@@ -157,6 +163,12 @@ namespace FiaMedKnuff
         {
             MainMenu.Instance.Visibility = Visibility.Collapsed;
             MainPage.Instance.ImageSource.Visibility = Visibility.Visible; 
+        }
+
+        private void backButtonSelect(object sender, PointerRoutedEventArgs e)
+        {
+            MainMenu.Instance.MainMenuContent.Visibility = Visibility.Visible;
+            MainMenu.Instance.SelectPlayerMenu.Visibility = Visibility.Collapsed;
         }
     }
 }

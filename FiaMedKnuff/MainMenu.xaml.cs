@@ -12,6 +12,7 @@ namespace FiaMedKnuff
 
         public static MainMenu Instance { get; private set; }
         public StackPanel MainMenuContent { get { return mainMenuContent; } }
+        public Grid SelectPlayerMenu { get { return selectPlayerMenu; } }
         public Grid highScoreMenu { get {  return highscoreMenu; } }
 
         public MainMenu()
@@ -36,8 +37,8 @@ namespace FiaMedKnuff
         /// </summary>
         private void StartNewGameSession(object sender, PointerRoutedEventArgs e)
         {
-            mainMenuContent.Visibility = Visibility.Collapsed;
-            selectPlayerMenu.Visibility = Visibility.Visible;
+            MainMenuContent.Visibility = Visibility.Collapsed;
+            Instance.SelectPlayerMenu.Visibility = Visibility.Visible;
 
         }
 
