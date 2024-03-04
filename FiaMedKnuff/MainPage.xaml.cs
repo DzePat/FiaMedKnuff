@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -30,7 +27,7 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalPath = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
-        public Dictionary<string, (int,int)> spawnTiles = new Dictionary<string, (int, int)>();
+        public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int stepCount;
@@ -212,7 +209,7 @@ namespace FiaMedKnuff
 
         }
 
-        private void generateSpawnTiles() 
+        private void generateSpawnTiles()
         {
             //yellow spawn tiles
             spawnTiles.Add("Gul-1", (11, 0));
@@ -327,7 +324,7 @@ namespace FiaMedKnuff
             Grid.SetColumn(rectangle, column);
             Board.Children.Add(rectangle);
         }
-        
+
         /// <summary>
         /// Checks if there is an enemy pawns on the tile your pawn stands
         /// </summary>
@@ -335,18 +332,18 @@ namespace FiaMedKnuff
         /// <param name="column"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        private async Task checkForEnemyPawns(int row, int column,string color) 
-        { 
-            foreach(object child in Board.Children) 
-            { 
-                if(child is Rectangle pawn) 
+        private async Task checkForEnemyPawns(int row, int column, string color)
+        {
+            foreach (object child in Board.Children)
+            {
+                if (child is Rectangle pawn)
                 {
                     if (pawn.Name != color && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
                     {
                         resetPawn(pawn);
                     }
                 }
-                
+
             }
         }
 
@@ -396,17 +393,17 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <returns></returns>
-        private bool tileIsEmpty(int row,int column) 
+        private bool tileIsEmpty(int row, int column)
         {
             foreach (object child in Board.Children)
             {
-                if(child is Rectangle pawn) 
+                if (child is Rectangle pawn)
                 {
                     if (Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
                     {
                         return false;
                     }
-                }           
+                }
             }
             return true;
         }
@@ -788,7 +785,7 @@ namespace FiaMedKnuff
             // Update visability for mainMenu and imageSource
             mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
             FadeinMainMenu.Begin();
-            imageSource.Visibility = Visibility.Collapsed;
+            imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }
