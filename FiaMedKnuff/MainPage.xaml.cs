@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.UI;
@@ -33,6 +34,8 @@ namespace FiaMedKnuff
         private Random random = new Random();
         private int stepCount;
         private bool isSoundOn = true; //sound is on by default
+        private bool isMusicOn = true;
+        private MediaElement musicPlayer = new MediaElement();
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
@@ -47,6 +50,20 @@ namespace FiaMedKnuff
             generateGoalStartTiles();
             generateSpawnTiles();
             InitializeAnimationTimer();
+            initMusicPlayer();
+        }
+        /// <summary>
+        /// Initializes the musicplayer to play the background music on permanent loop
+        /// </summary>
+        private async void initMusicPlayer()
+        {
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+            StorageFile file;
+            file = await folder.GetFileAsync("backgroundMusic.mp3");
+            musicPlayer.IsLooping= true;
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            musicPlayer.SetSource(stream, file.ContentType);
+            musicPlayer.Play();
         }
 
         private void InitializeAnimationTimer()
@@ -772,13 +789,39 @@ namespace FiaMedKnuff
             {
                 soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundon.png"));
                 isSoundOn = true;
+                if (isMusicOn) musicPlayer.Play();
             }
             else
             {
                 soundImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/soundoff.png"));
                 isSoundOn = false;
+                musicPlayer.Pause();
             }
         }
+        /// <summary>
+        /// Toggles the background music and music icon on and off
+        /// </summary>
+        /// <param name="sender">The source of the event, typically an Image control.</param>
+        /// <param name="e">Event data that contains information about the event that was triggered.</param>
+        private void musicImageSource_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+
+            // Sedan, i din händelsehanterare:
+            if (!isMusicOn)
+            {
+                musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-icon.png"));
+                isMusicOn = true;
+                if (isSoundOn) musicPlayer.Play();
+            }
+            else
+            {
+                musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-off-icon.png"));
+                isMusicOn = false;
+                musicPlayer.Pause();
+            }
+        }
+
         /// <summary>
         /// Changes the visibility of the about view when the user clicks on the questionmark
         /// </summary>
