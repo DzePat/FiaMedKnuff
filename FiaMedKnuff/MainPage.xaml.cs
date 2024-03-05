@@ -771,7 +771,7 @@ namespace FiaMedKnuff
             imageSource.Source = gifSource;
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
-
+            MarkPlayerSpawns();
             // Add a sound when dice is rolled
             if (isSoundOn == true)
             {
@@ -795,17 +795,15 @@ namespace FiaMedKnuff
             if (stepCount == 6)
             {
                 //go again
-                MarkPlayerSpawns();
+
             }
             else if (playerturn == Players.Count)
             {
                 playerturn = 1;
-                MarkPlayerSpawns();
             }
             else
             {
                 playerturn++;
-                MarkPlayerSpawns();
             }
             //Test of random and correct image display
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
