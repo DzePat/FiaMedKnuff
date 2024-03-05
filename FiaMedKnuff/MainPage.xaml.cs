@@ -541,6 +541,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// move a pawn from boardpath to goalpath
+        /// </summary>
+        /// <param name="rectangle"></param>
         private void moveToGoalTile(Rectangle rectangle)
         {
             (int row, int column) = goalPath[rectangle.Name + "-2"];
