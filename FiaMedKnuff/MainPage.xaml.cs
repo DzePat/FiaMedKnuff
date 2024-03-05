@@ -32,6 +32,7 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
         public Dictionary<int, (string,int)> Players = new Dictionary<int, (string,int)>();
+        private string[] colors = { "Gul", "Blå", "Röd", "Grön" };
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int stepCount;
@@ -475,6 +476,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
+            disableAllPawns();
             if (sender is Rectangle pawn)
             {
                 int currentRow = Grid.GetRow(pawn);
@@ -679,6 +681,29 @@ namespace FiaMedKnuff
             };
             return ellipse;
         }
+
+        private void disableAllPawns() 
+        { 
+            foreach(object obj in Board.Children) 
+            { 
+                if(obj is Rectangle pawn) 
+                { 
+                    pawn.IsHitTestVisible = false;
+                }
+            }
+        }
+
+        private void enablePlayerPawns(string color) 
+        {
+            foreach (object obj in Board.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color))
+                {
+                    pawn.IsHitTestVisible = true;
+                }
+            }
+        }
+
         /// <summary>
         /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
         /// </summary>
@@ -736,6 +761,7 @@ namespace FiaMedKnuff
         /// </remarks>
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            disableAllPawns();
             // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
@@ -757,7 +783,19 @@ namespace FiaMedKnuff
             stepCount = result;
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
-
+            enablePlayerPawns(colors[playerturn - 1]);
+            if(stepCount == 6) 
+            { 
+                //go again
+            }
+            else if(playerturn == 4) 
+            {
+                playerturn = 1;
+            }
+            else 
+            { 
+                playerturn++;
+            }
             //Test of random and correct image display
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
