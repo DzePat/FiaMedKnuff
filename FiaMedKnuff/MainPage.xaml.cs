@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.UI;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -30,12 +31,14 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
+        public Dictionary<int, (string,int)> Players = new Dictionary<int, (string,int)>();
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int stepCount;
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
+        private int playerturn = 1;
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
@@ -52,6 +55,47 @@ namespace FiaMedKnuff
             InitializeAnimationTimer();
             initMusicPlayer();
         }
+
+        public void initializePlayers() 
+        {
+           for(int a = 1; a < SelectPlayersPage.Instance.Players.Count+1; a++) 
+            {
+                string identity = SelectPlayersPage.Instance.Players[a];
+                Players.Add(a, (identity, 0));
+            }
+            switch (Players.Count)
+            {
+                case 2:
+                    //player 1
+                    addPlayerPawns(11, 0, 1, "Gul");
+                    //player 2
+                    addPlayerPawns(0, 0, 2, "Blå");
+                    break;
+                case 3:
+                    //player 1
+                    addPlayerPawns(11, 0, 1, "Gul");
+                    //player 2
+                    addPlayerPawns(0, 0, 2, "Blå");
+                    //player 3
+                    addPlayerPawns(0, 11, 3, "Röd");
+                    break;
+                case 4:
+                    //player 1
+                    addPlayerPawns(11, 0, 1, "Gul");
+                    //player 2
+                    addPlayerPawns(0, 0, 2, "Blå");
+                    //player 3
+                    addPlayerPawns(0, 11, 3, "Röd");
+                    //player 4
+                    addPlayerPawns(11, 11, 4, "Grön");
+                    break;
+                default:
+                    var dialog = new MessageDialog($"player Amount {Players.Count}");
+                    dialog.ShowAsync();
+                    break;
+            }
+        }
+
         /// <summary>
         /// Initializes the musicplayer to play the background music on permanent loop
         /// </summary>
@@ -66,6 +110,9 @@ namespace FiaMedKnuff
             musicPlayer.Play();
         }
 
+        /// <summary>
+        /// Start dispatch timer
+        /// </summary>
         private void InitializeAnimationTimer()
         {
             _animationTimer = new DispatcherTimer();
@@ -161,15 +208,7 @@ namespace FiaMedKnuff
             addspawntile(0, 11, Colors.Red);
             addspawntile(11, 0, Colors.Yellow);
             addspawntile(11, 11, Colors.Green);
-            //add Player Pawns
-            //player 1
-            addPlayerPawns(11, 0, 1, "Gul");
-            //player 2
-            addPlayerPawns(0, 0, 2, "Blå");
-            //player 3
-            addPlayerPawns(0, 11, 3, "Röd");
-            //player 4
-            addPlayerPawns(11, 11, 4, "Grön");
+
             imageSource.Visibility = Visibility.Collapsed;
 
         }
@@ -227,6 +266,9 @@ namespace FiaMedKnuff
 
         }
 
+        /// <summary>
+        /// generate a placeholder tiles for spawn tiles
+        /// </summary>
         private void generateSpawnTiles()
         {
             //yellow spawn tiles

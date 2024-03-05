@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.UI.Xaml.Controls.Primitives;
 using System.ServiceModel.Channels;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FiaMedKnuff
 {
@@ -129,13 +130,13 @@ namespace FiaMedKnuff
             {
                 Players[num + 1] = "Player";
             }
-            string test = "";
+            /*string test = "";
             foreach (int key in Players.Keys)
             {
                 test += $"index {key} = {Players[key]}\n";
             }
             var dialog = new MessageDialog(test);
-            dialog.ShowAsync();
+            dialog.ShowAsync();*/
         }
 
         ///<summary>
@@ -220,9 +221,17 @@ namespace FiaMedKnuff
         /// TBD add actual selection as of right now it just launches the game with all 4 players selected
         private void startButtonSelect(object sender, PointerRoutedEventArgs e)
         {
-            MainMenu.Instance.Visibility = Visibility.Collapsed;
-            MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
-            
+            if (Players.Count > 1) 
+            {
+                MainMenu.Instance.Visibility = Visibility.Collapsed;
+                MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
+                MainPage.Instance.initializePlayers();
+            }
+            else
+            {
+                var dialog = new MessageDialog("Select minimum of 2 players");
+                dialog.ShowAsync();
+            }
         }
 
         private void backButtonSelect(object sender, PointerRoutedEventArgs e)
