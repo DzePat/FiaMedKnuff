@@ -376,7 +376,7 @@ namespace FiaMedKnuff
 
             rectangle.RenderTransform = new ScaleTransform();
             rectangle.RenderTransformOrigin = new Point(0.5, 0.5);
-
+            rectangle.Margin = new Thickness(0, 8, 0, 0);
             rectangle.PointerPressed += Pawn_Clicked;
             ImageBrush imageBrush = new ImageBrush();
             imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
@@ -776,6 +776,7 @@ namespace FiaMedKnuff
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
             MarkPlayerSpawns();
+
             // Add a sound when dice is rolled
             if (isSoundOn == true)
             {
@@ -792,7 +793,7 @@ namespace FiaMedKnuff
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
-            if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn-1]) == true)
+            if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
             }
@@ -800,8 +801,8 @@ namespace FiaMedKnuff
             {
                 imageSource.IsHitTestVisible = false;
             }
-            MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
-            await dialog.ShowAsync();
+            //MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
+            //await dialog.ShowAsync();
             if (stepCount == 6)
             {
                 //go again
@@ -857,7 +858,8 @@ namespace FiaMedKnuff
             storyboard.Begin();
         }
 
-        private bool hasPawnOnSpawn(string color) 
+
+        private bool hasPawnOnSpawn(string color)
         {
             foreach (object obj in Board.Children)
             {
