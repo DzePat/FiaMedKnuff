@@ -46,6 +46,7 @@ namespace FiaMedKnuff
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
+        public StackPanel ScoreBoard { get { return scoreBoard; } }
 
         public MainPage()
         {
@@ -378,7 +379,7 @@ namespace FiaMedKnuff
 
             rectangle.RenderTransform = new ScaleTransform();
             rectangle.RenderTransformOrigin = new Point(0.5, 0.5);
-
+            rectangle.Margin = new Thickness(0, 8, 0, 0);
             rectangle.PointerPressed += Pawn_Clicked;
             ImageBrush imageBrush = new ImageBrush();
             imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
@@ -765,6 +766,7 @@ namespace FiaMedKnuff
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
             MarkPlayerSpawns();
+
             // Add a sound when dice is rolled
             if (isSoundOn == true)
             {
@@ -781,7 +783,7 @@ namespace FiaMedKnuff
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
-            if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn-1]) == true)
+            if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
             }
@@ -789,8 +791,10 @@ namespace FiaMedKnuff
             {
                 imageSource.IsHitTestVisible = false;
             }
-            MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
-            await dialog.ShowAsync();
+
+            CountScore();
+            //MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
+            //await dialog.ShowAsync();
             if (stepCount == 6)
             {
                 //go again
@@ -807,6 +811,38 @@ namespace FiaMedKnuff
             else
             {
                 playerturn++;
+
+            }
+        }
+
+        private void CountScore()
+        {
+            switch (playerturn)
+            {
+                case 1:
+                    (string identity, int score) = Players[1];
+                    int newScore = score + 1;
+                    Players[1] = (identity, newScore);
+                    OneScore.Text = newScore.ToString();
+                    break;
+                case 2:
+                    (string identity2, int score2) = Players[2];
+                    int newScore2 = score2 + 1;
+                    Players[2] = (identity2, newScore2);
+                    TwoScore.Text = newScore2.ToString();
+                    break;
+                case 3:
+                    (string identity3, int score3) = Players[3];
+                    int newScore3 = score3 + 1;
+                    Players[3] = (identity3, newScore3);
+                    ThreeScore.Text = newScore3.ToString();
+                    break;
+                case 4:
+                    (string identity4, int score4) = Players[4];
+                    int newScore4 = score4 + 1;
+                    Players[4] = (identity4, newScore4);
+                    FourScore.Text = newScore4.ToString();
+                    break;
             }
             if (Winners.Length == 3)
             {
@@ -888,7 +924,8 @@ namespace FiaMedKnuff
             storyboard.Begin();
         }
 
-        private bool hasPawnOnSpawn(string color) 
+
+        private bool hasPawnOnSpawn(string color)
         {
             foreach (object obj in Board.Children)
             {

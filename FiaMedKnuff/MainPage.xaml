@@ -42,6 +42,24 @@ x:Name="aboutOut">
         <Grid.Background>
             <ImageBrush ImageSource="/Assets/bgfuamedknuff1500.png" Stretch="UniformToFill"></ImageBrush>
         </Grid.Background>
+        <StackPanel x:Name="scoreBoard" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="Collapsed" Padding="10">
+            <Grid HorizontalAlignment="Left" Width="120">
+                <TextBlock FontSize="32">Gul:</TextBlock>
+                <TextBlock x:Name="OneScore" Text="0" FontSize="32" TextAlignment="Right"/>
+            </Grid>
+            <Grid >
+                <TextBlock FontSize="32">Blå:</TextBlock>
+                <TextBlock x:Name="TwoScore" Text="0"  FontSize="32" TextAlignment="Right"/>
+            </Grid>
+            <Grid>
+                <TextBlock FontSize="32">Röd:</TextBlock>
+                <TextBlock x:Name="ThreeScore" Text="0"  FontSize="32" TextAlignment="Right"/>
+            </Grid>
+            <Grid>
+                <TextBlock FontSize="32">Grön:</TextBlock>
+                <TextBlock x:Name="FourScore" Text="0"  FontSize="32" TextAlignment="Right"/>
+            </Grid>
+        </StackPanel>
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
         <Grid x:Name="mainMenu" Visibility="Visible">
