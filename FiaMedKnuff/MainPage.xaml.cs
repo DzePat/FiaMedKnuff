@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -508,7 +507,7 @@ namespace FiaMedKnuff
                         {
                             // move the pawn to the next position in the goalpath
                             int targetTile = checkNextGoalTileIndex(pawn.Name);
-                            if (stepCount == targetTile) 
+                            if (stepCount == targetTile)
                             {
                                 for (int i = 1; i <= targetTile; i++)
                                 {
@@ -523,7 +522,7 @@ namespace FiaMedKnuff
                                 imageSource.IsHitTestVisible = true;
                             }
                             ///TBD: add checker if player did not roll the right number but has another pawn on the board so it doesnt reset to step 0 if clicked but instead the pawn that cant go is disabled
-                            else 
+                            else
                             {
                                 //did not roll right number
                                 stepCount = 0;
@@ -540,7 +539,7 @@ namespace FiaMedKnuff
                             stepCount -= 1;
                             // update 'foundKey' to the new current position number
                             foundKey += 1;
-                            if(goalEntryTiles[pawn.Name + "-exit"] == (row, column)) 
+                            if (goalEntryTiles[pawn.Name + "-exit"] == (row, column))
                             {
                                 stepCount = 0;
                             }
@@ -564,12 +563,12 @@ namespace FiaMedKnuff
             }
         }
 
-        private int checkNextGoalTileIndex(string color) 
-        { 
-            for (int i = 4;i > 0; i--) 
+        private int checkNextGoalTileIndex(string color)
+        {
+            for (int i = 4; i > 0; i--)
             {
                 (int row, int column) = goalTiles[color + "-" + i];
-                if (tileIsEmpty(row,column)) 
+                if (tileIsEmpty(row, column))
                 {
                     return i;
                 }
@@ -694,7 +693,7 @@ namespace FiaMedKnuff
             {
                 if (obj is Rectangle pawn && pawn.Name.Contains(color))
                 {
-                    if(pawnHasReachedGoal(pawn) == false) 
+                    if (pawnHasReachedGoal(pawn) == false)
                     {
                         pawn.IsHitTestVisible = true;
                     }
@@ -850,31 +849,31 @@ namespace FiaMedKnuff
             }
         }
 
-        private bool pawnHasReachedGoal(Rectangle pawn) 
+        private bool pawnHasReachedGoal(Rectangle pawn)
         {
-            if (goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn)))) 
+            if (goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
             {
                 return true;
             }
-            else 
-            { 
+            else
+            {
                 return false;
             }
         }
 
-        private bool playerHasWon(string color) 
+        private bool playerHasWon(string color)
         {
             bool result = true;
-            foreach(object obj in Board.Children) 
-            { 
-                if(obj is Rectangle pawn && pawn.Name.Contains(color)) 
+            foreach (object obj in Board.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color))
                 {
                     if (goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
                     {
                         continue;
                     }
-                    else 
-                    { 
+                    else
+                    {
                         result = false;
                     }
                 }
@@ -1112,6 +1111,7 @@ namespace FiaMedKnuff
 
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
+            //BUG: The Dice shows on aboutview when game is on. when hide aboutview, the dice is not visible
             if (isAboutVisible)
             {
                 // Start aboutOut animation
@@ -1120,6 +1120,9 @@ namespace FiaMedKnuff
                 {
                     // Hide aboutView when animation is complete
                     aboutView.Visibility = Visibility.Collapsed;
+                    BlurdGridFadeOut.Begin();
+                    blurGrid.Visibility = Visibility.Collapsed;
+                    imageSource.Visibility = Visibility.Collapsed;
                 };
                 isAboutVisible = false;
             }
@@ -1129,12 +1132,15 @@ namespace FiaMedKnuff
                 aboutView.Visibility = Visibility.Visible;
                 aboutIn.Begin();
                 isAboutVisible = true;
+                blurGrid.Visibility = Visibility.Visible;
+                BlurdGridFadeIn.Begin();
+
             }
 
             // Update visability for mainMenu and imageSource
             mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
             FadeinMainMenu.Begin();
-            imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            //imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }
