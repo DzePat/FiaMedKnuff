@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.UI;
@@ -11,6 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 
@@ -372,6 +374,9 @@ namespace FiaMedKnuff
                 Height = 40
             };
 
+            rectangle.RenderTransform = new ScaleTransform();
+            rectangle.RenderTransformOrigin = new Point(0.5, 0.5);
+
             rectangle.PointerPressed += Pawn_Clicked;
             ImageBrush imageBrush = new ImageBrush();
             imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
@@ -496,7 +501,7 @@ namespace FiaMedKnuff
                         //Ljud
                         PlaySound("walk");
                         await Task.Delay(300);
-
+                        AnimatePawnLift(pawn);
                         if (goalStartTile[pawn.Name + "-1"] == (currentRow, currentColumn))
                         {
                             // move the pawn to the next position in the goalpath
@@ -820,6 +825,35 @@ namespace FiaMedKnuff
                 }
             }
             return false;
+        }
+        private void AnimatePawnLift(Rectangle pawn)
+        {
+            var storyboard = new Storyboard();
+
+            var scaleXAnimation = new DoubleAnimation()
+            {
+                From = 1,
+                To = 1.3, // 130%
+                Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+                AutoReverse = true // Automatically reverse the animation (shrink back)
+            };
+            Storyboard.SetTarget(scaleXAnimation, pawn);
+            Storyboard.SetTargetProperty(scaleXAnimation, "(UIElement.RenderTransform).(ScaleTransform.ScaleX)");
+
+            var scaleYAnimation = new DoubleAnimation()
+            {
+                From = 1,
+                To = 1.3,
+                Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+                AutoReverse = true
+            };
+            Storyboard.SetTarget(scaleYAnimation, pawn);
+            Storyboard.SetTargetProperty(scaleYAnimation, "(UIElement.RenderTransform).(ScaleTransform.ScaleY)");
+
+            storyboard.Children.Add(scaleXAnimation);
+            storyboard.Children.Add(scaleYAnimation);
+
+            storyboard.Begin();
         }
 
         public void MarkPlayerSpawns()
