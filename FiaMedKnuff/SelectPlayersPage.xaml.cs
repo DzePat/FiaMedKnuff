@@ -121,14 +121,14 @@ namespace FiaMedKnuff
                 AI[num] = true;
                 aiButtons[num].Background= new SolidColorBrush(Colors.White);
             }
-            Players[num + 1] = "AI";
-            string test = "";
-            foreach(int key in Players.Keys) 
+            if (Players[num+1] == "Player") 
             {
-                test += $"index {key} = {Players[key]}\n";
+                Players[num + 1] = "AI";
             }
-            var dialog = new MessageDialog(test);
-            dialog.ShowAsync();
+            else 
+            {
+                Players[num + 1] = "Player";
+            }
         }
 
         ///<summary>
@@ -210,7 +210,14 @@ namespace FiaMedKnuff
         private void startButtonSelect(object sender, PointerRoutedEventArgs e)
         {
             MainMenu.Instance.Visibility = Visibility.Collapsed;
-            MainPage.Instance.ImageSource.Visibility = Visibility.Visible; 
+            MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
+            string test = "";
+            foreach (int key in Players.Keys)
+            {
+                test += $"index {key} = {Players[key]}\n";
+            }
+            var dialog = new MessageDialog(test);
+            dialog.ShowAsync();
         }
 
         private void backButtonSelect(object sender, PointerRoutedEventArgs e)
