@@ -533,11 +533,6 @@ namespace FiaMedKnuff
                 {
                     await placepawnOnTheBoardAsync(pawn);
                 }
-                else if (stepCount != 0)
-                {
-                    stepCount = 0;
-                    imageSource.IsHitTestVisible = true;
-                }
             }
         }
 
@@ -792,6 +787,10 @@ namespace FiaMedKnuff
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
+            if (hasPawnOnBoard(colors[playerturn - 1]) == true)
+            {
+                imageSource.IsHitTestVisible = false;
+            }
             if (stepCount == 6)
             {
                 //go again
@@ -807,11 +806,23 @@ namespace FiaMedKnuff
                 playerturn++;
                 MarkPlayerSpawns();
             }
-            imageSource.IsHitTestVisible = false;
             //Test of random and correct image display
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
         }
+
+        private bool hasPawnOnBoard(string color) 
+        { 
+            foreach(object obj in Board.Children) 
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color) && boardPath.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
+                { 
+                    return true;
+                } 
+            }
+            return false;
+        }
+
         public void MarkPlayerSpawns()
         {
 
@@ -902,8 +913,6 @@ namespace FiaMedKnuff
             }
 
         }
-
-
 
         /// <summary>
         /// Handles the toggling of the sound icon based on user interaction.
