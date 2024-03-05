@@ -94,6 +94,7 @@ namespace FiaMedKnuff
                     dialog.ShowAsync();
                     break;
             }
+            MarkPlayerSpawns();
         }
 
         /// <summary>
@@ -811,14 +812,14 @@ namespace FiaMedKnuff
             //await dialog.ShowAsync();
         }
 
-        private bool hasPawnOnBoard(string color) 
-        { 
-            foreach(object obj in Board.Children) 
+        private bool hasPawnOnBoard(string color)
+        {
+            foreach (object obj in Board.Children)
             {
                 if (obj is Rectangle pawn && pawn.Name.Contains(color) && boardPath.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
-                { 
+                {
                     return true;
-                } 
+                }
             }
             return false;
         }
