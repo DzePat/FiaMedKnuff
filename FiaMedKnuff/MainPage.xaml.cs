@@ -476,7 +476,6 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
-            disableAllPawns();
             if (sender is Rectangle pawn)
             {
                 int currentRow = Grid.GetRow(pawn);
@@ -788,14 +787,19 @@ namespace FiaMedKnuff
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
-            if (hasPawnOnBoard(colors[playerturn - 1]) == true)
+            if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn-1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
             }
+            else if (hasPawnOnBoard(colors[playerturn - 1]) == true)
+            {
+                imageSource.IsHitTestVisible = false;
+            }
+            MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
+            await dialog.ShowAsync();
             if (stepCount == 6)
             {
                 //go again
-
             }
             else if (playerturn == Players.Count)
             {
@@ -805,9 +809,6 @@ namespace FiaMedKnuff
             {
                 playerturn++;
             }
-            //Test of random and correct image display
-            //MessageDialog dialog = new MessageDialog($"Du slog {result}");
-            //await dialog.ShowAsync();
         }
 
         private bool hasPawnOnBoard(string color)
@@ -815,6 +816,18 @@ namespace FiaMedKnuff
             foreach (object obj in Board.Children)
             {
                 if (obj is Rectangle pawn && pawn.Name.Contains(color) && boardPath.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool hasPawnOnSpawn(string color) 
+        {
+            foreach (object obj in Board.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color) && spawnTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
                 {
                     return true;
                 }
