@@ -226,6 +226,7 @@ namespace FiaMedKnuff
                 MainMenu.Instance.Visibility = Visibility.Collapsed;
                 MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
                 MainPage.Instance.initializePlayers();
+                MainPage.Instance.ScoreBoard.Visibility = Visibility.Visible;
             }
             else
             {
@@ -238,6 +239,8 @@ namespace FiaMedKnuff
         {
             MainMenu.Instance.MainMenuContent.Visibility = Visibility.Visible;
             MainMenu.Instance.SelectPlayerMenu.Visibility = Visibility.Collapsed;
+            MainPage.Instance.ScoreBoard.Visibility = Visibility.Collapsed;
+
         }
     }
 }

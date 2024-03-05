@@ -42,6 +42,7 @@ namespace FiaMedKnuff
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
+        public StackPanel ScoreBoard { get { return scoreBoard; } }
 
         public MainPage()
         {
