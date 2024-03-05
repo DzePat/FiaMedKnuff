@@ -58,6 +58,11 @@ x:Name="aboutOut">
                 <BitmapImage UriSource="Assets/soundon.png"/>
             </Image.Source>
         </Image>
+        <Image x:Name="musicImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="musicImageSource_Tapped"  Margin="0,30,90,0">
+            <Image.Source>
+                <BitmapImage UriSource="Assets/music-icon.png"/>
+            </Image.Source>
+        </Image>
         <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0">
             <Image.Source>
                 <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>

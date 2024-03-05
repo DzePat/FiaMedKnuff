@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Background.png" />
+    <Content Include="Assets\backgroundMusic.mp3" />
     <Content Include="Assets\bgfuamedknuff1500.png" />
     <Content Include="Assets\Blå.png" />
     <Content Include="Assets\dice-1.png" />
@@ -159,6 +160,8 @@
     <Content Include="Assets\Grön.png" />
     <Content Include="Assets\Gul.png" />
     <Content Include="Assets\logo.png" />
+    <Content Include="Assets\music-icon.png" />
+    <Content Include="Assets\music-off-icon.png" />
     <Content Include="Assets\Röd.png" />
     <Content Include="Assets\soundoff.png" />
     <Content Include="Assets\soundon.png" />
