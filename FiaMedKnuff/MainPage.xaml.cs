@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.UI;
@@ -31,7 +30,7 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> goalStartTile = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> goalReached = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
-        public Dictionary<int, (string,int)> Players = new Dictionary<int, (string,int)>();
+        public Dictionary<int, (string, int)> Players = new Dictionary<int, (string, int)>();
         private string[] colors = { "Gul", "Blå", "Röd", "Grön" };
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
@@ -57,9 +56,9 @@ namespace FiaMedKnuff
             initMusicPlayer();
         }
 
-        public void initializePlayers() 
+        public void initializePlayers()
         {
-           for(int a = 1; a < SelectPlayersPage.Instance.Players.Count+1; a++) 
+            for (int a = 1; a < SelectPlayersPage.Instance.Players.Count + 1; a++)
             {
                 string identity = SelectPlayersPage.Instance.Players[a];
                 Players.Add(a, (identity, 0));
@@ -105,7 +104,7 @@ namespace FiaMedKnuff
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
             StorageFile file;
             file = await folder.GetFileAsync("backgroundMusic.mp3");
-            musicPlayer.IsLooping= true;
+            musicPlayer.IsLooping = true;
             var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
             musicPlayer.SetSource(stream, file.ContentType);
             musicPlayer.Play();
@@ -534,7 +533,7 @@ namespace FiaMedKnuff
                 {
                     await placepawnOnTheBoardAsync(pawn);
                 }
-                else if(stepCount != 0)
+                else if (stepCount != 0)
                 {
                     stepCount = 0;
                     imageSource.IsHitTestVisible = true;
@@ -687,18 +686,18 @@ namespace FiaMedKnuff
             return ellipse;
         }
 
-        private void disableAllPawns() 
-        { 
-            foreach(object obj in Board.Children) 
-            { 
-                if(obj is Rectangle pawn) 
-                { 
+        private void disableAllPawns()
+        {
+            foreach (object obj in Board.Children)
+            {
+                if (obj is Rectangle pawn)
+                {
                     pawn.IsHitTestVisible = false;
                 }
             }
         }
 
-        private void enablePlayerPawns(string color) 
+        private void enablePlayerPawns(string color)
         {
             foreach (object obj in Board.Children)
             {
@@ -789,24 +788,73 @@ namespace FiaMedKnuff
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
-            if(stepCount == 6) 
-            { 
+            if (stepCount == 6)
+            {
                 //go again
+                MarkPlayerSpawns();
             }
-            else if(playerturn == Players.Count) 
+            else if (playerturn == Players.Count)
             {
                 playerturn = 1;
+                MarkPlayerSpawns();
             }
-            else 
-            { 
+            else
+            {
                 playerturn++;
+                MarkPlayerSpawns();
             }
             imageSource.IsHitTestVisible = false;
             //Test of random and correct image display
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
         }
+        public void MarkPlayerSpawns()
+        {
 
+            foreach (object obj in Board.Children)
+            {
+                if (obj is Ellipse ellipse)
+                {
+                    ellipse.StrokeThickness = 1;
+                }
+            }
+
+            foreach (object obj in Board.Children)
+            {
+                if (obj is Ellipse ellipse)
+                {
+
+                    var fill = ellipse.Fill as SolidColorBrush;
+
+                    if (fill != null)
+                    {
+                        bool isCurrentPlayerColor = false;
+
+                        switch (playerturn)
+                        {
+                            case 1:
+                                isCurrentPlayerColor = fill.Color.Equals(Colors.Yellow);
+                                break;
+                            case 2:
+                                isCurrentPlayerColor = fill.Color.Equals(Colors.Blue);
+                                break;
+                            case 3:
+                                isCurrentPlayerColor = fill.Color.Equals(Colors.Red);
+                                break;
+                            case 4:
+                                isCurrentPlayerColor = fill.Color.Equals(Colors.Green);
+                                break;
+                        }
+
+                        if (isCurrentPlayerColor)
+                        {
+                            ellipse.StrokeThickness = 4;
+                            ellipse.Stroke = new SolidColorBrush(Colors.Black);
+                        }
+                    }
+                }
+            }
+        }
         //private static async Task PlaySound(string sound)
         //{
         //    var element = new MediaElement();
