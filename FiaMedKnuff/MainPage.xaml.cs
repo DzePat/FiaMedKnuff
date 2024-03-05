@@ -802,6 +802,8 @@ namespace FiaMedKnuff
             {
                 imageSource.IsHitTestVisible = false;
             }
+
+            CountScore();
             //MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
             //await dialog.ShowAsync();
             if (stepCount == 6)
@@ -815,6 +817,38 @@ namespace FiaMedKnuff
             else
             {
                 playerturn++;
+
+            }
+        }
+
+        private void CountScore()
+        {
+            switch (playerturn)
+            {
+                case 1:
+                    (string identity, int score) = Players[1];
+                    int newScore = score + 1;
+                    Players[1] = (identity, newScore);
+                    OneScore.Text = newScore.ToString();
+                    break;
+                case 2:
+                    (string identity2, int score2) = Players[2];
+                    int newScore2 = score2 + 1;
+                    Players[2] = (identity2, newScore2);
+                    TwoScore.Text = newScore2.ToString();
+                    break;
+                case 3:
+                    (string identity3, int score3) = Players[3];
+                    int newScore3 = score3 + 1;
+                    Players[3] = (identity3, newScore3);
+                    ThreeScore.Text = newScore3.ToString();
+                    break;
+                case 4:
+                    (string identity4, int score4) = Players[4];
+                    int newScore4 = score4 + 1;
+                    Players[4] = (identity4, newScore4);
+                    FourScore.Text = newScore4.ToString();
+                    break;
             }
         }
 
