@@ -520,6 +520,7 @@ namespace FiaMedKnuff
                             if (stepCount == 0)
                             {
                                 await checkForEnemyPawns(row, column, pawn.Name);
+                                imageSource.IsHitTestVisible = true;
                             }
                         }
                         else
@@ -533,7 +534,11 @@ namespace FiaMedKnuff
                 {
                     await placepawnOnTheBoardAsync(pawn);
                 }
-
+                else if(stepCount != 0)
+                {
+                    stepCount = 0;
+                    imageSource.IsHitTestVisible = true;
+                }
             }
         }
 
@@ -558,6 +563,7 @@ namespace FiaMedKnuff
             if (stepCount == 0)
             {
                 await checkForEnemyPawns(row, column, rectangle.Name);
+                imageSource.IsHitTestVisible = true;
             }
         }
 
@@ -590,10 +596,8 @@ namespace FiaMedKnuff
             rectangle.HorizontalAlignment = HorizontalAlignment.Center;
             rectangle.VerticalAlignment = VerticalAlignment.Center;
             stepCount = 0;
-            if (stepCount == 0)
-            {
-                await checkForEnemyPawns(row, column, rectangle.Name);
-            }
+            await checkForEnemyPawns(row, column, rectangle.Name);
+            imageSource.IsHitTestVisible = true;
         }
 
         /// <summary>
@@ -622,6 +626,7 @@ namespace FiaMedKnuff
                     goalReached.Add(newkey, goalPath[newkey]);
                     rectangle.PointerPressed -= Pawn_Clicked;
                     stepCount = 0;
+                    imageSource.IsHitTestVisible = true;
                 }
             }
             else
@@ -788,7 +793,7 @@ namespace FiaMedKnuff
             { 
                 //go again
             }
-            else if(playerturn == 4) 
+            else if(playerturn == Players.Count) 
             {
                 playerturn = 1;
             }
@@ -796,6 +801,7 @@ namespace FiaMedKnuff
             { 
                 playerturn++;
             }
+            imageSource.IsHitTestVisible = false;
             //Test of random and correct image display
             //MessageDialog dialog = new MessageDialog($"Du slog {result}");
             //await dialog.ShowAsync();
