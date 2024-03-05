@@ -129,6 +129,13 @@ namespace FiaMedKnuff
             {
                 Players[num + 1] = "Player";
             }
+            string test = "";
+            foreach (int key in Players.Keys)
+            {
+                test += $"index {key} = {Players[key]}\n";
+            }
+            var dialog = new MessageDialog(test);
+            dialog.ShowAsync();
         }
 
         ///<summary>
@@ -145,7 +152,7 @@ namespace FiaMedKnuff
         ///</summary>
         private void selectPlayer(int number)
         {
-            enableAllAIButtons();
+            enableAndResetAllAIButtons();
             selectedNumber = number;
             Players.Clear();
             for (int i = 1; i <= number; i++)
@@ -176,17 +183,21 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// enable all AI Buttons
+        /// enable all AI Buttons and reset their colors
         /// </summary>
-        private void enableAllAIButtons() 
-        { 
+        private void enableAndResetAllAIButtons() 
+        {
+            int index = 0;
         foreach (Button aiButton in aiButtons) 
             {
+                aiButton.Background = new SolidColorBrush(Colors.DarkGray);
+                AI[index] = false;
                 if(aiButton.IsHitTestVisible == false)
                 {
                     aiButton.Opacity = 1;
                     aiButton.IsHitTestVisible = true;
                 }
+                index++;
             }
         }
 
@@ -211,13 +222,7 @@ namespace FiaMedKnuff
         {
             MainMenu.Instance.Visibility = Visibility.Collapsed;
             MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
-            string test = "";
-            foreach (int key in Players.Keys)
-            {
-                test += $"index {key} = {Players[key]}\n";
-            }
-            var dialog = new MessageDialog(test);
-            dialog.ShowAsync();
+            
         }
 
         private void backButtonSelect(object sender, PointerRoutedEventArgs e)
