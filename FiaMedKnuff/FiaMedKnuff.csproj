@@ -123,6 +123,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Design.cs" />
+    <Compile Include="VictoryPage.xaml.cs">
+      <DependentUpon>VictoryPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HighscorePage.xaml.cs">
       <DependentUpon>HighscorePage.xaml</DependentUpon>
     </Compile>
@@ -206,6 +209,10 @@
     <Page Include="AboutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VictoryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>

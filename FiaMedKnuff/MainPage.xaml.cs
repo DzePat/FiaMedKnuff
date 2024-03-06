@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Popups;
@@ -38,10 +39,12 @@ namespace FiaMedKnuff
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int stepCount;
+        private int stepCount2;
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         private int playerturn = 1;
+        string currentplayercolor = "";
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
@@ -74,6 +77,8 @@ namespace FiaMedKnuff
                     addPlayerPawns(11, 0, 1, "Gul");
                     //player 2
                     addPlayerPawns(0, 0, 2, "Blå");
+                    yellowPlayerScore.Visibility = Visibility.Visible;
+                    bluePlayerScore.Visibility = Visibility.Visible;
                     break;
                 case 3:
                     //player 1
@@ -82,6 +87,9 @@ namespace FiaMedKnuff
                     addPlayerPawns(0, 0, 2, "Blå");
                     //player 3
                     addPlayerPawns(0, 11, 3, "Röd");
+                    yellowPlayerScore.Visibility = Visibility.Visible;
+                    bluePlayerScore.Visibility = Visibility.Visible;
+                    redPlayerScore.Visibility = Visibility.Visible;
                     break;
                 case 4:
                     //player 1
@@ -92,6 +100,10 @@ namespace FiaMedKnuff
                     addPlayerPawns(0, 11, 3, "Röd");
                     //player 4
                     addPlayerPawns(11, 11, 4, "Grön");
+                    yellowPlayerScore.Visibility = Visibility.Visible;
+                    bluePlayerScore.Visibility = Visibility.Visible;
+                    redPlayerScore.Visibility = Visibility.Visible;
+                    greenPlayerScore.Visibility = Visibility.Visible;
                     break;
                 default:
                     var dialog = new MessageDialog($"player Amount {Players.Count}");
@@ -107,12 +119,16 @@ namespace FiaMedKnuff
         private async void initMusicPlayer()
         {
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-            StorageFile file;
-            file = await folder.GetFileAsync("backgroundMusic.mp3");
+            StorageFile file = await folder.GetFileAsync("backgroundMusic.mp3");
             musicPlayer.IsLooping = true;
+
+            musicPlayer.Volume = 0.1;
+            //currently not playing music on start to save developer sanity
+            musicPlayer.AutoPlay = false;
+            TurnOffMusic();
+
             var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
             musicPlayer.SetSource(stream, file.ContentType);
-            musicPlayer.Play();
         }
 
         /// <summary>
@@ -213,8 +229,6 @@ namespace FiaMedKnuff
             addspawntile(0, 11, Colors.Red);
             addspawntile(11, 0, Colors.Yellow);
             addspawntile(11, 11, Colors.Green);
-
-            imageSource.Visibility = Visibility.Collapsed;
 
         }
 
@@ -487,6 +501,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
+
             if (sender is Rectangle pawn)
             {
                 pawn.IsHitTestVisible = false;
@@ -558,13 +573,21 @@ namespace FiaMedKnuff
                             await linkEndToStartPath(pawn);
                         }
                     }
+
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
                 else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
                 {
                     await placepawnOnTheBoardAsync(pawn);
+
                 }
+
             }
+            if (stepCount == 0 && hasPawnOnBoard(currentplayercolor))
+            {
+                MarkPlayerSpawns();
+            }
+
         }
 
         private int checkNextGoalTileIndex(string color,int currentrow, int currentcolumn)
@@ -786,6 +809,7 @@ namespace FiaMedKnuff
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
             disableAllPawns();
+
             // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
@@ -806,6 +830,8 @@ namespace FiaMedKnuff
             // Randomly generate a dice result and display the static image
             int result = random.Next(6, 7);
             stepCount = result;
+            stepCount2 = result;
+
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
@@ -837,8 +863,12 @@ namespace FiaMedKnuff
             else
             {
                 playerturn++;
-
             }
+
+
+
+
+
         }
 
         private void CountScore()
@@ -920,6 +950,7 @@ namespace FiaMedKnuff
             return false;
         }
 
+
         private void AnimatePawnLift(Rectangle pawn)
         {
             var storyboard = new Storyboard();
@@ -989,15 +1020,19 @@ namespace FiaMedKnuff
                         {
                             case 1:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Yellow);
+                                currentplayercolor = "Gul";
                                 break;
                             case 2:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Blue);
+                                currentplayercolor = "Blå";
                                 break;
                             case 3:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Red);
+                                currentplayercolor = "Röd";
                                 break;
                             case 4:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Green);
+                                currentplayercolor = "Grön";
                                 break;
                         }
 
@@ -1005,8 +1040,53 @@ namespace FiaMedKnuff
                         {
                             ellipse.StrokeThickness = 4;
                             ellipse.Stroke = new SolidColorBrush(Colors.Black);
+
+                            //MessageDialog dialog = new MessageDialog($"{stepCount} ");
+                            //dialog.ShowAsync();
+
+
+
+                            if ((stepCount2 == 1 || stepCount2 == 6) && hasPawnOnSpawn(currentplayercolor) && hasPawnOnBoard(currentplayercolor))
+                            {
+
+
+                                MarkCurrentPlayerTurnChoice(currentplayercolor);
+                            }
+
+
                         }
                     }
+                }
+            }
+        }
+        private void MarkCurrentPlayerTurnChoice(string currentPlayer)
+        {
+            // Ta bort tidigare markeringar
+            ClearPreviousPlayerChoiceIndications();
+
+            // Loopa genom alla barn till spelbrädet
+            foreach (var child in Board.Children)
+            {
+                if (child is Rectangle pawn && pawn.Name.Contains(currentPlayer))
+                {
+                    pawn.Stroke = new SolidColorBrush(Colors.Gold);
+                    pawn.StrokeThickness = 2;
+                    //AnimatePawnLift(pawn);
+
+                }
+            }
+
+        }
+
+        private void ClearPreviousPlayerChoiceIndications()
+        {
+            foreach (var child in Board.Children)
+            {
+                if (child is Rectangle pawn)
+                {
+                    // Återställ visuella effekter för pionen
+                    pawn.Stroke = new SolidColorBrush(Colors.Transparent);
+                    pawn.StrokeThickness = 0;
                 }
             }
         }
@@ -1085,6 +1165,7 @@ namespace FiaMedKnuff
                 musicPlayer.Pause();
             }
         }
+
         /// <summary>
         /// Toggles the background music and music icon on and off
         /// </summary>
@@ -1097,16 +1178,31 @@ namespace FiaMedKnuff
             // Sedan, i din händelsehanterare:
             if (!isMusicOn)
             {
-                musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-icon.png"));
-                isMusicOn = true;
-                if (isSoundOn) musicPlayer.Play();
+                turnOnMusic();
             }
             else
             {
-                musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-off-icon.png"));
-                isMusicOn = false;
-                musicPlayer.Pause();
+                TurnOffMusic();
             }
+        }
+        /// <summary>
+        /// Starts playing music and updates the music icon accordingly
+        /// </summary>
+        private void TurnOffMusic()
+        {
+            musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-off-icon.png"));
+            isMusicOn = false;
+            musicPlayer.Pause();
+        }
+
+        /// <summary>
+        /// stops playing music and updates the music icon accordingly
+        /// </summary>
+        private void turnOnMusic()
+        {
+            musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-icon.png"));
+            isMusicOn = true;
+            if (isSoundOn) musicPlayer.Play();
         }
 
         /// <summary>
@@ -1147,7 +1243,7 @@ namespace FiaMedKnuff
                     aboutView.Visibility = Visibility.Collapsed;
                     BlurdGridFadeOut.Begin();
                     blurGrid.Visibility = Visibility.Collapsed;
-                    imageSource.Visibility = Visibility.Collapsed;
+                    imageSource.Visibility = (MainMenu.Instance.MainMenuContent.Visibility == Visibility.Visible || MainMenu.Instance.HighScoreMenu.Visibility == Visibility.Visible || MainMenu.Instance.SelectPlayerMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
                 };
                 isAboutVisible = false;
             }
@@ -1159,7 +1255,7 @@ namespace FiaMedKnuff
                 isAboutVisible = true;
                 blurGrid.Visibility = Visibility.Visible;
                 BlurdGridFadeIn.Begin();
-
+                imageSource.Visibility = Visibility.Collapsed;
             }
 
             // Update visability for mainMenu and imageSource
