@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
+using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -34,7 +36,7 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> pawnsOnGoalTiles = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
         public Dictionary<int, (string, int)> Players = new Dictionary<int, (string, int)>();
-        public int[] Winners = new int[3];
+        List<int> Winners = new List<int>();
         private string[] colors = { "Gul", "Blå", "Röd", "Grön" };
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
@@ -520,7 +522,7 @@ namespace FiaMedKnuff
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
                         //Ljud
-                        PlaySound("walk");
+                        await PlaySound("walk");
                         await Task.Delay(300);
                         AnimatePawnLift(pawn);
                         if (goalTiles.ContainsValue((currentRow, currentColumn)) && goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key.Contains(pawn.Name))
@@ -538,8 +540,6 @@ namespace FiaMedKnuff
                                 stepCount--;
                                 imageSource.IsHitTestVisible = true;
                                 (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile+1)];
-                                var messageDialog = new MessageDialog($"row:{currentRow}\n column: {currentColumn}\n moving to\n row: {row}\n column: {column}");
-                                messageDialog.ShowAsync();
                                 Grid.SetRow(pawn, row);
                                 Grid.SetColumn(pawn, column);
                                 currentTile += 1;
@@ -549,7 +549,34 @@ namespace FiaMedKnuff
                                 stepCount = 0;
                                 pawn.IsHitTestVisible = false;
                                 imageSource.IsHitTestVisible = true;
-                                pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (currentRow, currentColumn));
+                                pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
+                                if(playerHasWon(pawn.Name) == true) 
+                                {
+                                    Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
+                                    playerturn++;
+                                }
+                                var dialog2 = new MessageDialog( "" + (Players.Count-1) + "winnercount: " + Winners.Count);
+                                await dialog2.ShowAsync();
+                                if (Winners.Count == Players.Count - 1) 
+                                {
+                                    int index = 0;
+                                    string result = "";
+                                    foreach(int player in Winners)
+                                    {
+                                        (string identity, int score) = Players[player];
+                                        result += $"Player {player} won with {score}\n";
+                                    }
+                                    var dialog = new MessageDialog(result);
+                                    await dialog.ShowAsync();
+                                }
+                                while (playerHasWon(colors[playerturn - 1]))
+                                {
+                                    playerturn++;
+                                    if(playerturn == Players.Count) 
+                                    {
+                                        playerturn = 1;
+                                    }
+                                }
                             }
                         }
                         // if the boardpath contains the next position of the clicked pawn
@@ -743,13 +770,27 @@ namespace FiaMedKnuff
             {
                 if (obj is Rectangle pawn && pawn.Name.Contains(color))
                 {
-                    if (pawnHasReachedGoal(pawn) == false)
+                    bool result = pawnHasReachedGoal(pawn);
+                    if (result == false)
                     {
                         pawn.IsHitTestVisible = true;
                     }
                 }
             }
         }
+
+        private bool pawnHasReachedGoal(Rectangle pawn)
+        {
+            if (pawnsOnGoalTiles.ContainsValue((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
+            {
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
@@ -854,11 +895,6 @@ namespace FiaMedKnuff
             else if (playerturn == Players.Count)
             {
                 playerturn = 1;
-                while (playerHasWon(colors[playerturn - 1]) && Winners.Length != 1)
-                {
-                    Winners.Append(playerturn);
-                    playerturn++;
-                }
             }
             else
             {
@@ -900,42 +936,30 @@ namespace FiaMedKnuff
                     FourScore.Text = newScore4.ToString();
                     break;
             }
-            if (Winners.Length == 3)
+            if (Winners.Count == 3)
             {
                 //Player has won
             }
         }
 
-        private bool pawnHasReachedGoal(Rectangle pawn)
-        {
-            foreach((int row, int col) value in pawnsOnGoalTiles.Values)
-            {
-                if(value == (Grid.GetRow(pawn), Grid.GetColumn(pawn))) 
-                { 
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private bool playerHasWon(string color)
         {
-            bool result = true;
-            foreach (object obj in Board.Children)
+            int pawnsOnGoalTile = 0;
+            foreach (string key in pawnsOnGoalTiles.Keys)
             {
-                if (obj is Rectangle pawn && pawn.Name.Contains(color))
+                if (key.Contains(color)) 
                 {
-                    if (goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        result = false;
-                    }
+                    pawnsOnGoalTile += 1;
                 }
             }
-            return result;
+            if(pawnsOnGoalTile == 4)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private bool hasPawnOnBoard(string color)
