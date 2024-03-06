@@ -486,6 +486,7 @@ namespace FiaMedKnuff
         {
             if (sender is Rectangle pawn)
             {
+                pawn.IsHitTestVisible = false;
                 int currentRow = Grid.GetRow(pawn);
                 int currentColumn = Grid.GetColumn(pawn);
                 int foundKey;
@@ -1093,8 +1094,6 @@ namespace FiaMedKnuff
         //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         //    imageSource.Visibility = Visibility.Collapsed;
-
-
         //}
 
         private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
