@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.Foundation.Metadata;
+using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -58,13 +59,17 @@ namespace FiaMedKnuff
         private async void initMusicPlayer()
         {
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-            StorageFile file;
-            file = await folder.GetFileAsync("backgroundMusic.mp3");
-            musicPlayer.IsLooping= true;
+            StorageFile file = await folder.GetFileAsync("backgroundMusic.mp3");
+            musicPlayer.IsLooping = true;
+
+            //currently not playing music on start to save developer sanity
+            musicPlayer.AutoPlay = false;
+            TurnOffMusic();
+
             var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
             musicPlayer.SetSource(stream, file.ContentType);
-            musicPlayer.Play();
         }
+
 
         private void InitializeAnimationTimer()
         {
@@ -798,6 +803,7 @@ namespace FiaMedKnuff
                 musicPlayer.Pause();
             }
         }
+
         /// <summary>
         /// Toggles the background music and music icon on and off
         /// </summary>
@@ -810,16 +816,31 @@ namespace FiaMedKnuff
             // Sedan, i din händelsehanterare:
             if (!isMusicOn)
             {
-                musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-icon.png"));
-                isMusicOn = true;
-                if (isSoundOn) musicPlayer.Play();
+                turnOnMusic();
             }
             else
             {
-                musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-off-icon.png"));
-                isMusicOn = false;
-                musicPlayer.Pause();
+                TurnOffMusic();
             }
+        }
+        /// <summary>
+        /// Starts playing music and updates the music icon accordingly
+        /// </summary>
+        private void TurnOffMusic()
+        {
+            musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-off-icon.png"));
+            isMusicOn = false;
+            musicPlayer.Pause();
+        }
+
+        /// <summary>
+        /// stops playing music and updates the music icon accordingly
+        /// </summary>
+        private void turnOnMusic()
+        {
+            musicImageSource.Source = new BitmapImage(new Uri("ms-appx:///Assets/music-icon.png"));
+            isMusicOn = true;
+            if (isSoundOn) musicPlayer.Play();
         }
 
         /// <summary>
