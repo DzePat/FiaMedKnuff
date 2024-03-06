@@ -214,8 +214,6 @@ namespace FiaMedKnuff
             addspawntile(11, 0, Colors.Yellow);
             addspawntile(11, 11, Colors.Green);
 
-            imageSource.Visibility = Visibility.Collapsed;
-
         }
 
         /// <summary>
@@ -1121,7 +1119,7 @@ namespace FiaMedKnuff
                     aboutView.Visibility = Visibility.Collapsed;
                     BlurdGridFadeOut.Begin();
                     blurGrid.Visibility = Visibility.Collapsed;
-                    imageSource.Visibility = Visibility.Collapsed;
+                    imageSource.Visibility = (MainMenu.Instance.MainMenuContent.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
                 };
                 isAboutVisible = false;
             }
@@ -1133,7 +1131,7 @@ namespace FiaMedKnuff
                 isAboutVisible = true;
                 blurGrid.Visibility = Visibility.Visible;
                 BlurdGridFadeIn.Begin();
-
+                imageSource.Visibility = Visibility.Collapsed;
             }
 
             // Update visability for mainMenu and imageSource
