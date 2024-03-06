@@ -507,7 +507,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
-
+            ClearPreviousPlayerChoiceIndications();
             if (sender is Rectangle pawn)
             {
                 pawn.IsHitTestVisible = false;
@@ -558,8 +558,8 @@ namespace FiaMedKnuff
                                 {
                                     Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
                                     playerturn++;
-                                    MarkPlayerSpawns(playerturn);
                                 }
+                                MarkPlayerSpawns(playerturn);
                                 var dialog2 = new MessageDialog("" + (Players.Count - 1) + "winnercount: " + Winners.Count);
                                 await dialog2.ShowAsync();
                                 if (Winners.Count == Players.Count - 1)
@@ -858,7 +858,7 @@ namespace FiaMedKnuff
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
             disableAllPawns();
-
+            ClearPreviousPlayerChoiceIndications();
             // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
@@ -886,6 +886,7 @@ namespace FiaMedKnuff
             if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
+                MarkCurrentPlayerTurnChoice(colors[playerturn - 1]);
             }
             else if (hasPawnOnBoard(colors[playerturn - 1]) == true)
             {
@@ -904,9 +905,10 @@ namespace FiaMedKnuff
                 {
                     MarkPlayerSpawns(playerturn + 1);
                 }
-                
-            } else if (!hasPawns && (stepCount == 1 || stepCount == 6)) 
-            { 
+
+            }
+            else if (!hasPawns && (stepCount == 1 || stepCount == 6))
+            {
                 MarkPlayerSpawns(playerturn);
             }
             else if (hasPawns && (stepCount != 1 && stepCount != 6))
@@ -1055,6 +1057,10 @@ namespace FiaMedKnuff
                 {
                     ellipse.StrokeThickness = 4;
                     ellipse.Stroke = new SolidColorBrush(Colors.Black);
+                    if ((stepCount == 1 || stepCount == 6) && hasPawnOnSpawn(colors[colorIndex - 1]) && hasPawnOnBoard(colors[colorIndex - 1]))
+                    {
+                        MarkCurrentPlayerTurnChoice(colors[colorIndex - 1]);
+                    }
                 }
             }
 
@@ -1122,10 +1128,10 @@ namespace FiaMedKnuff
             {
                 if (child is Rectangle pawn && pawn.Name.Contains(currentPlayer))
                 {
-                    //pawn.Stroke = new SolidColorBrush(Colors.Gold);
-                    //pawn.StrokeThickness = 2;
-                    //AnimatePawnLift(pawn);
-
+                    // FIX: Only target the pawns that has not reached the goalTiles
+                    pawn.Stroke = new SolidColorBrush(Colors.Gold);
+                    pawn.StrokeThickness = 2;
+                    AnimatePawnLift(pawn);
                 }
             }
 
