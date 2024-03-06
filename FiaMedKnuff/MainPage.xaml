@@ -36,6 +36,18 @@ x:Name="aboutOut">
                 <EasingDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="BlurdGridFadeIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="blurGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="BlurdGridFadeOut">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="blurGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Page.Resources>
 
     <Grid Name="mainGrid">
@@ -61,7 +73,11 @@ x:Name="aboutOut">
             </Grid>
         </StackPanel>
         <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
-
+        <Grid x:Name="blurGrid" Visibility="Collapsed">
+            <Grid.Background>
+                <AcrylicBrush BackgroundSource="Backdrop" TintColor="#FFFFFF" TintOpacity="0.6" FallbackColor="#FFFFFF"/>
+            </Grid.Background>
+        </Grid>
         <Grid x:Name="mainMenu" Visibility="Visible">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
@@ -69,6 +85,7 @@ x:Name="aboutOut">
             <Grid.RenderTransform>
                 <CompositeTransform/>
             </Grid.RenderTransform>
+            
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
         <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">
