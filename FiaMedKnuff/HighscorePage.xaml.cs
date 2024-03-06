@@ -224,7 +224,7 @@ namespace FiaMedKnuff
         private void BackToMenu(object sender, PointerRoutedEventArgs e)
         {
             MainMenu.Instance.MainMenuContent.Visibility = Visibility.Visible;
-            MainMenu.Instance.highScoreMenu.Visibility = Visibility.Collapsed;
+            MainMenu.Instance.HighScoreMenu.Visibility = Visibility.Collapsed;
         }
 
     }

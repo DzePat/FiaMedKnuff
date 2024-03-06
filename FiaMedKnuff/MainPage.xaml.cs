@@ -1119,7 +1119,7 @@ namespace FiaMedKnuff
                     aboutView.Visibility = Visibility.Collapsed;
                     BlurdGridFadeOut.Begin();
                     blurGrid.Visibility = Visibility.Collapsed;
-                    imageSource.Visibility = (MainMenu.Instance.MainMenuContent.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+                    imageSource.Visibility = (MainMenu.Instance.MainMenuContent.Visibility == Visibility.Visible || MainMenu.Instance.HighScoreMenu.Visibility == Visibility.Visible || MainMenu.Instance.SelectPlayerMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
                 };
                 isAboutVisible = false;
             }
