@@ -56,7 +56,7 @@ x:Name="aboutOut">
         </Grid.Background>
         <StackPanel x:Name="scoreBoard" CornerRadius="20" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#AA000000" Padding="10" Margin="10" Visibility="Collapsed">
             <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="42" Foreground="#FFF" TextAlignment="Center" Margin="0, 0, 0, 10">Highscore</TextBlock>
-            <Grid>
+            <Grid x:Name="yellowPlayerScore" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -64,7 +64,7 @@ x:Name="aboutOut">
                 <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Yellow</TextBlock>
                 <TextBlock Grid.Column="1" x:Name="OneScore" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Text="0" FontSize="24" TextAlignment="Left" Margin="50, 0, 0, 0"/>
             </Grid>
-            <Grid>
+            <Grid x:Name="bluePlayerScore" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -72,7 +72,7 @@ x:Name="aboutOut">
                 <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Blue</TextBlock>
                 <TextBlock Grid.Column="1" x:Name="TwoScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
             </Grid>
-            <Grid>
+            <Grid x:Name="redPlayerScore" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -80,7 +80,7 @@ x:Name="aboutOut">
                 <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Red</TextBlock>
                 <TextBlock Grid.Column="1" x:Name="ThreeScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
             </Grid>
-            <Grid>
+            <Grid x:Name="greenPlayerScore" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>

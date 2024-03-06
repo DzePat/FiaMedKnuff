@@ -74,6 +74,8 @@ namespace FiaMedKnuff
                     addPlayerPawns(11, 0, 1, "Gul");
                     //player 2
                     addPlayerPawns(0, 0, 2, "Blå");
+                    yellowPlayerScore.Visibility = Visibility.Visible;
+                    bluePlayerScore.Visibility = Visibility.Visible;
                     break;
                 case 3:
                     //player 1
@@ -82,6 +84,9 @@ namespace FiaMedKnuff
                     addPlayerPawns(0, 0, 2, "Blå");
                     //player 3
                     addPlayerPawns(0, 11, 3, "Röd");
+                    yellowPlayerScore.Visibility = Visibility.Visible;
+                    bluePlayerScore.Visibility = Visibility.Visible;
+                    redPlayerScore.Visibility = Visibility.Visible;
                     break;
                 case 4:
                     //player 1
@@ -92,6 +97,10 @@ namespace FiaMedKnuff
                     addPlayerPawns(0, 11, 3, "Röd");
                     //player 4
                     addPlayerPawns(11, 11, 4, "Grön");
+                    yellowPlayerScore.Visibility = Visibility.Visible;
+                    bluePlayerScore.Visibility = Visibility.Visible;
+                    redPlayerScore.Visibility = Visibility.Visible;
+                    greenPlayerScore.Visibility = Visibility.Visible;
                     break;
                 default:
                     var dialog = new MessageDialog($"player Amount {Players.Count}");
