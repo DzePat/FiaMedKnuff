@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Popups;
@@ -34,7 +34,11 @@ namespace FiaMedKnuff
         public Dictionary<string, (int, int)> pawnsOnGoalTiles = new Dictionary<string, (int, int)>();
         public Dictionary<string, (int, int)> spawnTiles = new Dictionary<string, (int, int)>();
         public Dictionary<int, (string, int)> Players = new Dictionary<int, (string, int)>();
-        public int[] Winners = new int[3];
+        /// <summary>
+        /// A list of all the ellipses on the board with a string of the color and boolean if it is a goaltile or not
+        /// </summary>
+        public Dictionary<Ellipse, string> listOfAllGoalTileEllipses = new Dictionary<Ellipse, string>();
+        List<int> Winners = new List<int>();
         private string[] colors = { "Gul", "Blå", "Röd", "Grön" };
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
@@ -44,14 +48,16 @@ namespace FiaMedKnuff
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         private int playerturn = 1;
-        string currentplayercolor = "";
+        string currentplayercolor = "Gul";
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
 
+
         public MainPage()
         {
+
             this.InitializeComponent();
             Instance = this;
             populateBoard();
@@ -62,6 +68,7 @@ namespace FiaMedKnuff
             InitializeAnimationTimer();
             initMusicPlayer();
         }
+
 
         public void initializePlayers()
         {
@@ -110,7 +117,7 @@ namespace FiaMedKnuff
                     dialog.ShowAsync();
                     break;
             }
-            MarkPlayerSpawns();
+            MarkPlayerSpawns(1);
         }
 
         /// <summary>
@@ -163,72 +170,72 @@ namespace FiaMedKnuff
             //add top tiles
             for (int i = 2; i < 5; i++)
             {
-                addellipse(i, 5, Colors.White);
-                addellipse(i, 6, Colors.Red);
-                addellipse(i, 7, Colors.White);
+                addellipse(i, 5, Colors.White, "Vit", false);
+                addellipse(i, 6, Colors.Red, "Röd", true);
+                addellipse(i, 7, Colors.White, "Vit", false);
             }
 
             //add bottom tiles
             for (int i = 8; i < 11; i++)
             {
-                addellipse(i, 5, Colors.White);
-                addellipse(i, 6, Colors.Yellow);
-                addellipse(i, 7, Colors.White);
+                addellipse(i, 5, Colors.White, "Vit", false);
+                addellipse(i, 6, Colors.Yellow, "Gul", true);
+                addellipse(i, 7, Colors.White, "Vit", false);
             }
             //add left tiles
             for (int i = 2; i < 5; i++)
             {
-                addellipse(5, i, Colors.White);
-                addellipse(6, i, Colors.Blue);
-                addellipse(7, i, Colors.White);
+                addellipse(5, i, Colors.White, "Vit", false);
+                addellipse(6, i, Colors.Blue, "Blå", true);
+                addellipse(7, i, Colors.White, "Vit", false);
             }
             //add right tiles
             for (int i = 8; i < 11; i++)
             {
-                addellipse(5, i, Colors.White);
-                addellipse(6, i, Colors.Green);
-                addellipse(7, i, Colors.White);
+                addellipse(5, i, Colors.White, "Vit", false);
+                addellipse(6, i, Colors.Green, "Grön", true);
+                addellipse(7, i, Colors.White, "Vit", false);
             }
             //add end tiles and start positions
             for (int i = 5; i < 8; i++)
             {
                 if (i == 5)
                 {
-                    addellipse(1, i, Colors.White);
-                    addellipse(11, i, Windows.UI.Color.FromArgb(100, 255, 255, 0));
-                    addellipse(i, 1, Windows.UI.Color.FromArgb(100, 0, 0, 255));
-                    addellipse(i, 11, Colors.White);
+                    addellipse(1, i, Colors.White, "Vit", false);
+                    addellipse(11, i, Windows.UI.Color.FromArgb(100, 255, 255, 0), "", false);
+                    addellipse(i, 1, Windows.UI.Color.FromArgb(100, 0, 0, 255), "", false);
+                    addellipse(i, 11, Colors.White, "Vit", false);
                 }
                 else if (i == 7)
                 {
-                    addellipse(1, i, Windows.UI.Color.FromArgb(100, 255, 0, 0));
-                    addellipse(11, i, Colors.White);
-                    addellipse(i, 1, Colors.White);
-                    addellipse(i, 11, Windows.UI.Color.FromArgb(100, 0, 255, 0));
+                    addellipse(1, i, Windows.UI.Color.FromArgb(100, 255, 0, 0), "", false);
+                    addellipse(11, i, Colors.White, "Vit", false);
+                    addellipse(i, 1, Colors.White, "Vit", false);
+                    addellipse(i, 11, Windows.UI.Color.FromArgb(100, 0, 255, 0), "", false);
                 }
                 else
                 {
-                    addellipse(1, i, Colors.White);
-                    addellipse(11, i, Colors.White);
-                    addellipse(i, 1, Colors.White);
-                    addellipse(i, 11, Colors.White);
+                    addellipse(1, i, Colors.White, "Vit", false);
+                    addellipse(11, i, Colors.White, "Vit", false);
+                    addellipse(i, 1, Colors.White, "Vit", false);
+                    addellipse(i, 11, Colors.White, "Vit", false);
                 }
             }
             //add middle tiles
-            addellipse(5, 5, Colors.White);
-            addellipse(5, 7, Colors.White);
-            addellipse(7, 5, Colors.White);
-            addellipse(7, 7, Colors.White);
-            addellipse(6, 6, Colors.Black);
-            addellipse(5, 6, Colors.Red);
-            addellipse(6, 5, Colors.Blue);
-            addellipse(6, 7, Colors.Green);
-            addellipse(7, 6, Colors.Yellow);
+            addellipse(5, 5, Colors.White, "Vit", false);
+            addellipse(5, 7, Colors.White, "Vit", false);
+            addellipse(7, 5, Colors.White, "Vit", false);
+            addellipse(7, 7, Colors.White, "Vit", false);
+            addellipse(6, 6, Colors.Black, "Svart", false);
+            addellipse(5, 6, Colors.Red, "Röd", true);
+            addellipse(6, 5, Colors.Blue, "Blå", true);
+            addellipse(6, 7, Colors.Green, "Grön", true);
+            addellipse(7, 6, Colors.Yellow, "Gul", true);
             //add Player Pawn Spawn tiles
-            addspawntile(0, 0, Colors.Blue);
-            addspawntile(0, 11, Colors.Red);
-            addspawntile(11, 0, Colors.Yellow);
-            addspawntile(11, 11, Colors.Green);
+            addspawntile(0, 0, Colors.Blue, "Blå", true);
+            addspawntile(0, 11, Colors.Red, "Röd", true);
+            addspawntile(11, 0, Colors.Yellow, "Gul", true);
+            addspawntile(11, 11, Colors.Green, "Grön", true);
 
         }
 
@@ -318,21 +325,25 @@ namespace FiaMedKnuff
         private void generateGoalPath()
         {
             //yellow goal path
+            goalTiles.Add("Gul-0", (11, 6));
             goalTiles.Add("Gul-1", (10, 6));
             goalTiles.Add("Gul-2", (9, 6));
             goalTiles.Add("Gul-3", (8, 6));
             goalTiles.Add("Gul-4", (7, 6));
             //blue goal path 
+            goalTiles.Add("Blå-0", (6, 1));
             goalTiles.Add("Blå-1", (6, 2));
             goalTiles.Add("Blå-2", (6, 3));
             goalTiles.Add("Blå-3", (6, 4));
             goalTiles.Add("Blå-4", (6, 5));
-            //red goal path  
+            //red goal path
+            goalTiles.Add("Röd-0", (1, 6));
             goalTiles.Add("Röd-1", (2, 6));
             goalTiles.Add("Röd-2", (3, 6));
             goalTiles.Add("Röd-3", (4, 6));
             goalTiles.Add("Röd-4", (5, 6));
             //green goal path
+            goalTiles.Add("Grön-0", (6, 11));
             goalTiles.Add("Grön-1", (6, 10));
             goalTiles.Add("Grön-2", (6, 9));
             goalTiles.Add("Grön-3", (6, 8));
@@ -497,7 +508,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
-
+            ClearPreviousPlayerChoiceIndications();
             if (sender is Rectangle pawn)
             {
                 pawn.IsHitTestVisible = false;
@@ -516,33 +527,62 @@ namespace FiaMedKnuff
                         foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
                         // if the pawn is on the last tile of the boardpath
                         //Ljud
-                        PlaySound("walk");
+                        await PlaySound("walk");
                         await Task.Delay(300);
                         AnimatePawnLift(pawn);
-                        if (goalEntryTiles[pawn.Name + "-exit"] == (currentRow, currentColumn))
+                        if (goalTiles.ContainsValue((currentRow, currentColumn)) && goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key.Contains(pawn.Name))
                         {
-                            // move the pawn to the next position in the goalpath
-                            int targetTile = checkNextGoalTileIndex(pawn.Name);
-                            if (stepCount == targetTile)
+                            int targetTile = checkNextGoalTileIndex(pawn.Name, currentRow, currentColumn);
+                            int currentTile = int.Parse((goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key).Split('-')[1]);
+                            int next = checkNextAvailablePosition(pawn.Name, targetTile, currentTile);
+                            if (next == currentTile)
                             {
-                                for (int i = 1; i <= targetTile; i++)
-                                {
-                                    PlaySound("walk");
-                                    await Task.Delay(300);
-                                    AnimatePawnLift(pawn);
-                                    (int row, int column) = goalTiles[pawn.Name + "-" + i];
-                                    Grid.SetRow(pawn, row);
-                                    Grid.SetColumn(pawn, column);
-                                    stepCount -= 1;
-                                }
-                                imageSource.IsHitTestVisible = true;
-                            }
-                            ///TBD: add checker if player did not roll the right number but has another pawn on the board so it doesnt reset to step 0 if clicked but instead the pawn that cant go is disabled
-                            else
-                            {
-                                //did not roll right number
                                 stepCount = 0;
                                 imageSource.IsHitTestVisible = true;
+                            }
+                            else
+                            {
+                                stepCount--;
+                                imageSource.IsHitTestVisible = true;
+                                (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile + 1)];
+                                Grid.SetRow(pawn, row);
+                                Grid.SetColumn(pawn, column);
+                                currentTile += 1;
+                            }
+                            if (currentTile == targetTile)
+                            {
+                                stepCount = 0;
+                                pawn.IsHitTestVisible = false;
+                                imageSource.IsHitTestVisible = true;
+                                pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
+                                if (playerHasWon(pawn.Name) == true)
+                                {
+                                    Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
+                                    playerturn++;
+                                }
+                                MarkPlayerSpawns(playerturn);
+                                var dialog2 = new MessageDialog("" + (Players.Count - 1) + "winnercount: " + Winners.Count);
+                                await dialog2.ShowAsync();
+                                if (Winners.Count == Players.Count - 1)
+                                {
+                                    int index = 0;
+                                    string result = "";
+                                    foreach (int player in Winners)
+                                    {
+                                        (string identity, int score) = Players[player];
+                                        result += $"Player {player} won with {score}\n";
+                                    }
+                                    var dialog = new MessageDialog(result);
+                                    await dialog.ShowAsync();
+                                }
+                                while (playerHasWon(colors[playerturn - 1]))
+                                {
+                                    playerturn++;
+                                    if (playerturn == Players.Count)
+                                    {
+                                        playerturn = 1;
+                                    }
+                                }
                             }
                         }
                         // if the boardpath contains the next position of the clicked pawn
@@ -555,14 +595,11 @@ namespace FiaMedKnuff
                             stepCount -= 1;
                             // update 'foundKey' to the new current position number
                             foundKey += 1;
-                            if (goalEntryTiles[pawn.Name + "-exit"] == (row, column))
-                            {
-                                stepCount = 0;
-                            }
                             if (stepCount == 0)
                             {
                                 await checkForEnemyPawns(row, column, pawn.Name);
                                 imageSource.IsHitTestVisible = true;
+                                MarkPlayerSpawns(playerturn);
                             }
                         }
                         else
@@ -576,18 +613,18 @@ namespace FiaMedKnuff
                 else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
                 {
                     await placepawnOnTheBoardAsync(pawn);
-
+                    MarkPlayerSpawns(playerturn);
                 }
 
             }
-            if (stepCount == 0 && hasPawnOnBoard(currentplayercolor))
-            {
-                MarkPlayerSpawns();
-            }
+            //if (stepCount == 0 && hasPawnOnBoard(colors[playerturn - 1]))
+            //{
+            //    MarkPlayerSpawns(playerturn);
+            //}
 
         }
 
-        private int checkNextGoalTileIndex(string color)
+        private int checkNextGoalTileIndex(string color, int currentrow, int currentcolumn)
         {
             for (int i = 4; i > 0; i--)
             {
@@ -596,10 +633,33 @@ namespace FiaMedKnuff
                 {
                     return i;
                 }
+                if ((row, column) == (currentrow, currentcolumn))
+                {
+                    return i;
+                }
             }
             return 0;
         }
 
+        private int checkNextAvailablePosition(string color, int targetTile, int currentposition)
+        {
+            if (stepCount >= targetTile - currentposition)
+            {
+                return targetTile;
+            }
+            else
+            {
+                for (int i = currentposition + stepCount; i > currentposition; i--)
+                {
+                    (int row, int column) = goalTiles[color + "-" + i];
+                    if (tileIsEmpty(row, column))
+                    {
+                        return i;
+                    }
+                }
+                return currentposition;
+            }
+        }
         /// <summary>
         /// sets rectangle position to first tile of the path dictionary
         /// </summary>
@@ -656,11 +716,12 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addellipse(int row, int column, Color color)
+        private void addellipse(int row, int column, Color color, string colorString, bool isGoalTile)
         {
             Ellipse ellipse = createElipse(color, 40);
             Grid.SetRow(ellipse, row);
             Grid.SetColumn(ellipse, column);
+            if (isGoalTile) listOfAllGoalTileEllipses.Add(ellipse, colorString);
             Board.Children.Add(ellipse);
         }
 
@@ -670,13 +731,14 @@ namespace FiaMedKnuff
         /// <param name="row"></param>
         /// <param name="column"></param>
         /// <param name="color"></param>
-        private void addspawntile(int row, int column, Color color)
+        private void addspawntile(int row, int column, Color color, string colorString, bool isGoalTile)
         {
             Ellipse ellipse = createElipse(color, 100);
             Grid.SetRowSpan(ellipse, 2);
             Grid.SetColumnSpan(ellipse, 2);
             Grid.SetRow(ellipse, row);
             Grid.SetColumn(ellipse, column);
+            if (isGoalTile) listOfAllGoalTileEllipses.Add(ellipse, colorString);
             Board.Children.Add(ellipse);
 
         }
@@ -717,13 +779,27 @@ namespace FiaMedKnuff
             {
                 if (obj is Rectangle pawn && pawn.Name.Contains(color))
                 {
-                    if (pawnHasReachedGoal(pawn) == false)
+                    bool result = pawnHasReachedGoal(pawn);
+                    if (result == false)
                     {
                         pawn.IsHitTestVisible = true;
                     }
                 }
             }
         }
+
+        private bool pawnHasReachedGoal(Rectangle pawn)
+        {
+            if (pawnsOnGoalTiles.ContainsValue((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
@@ -783,13 +859,12 @@ namespace FiaMedKnuff
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
             disableAllPawns();
-
+            ClearPreviousPlayerChoiceIndications();
             // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
             ((BitmapImage)imageSource.Source).AutoPlay = true;
             ((BitmapImage)imageSource.Source).Play();
-            MarkPlayerSpawns();
 
             // Add a sound when dice is rolled
             if (isSoundOn == true)
@@ -812,12 +887,35 @@ namespace FiaMedKnuff
             if ((stepCount == 1 | stepCount == 6) && hasPawnOnSpawn(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
+                MarkCurrentPlayerTurnChoice(colors[playerturn - 1]);
             }
             else if (hasPawnOnBoard(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
             }
 
+            Debug.WriteLine($"In Dice -- playerturn: {playerturn}, colors: {colors[playerturn - 1]}, hasPawns: {hasPawnOnBoard(colors[playerturn - 1])}");
+            bool hasPawns = hasPawnOnBoard(colors[playerturn - 1]);
+            if (!hasPawns && (stepCount != 1 && stepCount != 6))
+            {
+                if (playerturn == Players.Count)
+                {
+                    MarkPlayerSpawns(1);
+                }
+                else
+                {
+                    MarkPlayerSpawns(playerturn + 1);
+                }
+
+            }
+            else if (!hasPawns && (stepCount == 1 || stepCount == 6))
+            {
+                MarkPlayerSpawns(playerturn);
+            }
+            else if (hasPawns && (stepCount != 1 && stepCount != 6))
+            {
+                MarkPlayerSpawns(playerturn);
+            }
             CountScore();
             //MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
             //await dialog.ShowAsync();
@@ -828,21 +926,11 @@ namespace FiaMedKnuff
             else if (playerturn == Players.Count)
             {
                 playerturn = 1;
-                while (playerHasWon(colors[playerturn - 1]) && Winners.Length != 1)
-                {
-                    Winners.Append(playerturn);
-                    playerturn++;
-                }
             }
             else
             {
                 playerturn++;
             }
-
-
-
-
-
         }
 
         private void CountScore()
@@ -874,15 +962,23 @@ namespace FiaMedKnuff
                     FourScore.Text = newScore4.ToString();
                     break;
             }
-            if (Winners.Length == 3)
+            if (Winners.Count == 3)
             {
                 //Player has won
             }
         }
 
-        private bool pawnHasReachedGoal(Rectangle pawn)
+        private bool playerHasWon(string color)
         {
-            if (goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
+            int pawnsOnGoalTile = 0;
+            foreach (string key in pawnsOnGoalTiles.Keys)
+            {
+                if (key.Contains(color))
+                {
+                    pawnsOnGoalTile += 1;
+                }
+            }
+            if (pawnsOnGoalTile == 4)
             {
                 return true;
             }
@@ -890,26 +986,6 @@ namespace FiaMedKnuff
             {
                 return false;
             }
-        }
-
-        private bool playerHasWon(string color)
-        {
-            bool result = true;
-            foreach (object obj in Board.Children)
-            {
-                if (obj is Rectangle pawn && pawn.Name.Contains(color))
-                {
-                    if (goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-            }
-            return result;
         }
 
         private bool hasPawnOnBoard(string color)
@@ -968,70 +1044,80 @@ namespace FiaMedKnuff
             return false;
         }
 
-        public void MarkPlayerSpawns()
+        public void MarkPlayerSpawns(int colorIndex)
         {
-
-            foreach (object obj in Board.Children)
+            Debug.WriteLine($"playerturn: {playerturn}, colors: {colors[playerturn - 1]}, hasPawns: {hasPawnOnBoard(colors[playerturn - 1])}");
+            foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
             {
-                if (obj is Ellipse ellipse)
-                {
-                    ellipse.StrokeThickness = 1;
-                }
+                ellipse.StrokeThickness = 1;
             }
 
-            foreach (object obj in Board.Children)
+            foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
             {
-                if (obj is Ellipse ellipse)
+                if (listOfAllGoalTileEllipses[ellipse] == colors[colorIndex - 1])
                 {
-
-                    var fill = ellipse.Fill as SolidColorBrush;
-
-                    if (fill != null)
+                    ellipse.StrokeThickness = 4;
+                    ellipse.Stroke = new SolidColorBrush(Colors.Black);
+                    if ((stepCount == 1 || stepCount == 6) && hasPawnOnSpawn(colors[colorIndex - 1]) && hasPawnOnBoard(colors[colorIndex - 1]))
                     {
-                        bool isCurrentPlayerColor = false;
-
-                        switch (playerturn)
-                        {
-                            case 1:
-                                isCurrentPlayerColor = fill.Color.Equals(Colors.Yellow);
-                                currentplayercolor = "Gul";
-                                break;
-                            case 2:
-                                isCurrentPlayerColor = fill.Color.Equals(Colors.Blue);
-                                currentplayercolor = "Blå";
-                                break;
-                            case 3:
-                                isCurrentPlayerColor = fill.Color.Equals(Colors.Red);
-                                currentplayercolor = "Röd";
-                                break;
-                            case 4:
-                                isCurrentPlayerColor = fill.Color.Equals(Colors.Green);
-                                currentplayercolor = "Grön";
-                                break;
-                        }
-
-                        if (isCurrentPlayerColor)
-                        {
-                            ellipse.StrokeThickness = 4;
-                            ellipse.Stroke = new SolidColorBrush(Colors.Black);
-
-                            //MessageDialog dialog = new MessageDialog($"{stepCount} ");
-                            //dialog.ShowAsync();
-
-
-
-                            if ((stepCount2 == 1 || stepCount2 == 6) && hasPawnOnSpawn(currentplayercolor) && hasPawnOnBoard(currentplayercolor))
-                            {
-
-
-                                MarkCurrentPlayerTurnChoice(currentplayercolor);
-                            }
-
-
-                        }
+                        MarkCurrentPlayerTurnChoice(colors[colorIndex - 1]);
                     }
                 }
             }
+
+            //foreach (object obj in Board.Children)
+            //{
+            //    if (obj is Ellipse ellipse)
+            //    {
+
+            //        var fill = ellipse.Fill as SolidColorBrush;
+
+            //        if (fill != null)
+            //        {
+            //            bool isCurrentPlayerColor = false;
+
+            //            switch (playerturn)
+            //            {
+            //                case 1:
+            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Yellow);
+            //                    currentplayercolor = "Gul";
+            //                    break;
+            //                case 2:
+            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Blue);
+            //                    currentplayercolor = "Blå";
+            //                    break;
+            //                case 3:
+            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Red);
+            //                    currentplayercolor = "Röd";
+            //                    break;
+            //                case 4:
+            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Green);
+            //                    currentplayercolor = "Grön";
+            //                    break;
+            //            }
+
+            //            if (isCurrentPlayerColor)
+            //            {
+            //                ellipse.StrokeThickness = 4;
+            //                ellipse.Stroke = new SolidColorBrush(Colors.Black);
+
+            ////                MessageDialog dialog = new MessageDialog($"{stepCount} ");
+            ////                dialog.ShowAsync();
+
+
+
+            //                if ((stepCount2 == 1 || stepCount2 == 6) && hasPawnOnSpawn(currentplayercolor) && hasPawnOnBoard(currentplayercolor))
+            //                {
+
+
+            //                    MarkCurrentPlayerTurnChoice(currentplayercolor);
+            //                }
+
+
+            //            }
+            //        }
+            //    }
+            //}
         }
         private void MarkCurrentPlayerTurnChoice(string currentPlayer)
         {
@@ -1043,10 +1129,10 @@ namespace FiaMedKnuff
             {
                 if (child is Rectangle pawn && pawn.Name.Contains(currentPlayer))
                 {
+                    // FIX: Only target the pawns that has not reached the goalTiles
                     pawn.Stroke = new SolidColorBrush(Colors.Gold);
                     pawn.StrokeThickness = 2;
-                    //AnimatePawnLift(pawn);
-
+                    AnimatePawnLift(pawn);
                 }
             }
 

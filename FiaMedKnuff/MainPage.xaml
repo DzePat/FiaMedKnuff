@@ -95,6 +95,9 @@ x:Name="aboutOut">
                 <AcrylicBrush BackgroundSource="Backdrop" TintColor="#FFFFFF" TintOpacity="0.6" FallbackColor="#FFFFFF"/>
             </Grid.Background>
         </Grid>
+        <Grid x:Name="splashScreen" Visibility="Collapsed">
+            <local:SplashScreen VerticalAlignment="Center" HorizontalAlignment="center" Margin="0,0,0,0"/>
+        </Grid>
         <Grid x:Name="mainMenu" Visibility="Visible">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
@@ -102,7 +105,7 @@ x:Name="aboutOut">
             <Grid.RenderTransform>
                 <CompositeTransform/>
             </Grid.RenderTransform>
-            
+
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
         <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">

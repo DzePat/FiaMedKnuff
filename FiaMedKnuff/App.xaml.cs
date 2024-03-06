@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace FiaMedKnuff
@@ -37,25 +28,31 @@ namespace FiaMedKnuff
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                this.DebugSettings.EnableFrameRateCounter = false;
+            }
+#endif
+
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
+            // Skapa inte ramen på nytt om appen redan körs, se bara till att fönstret är aktivt
             if (rootFrame == null)
             {
-                // Create a Frame to act as the navigation context and navigate to the first page
+                // Skapa en Frame som agerar navigationskontext och navigera till den första sidan
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
+                    //TODO: Ladda tillstånd från tidigare avstängd session
                 }
 
-                // Place the frame in the current Window
+                // Placera ramen i det aktuella Window
                 Window.Current.Content = rootFrame;
             }
 
@@ -63,12 +60,17 @@ namespace FiaMedKnuff
             {
                 if (rootFrame.Content == null)
                 {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    // Visa splashscreen här innan MainPage laddas
+                    rootFrame.Navigate(typeof(SplashScreen)); // Använd din SplashScreen här
+                    Window.Current.Activate();
+
+                    // Vänta i 1 sekund
+                    await Task.Delay(1000);
+
+                    // Byt till MainPage efter splashscreen
+                    rootFrame.Navigate(typeof(MainPage)); // Byt till din huvudsida
                 }
-                // Ensure the current window is active
+                // Se till att det nuvarande fönstret är aktivt
                 Window.Current.Activate();
             }
         }
