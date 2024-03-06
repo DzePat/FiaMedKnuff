@@ -762,7 +762,7 @@ namespace FiaMedKnuff
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
             disableAllPawns();
-            ClearPreviousPlayerChoiceIndications();
+
             // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
@@ -998,6 +998,8 @@ namespace FiaMedKnuff
 
                             if ((stepCount2 == 1 || stepCount2 == 6) && hasPawnOnSpawn(currentplayercolor) && hasPawnOnBoard(currentplayercolor))
                             {
+
+
                                 MarkCurrentPlayerTurnChoice(currentplayercolor);
                             }
 
@@ -1010,7 +1012,7 @@ namespace FiaMedKnuff
         private void MarkCurrentPlayerTurnChoice(string currentPlayer)
         {
             // Ta bort tidigare markeringar
-
+            ClearPreviousPlayerChoiceIndications();
 
             // Loopa genom alla barn till spelbrädet
             foreach (var child in Board.Children)
@@ -1018,8 +1020,8 @@ namespace FiaMedKnuff
                 if (child is Rectangle pawn && pawn.Name.Contains(currentPlayer))
                 {
                     pawn.Stroke = new SolidColorBrush(Colors.Gold);
-                    //pawn.StrokeThickness = 2;
-                    AnimatePawnLift(pawn);
+                    pawn.StrokeThickness = 2;
+                    //AnimatePawnLift(pawn);
 
                 }
             }
