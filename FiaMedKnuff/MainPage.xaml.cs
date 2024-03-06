@@ -43,6 +43,7 @@ namespace FiaMedKnuff
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         private int playerturn = 1;
+        string currentplayercolor = "";
 
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
@@ -556,14 +557,21 @@ namespace FiaMedKnuff
                             await linkEndToStartPath(pawn);
                         }
                     }
+
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
                 else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
                 {
                     await placepawnOnTheBoardAsync(pawn);
+
                 }
 
             }
+            if (stepCount == 0 && hasPawnOnBoard(currentplayercolor))
+            {
+                MarkPlayerSpawns();
+            }
+
         }
 
         private int checkNextGoalTileIndex(string color)
@@ -816,8 +824,11 @@ namespace FiaMedKnuff
             else
             {
                 playerturn++;
-
             }
+
+
+
+
 
         }
 
@@ -946,7 +957,7 @@ namespace FiaMedKnuff
 
         public void MarkPlayerSpawns()
         {
-            string currentplayercolor = "";
+
             foreach (object obj in Board.Children)
             {
                 if (obj is Ellipse ellipse)
