@@ -38,6 +38,7 @@ namespace FiaMedKnuff
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int stepCount;
+        private int stepCount2;
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
@@ -483,6 +484,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
+
             if (sender is Rectangle pawn)
             {
                 int currentRow = Grid.GetRow(pawn);
@@ -560,6 +562,7 @@ namespace FiaMedKnuff
                 {
                     await placepawnOnTheBoardAsync(pawn);
                 }
+
             }
         }
 
@@ -759,6 +762,7 @@ namespace FiaMedKnuff
         private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
             disableAllPawns();
+            ClearPreviousPlayerChoiceIndications();
             // Start the GIF animation
             var gifSource = new BitmapImage(new Uri("ms-appx:///Assets/dice-despeed.gif"));
             imageSource.Source = gifSource;
@@ -779,6 +783,8 @@ namespace FiaMedKnuff
             // Randomly generate a dice result and display the static image
             int result = random.Next(1, 7);
             stepCount = result;
+            stepCount2 = result;
+
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
             enablePlayerPawns(colors[playerturn - 1]);
@@ -812,6 +818,7 @@ namespace FiaMedKnuff
                 playerturn++;
 
             }
+
         }
 
         private void CountScore()
@@ -893,6 +900,7 @@ namespace FiaMedKnuff
             return false;
         }
 
+
         private void AnimatePawnLift(Rectangle pawn)
         {
             var storyboard = new Storyboard();
@@ -938,7 +946,7 @@ namespace FiaMedKnuff
 
         public void MarkPlayerSpawns()
         {
-
+            string currentplayercolor = "";
             foreach (object obj in Board.Children)
             {
                 if (obj is Ellipse ellipse)
@@ -962,15 +970,19 @@ namespace FiaMedKnuff
                         {
                             case 1:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Yellow);
+                                currentplayercolor = "Gul";
                                 break;
                             case 2:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Blue);
+                                currentplayercolor = "Blå";
                                 break;
                             case 3:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Red);
+                                currentplayercolor = "Röd";
                                 break;
                             case 4:
                                 isCurrentPlayerColor = fill.Color.Equals(Colors.Green);
+                                currentplayercolor = "Grön";
                                 break;
                         }
 
@@ -978,8 +990,51 @@ namespace FiaMedKnuff
                         {
                             ellipse.StrokeThickness = 4;
                             ellipse.Stroke = new SolidColorBrush(Colors.Black);
+
+                            //MessageDialog dialog = new MessageDialog($"{stepCount} ");
+                            //dialog.ShowAsync();
+
+
+
+                            if ((stepCount2 == 1 || stepCount2 == 6) && hasPawnOnSpawn(currentplayercolor) && hasPawnOnBoard(currentplayercolor))
+                            {
+                                MarkCurrentPlayerTurnChoice(currentplayercolor);
+                            }
+
+
                         }
                     }
+                }
+            }
+        }
+        private void MarkCurrentPlayerTurnChoice(string currentPlayer)
+        {
+            // Ta bort tidigare markeringar
+
+
+            // Loopa genom alla barn till spelbrädet
+            foreach (var child in Board.Children)
+            {
+                if (child is Rectangle pawn && pawn.Name.Contains(currentPlayer))
+                {
+                    pawn.Stroke = new SolidColorBrush(Colors.Gold);
+                    //pawn.StrokeThickness = 2;
+                    AnimatePawnLift(pawn);
+
+                }
+            }
+
+        }
+
+        private void ClearPreviousPlayerChoiceIndications()
+        {
+            foreach (var child in Board.Children)
+            {
+                if (child is Rectangle pawn)
+                {
+                    // Återställ visuella effekter för pionen
+                    pawn.Stroke = new SolidColorBrush(Colors.Transparent);
+                    pawn.StrokeThickness = 0;
                 }
             }
         }
