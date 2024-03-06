@@ -98,7 +98,7 @@ x:Name="aboutOut">
                 <BitmapImage UriSource="Assets/music-icon.png"/>
             </Image.Source>
         </Image>
-        <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0">
+        <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0" Visibility="Collapsed">
             <Image.Source>
                 <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
             </Image.Source>

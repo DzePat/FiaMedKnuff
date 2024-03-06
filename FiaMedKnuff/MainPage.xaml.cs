@@ -219,8 +219,6 @@ namespace FiaMedKnuff
             addspawntile(11, 0, Colors.Yellow);
             addspawntile(11, 11, Colors.Green);
 
-            imageSource.Visibility = Visibility.Collapsed;
-
         }
 
         /// <summary>
@@ -490,6 +488,7 @@ namespace FiaMedKnuff
         {
             if (sender is Rectangle pawn)
             {
+                pawn.IsHitTestVisible = false;
                 int currentRow = Grid.GetRow(pawn);
                 int currentColumn = Grid.GetColumn(pawn);
                 int foundKey;
@@ -1113,8 +1112,6 @@ namespace FiaMedKnuff
         //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         //    imageSource.Visibility = Visibility.Collapsed;
-
-
         //}
 
         private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
@@ -1143,7 +1140,7 @@ namespace FiaMedKnuff
                     aboutView.Visibility = Visibility.Collapsed;
                     BlurdGridFadeOut.Begin();
                     blurGrid.Visibility = Visibility.Collapsed;
-                    imageSource.Visibility = Visibility.Collapsed;
+                    imageSource.Visibility = (MainMenu.Instance.MainMenuContent.Visibility == Visibility.Visible || MainMenu.Instance.HighScoreMenu.Visibility == Visibility.Visible || MainMenu.Instance.SelectPlayerMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
                 };
                 isAboutVisible = false;
             }
@@ -1155,7 +1152,7 @@ namespace FiaMedKnuff
                 isAboutVisible = true;
                 blurGrid.Visibility = Visibility.Visible;
                 BlurdGridFadeIn.Begin();
-
+                imageSource.Visibility = Visibility.Collapsed;
             }
 
             // Update visability for mainMenu and imageSource
