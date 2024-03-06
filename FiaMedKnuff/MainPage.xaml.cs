@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Popups;
@@ -525,19 +524,19 @@ namespace FiaMedKnuff
                         AnimatePawnLift(pawn);
                         if (goalTiles.ContainsValue((currentRow, currentColumn)) && goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key.Contains(pawn.Name))
                         {
-                            int targetTile = checkNextGoalTileIndex(pawn.Name,currentRow,currentColumn);
+                            int targetTile = checkNextGoalTileIndex(pawn.Name, currentRow, currentColumn);
                             int currentTile = int.Parse((goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key).Split('-')[1]);
                             int next = checkNextAvailablePosition(pawn.Name, targetTile, currentTile);
-                            if(next == currentTile) 
+                            if (next == currentTile)
                             {
                                 stepCount = 0;
                                 imageSource.IsHitTestVisible = true;
                             }
-                            else 
+                            else
                             {
                                 stepCount--;
                                 imageSource.IsHitTestVisible = true;
-                                (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile+1)];
+                                (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile + 1)];
                                 var messageDialog = new MessageDialog($"row:{currentRow}\n column: {currentColumn}\n moving to\n row: {row}\n column: {column}");
                                 messageDialog.ShowAsync();
                                 Grid.SetRow(pawn, row);
@@ -590,7 +589,7 @@ namespace FiaMedKnuff
 
         }
 
-        private int checkNextGoalTileIndex(string color,int currentrow, int currentcolumn)
+        private int checkNextGoalTileIndex(string color, int currentrow, int currentcolumn)
         {
             for (int i = 4; i > 0; i--)
             {
@@ -599,7 +598,7 @@ namespace FiaMedKnuff
                 {
                     return i;
                 }
-                if ((row, column) == (currentrow, currentcolumn)) 
+                if ((row, column) == (currentrow, currentcolumn))
                 {
                     return i;
                 }
@@ -607,21 +606,21 @@ namespace FiaMedKnuff
             return 0;
         }
 
-        private int checkNextAvailablePosition(string color,int targetTile,int currentposition) 
-        { 
-            if(stepCount >= targetTile - currentposition) 
+        private int checkNextAvailablePosition(string color, int targetTile, int currentposition)
+        {
+            if (stepCount >= targetTile - currentposition)
             {
                 return targetTile;
             }
-            else 
-            { 
-                for(int i = currentposition + stepCount; i > currentposition; i--) 
-                { 
+            else
+            {
+                for (int i = currentposition + stepCount; i > currentposition; i--)
+                {
                     (int row, int column) = goalTiles[color + "-" + i];
-                    if (tileIsEmpty(row, column)) 
+                    if (tileIsEmpty(row, column))
                     {
                         return i;
-                    }  
+                    }
                 }
                 return currentposition;
             }
@@ -828,7 +827,7 @@ namespace FiaMedKnuff
             await Task.Delay(1000);
 
             // Randomly generate a dice result and display the static image
-            int result = random.Next(6, 7);
+            int result = random.Next(1, 7);
             stepCount = result;
             stepCount2 = result;
 
@@ -864,8 +863,11 @@ namespace FiaMedKnuff
             {
                 playerturn++;
             }
-
-
+            bool hasPawns = hasPawnOnBoard(colors[playerturn - 1]);
+            if (!hasPawns && (stepCount != 1 && stepCount != 6))
+            {
+                MarkPlayerSpawns();
+            }
 
 
 
@@ -908,10 +910,10 @@ namespace FiaMedKnuff
 
         private bool pawnHasReachedGoal(Rectangle pawn)
         {
-            foreach((int row, int col) value in pawnsOnGoalTiles.Values)
+            foreach ((int row, int col) value in pawnsOnGoalTiles.Values)
             {
-                if(value == (Grid.GetRow(pawn), Grid.GetColumn(pawn))) 
-                { 
+                if (value == (Grid.GetRow(pawn), Grid.GetColumn(pawn)))
+                {
                     return true;
                 }
             }
@@ -1069,8 +1071,8 @@ namespace FiaMedKnuff
             {
                 if (child is Rectangle pawn && pawn.Name.Contains(currentPlayer))
                 {
-                    pawn.Stroke = new SolidColorBrush(Colors.Gold);
-                    pawn.StrokeThickness = 2;
+                    //pawn.Stroke = new SolidColorBrush(Colors.Gold);
+                    //pawn.StrokeThickness = 2;
                     //AnimatePawnLift(pawn);
 
                 }
