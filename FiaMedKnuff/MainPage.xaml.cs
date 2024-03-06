@@ -62,6 +62,7 @@ namespace FiaMedKnuff
             StorageFile file = await folder.GetFileAsync("backgroundMusic.mp3");
             musicPlayer.IsLooping = true;
 
+            musicPlayer.Volume = 0.1;
             //currently not playing music on start to save developer sanity
             musicPlayer.AutoPlay = false;
             TurnOffMusic();
