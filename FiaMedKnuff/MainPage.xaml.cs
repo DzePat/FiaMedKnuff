@@ -1063,59 +1063,6 @@ namespace FiaMedKnuff
                 }
             }
 
-            //foreach (object obj in Board.Children)
-            //{
-            //    if (obj is Ellipse ellipse)
-            //    {
-
-            //        var fill = ellipse.Fill as SolidColorBrush;
-
-            //        if (fill != null)
-            //        {
-            //            bool isCurrentPlayerColor = false;
-
-            //            switch (playerturn)
-            //            {
-            //                case 1:
-            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Yellow);
-            //                    currentplayercolor = "Gul";
-            //                    break;
-            //                case 2:
-            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Blue);
-            //                    currentplayercolor = "Blå";
-            //                    break;
-            //                case 3:
-            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Red);
-            //                    currentplayercolor = "Röd";
-            //                    break;
-            //                case 4:
-            //                    isCurrentPlayerColor = fill.Color.Equals(Colors.Green);
-            //                    currentplayercolor = "Grön";
-            //                    break;
-            //            }
-
-            //            if (isCurrentPlayerColor)
-            //            {
-            //                ellipse.StrokeThickness = 4;
-            //                ellipse.Stroke = new SolidColorBrush(Colors.Black);
-
-            ////                MessageDialog dialog = new MessageDialog($"{stepCount} ");
-            ////                dialog.ShowAsync();
-
-
-
-            //                if ((stepCount2 == 1 || stepCount2 == 6) && hasPawnOnSpawn(currentplayercolor) && hasPawnOnBoard(currentplayercolor))
-            //                {
-
-
-            //                    MarkCurrentPlayerTurnChoice(currentplayercolor);
-            //                }
-
-
-            //            }
-            //        }
-            //    }
-            //}
         }
         private void MarkCurrentPlayerTurnChoice(string currentPlayer)
         {
@@ -1148,16 +1095,7 @@ namespace FiaMedKnuff
                 }
             }
         }
-        //private static async Task PlaySound(string sound)
-        //{
-        //    var element = new MediaElement();
-        //    var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
-        //    var file = await folder.GetFileAsync("dice-sound.mp3");
-        //    var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-        //    element.SetSource(stream, "");
 
-        //    element.Play();
-        //}
         private async Task PlaySound(string sound)
         {
             var element = new MediaElement();
