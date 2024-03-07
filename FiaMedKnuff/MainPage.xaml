@@ -48,13 +48,22 @@ x:Name="aboutOut">
                 <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="highScoreIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="scoreBoard" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-253.968"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="-1.716"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Page.Resources>
 
     <Grid Name="mainGrid">
         <Grid.Background>
             <ImageBrush ImageSource="/Assets/bgfuamedknuff1500.png" Stretch="UniformToFill"></ImageBrush>
         </Grid.Background>
-        <StackPanel x:Name="scoreBoard" CornerRadius="20" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#AA000000" Padding="10" Margin="10" Visibility="Collapsed">
+        <StackPanel x:Name="scoreBoard" CornerRadius="20" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#AA000000" Padding="10" Margin="10" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+            <StackPanel.RenderTransform>
+                <CompositeTransform/>
+            </StackPanel.RenderTransform>
             <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="42" Foreground="#FFF" TextAlignment="Center" Margin="0, 0, 0, 10">Highscore</TextBlock>
             <Grid x:Name="yellowPlayerScore" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
