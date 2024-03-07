@@ -1047,6 +1047,7 @@ namespace FiaMedKnuff
             foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
             {
                 ellipse.StrokeThickness = 1;
+                ellipse.Opacity = 0.5;
             }
 
             foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
@@ -1056,6 +1057,7 @@ namespace FiaMedKnuff
                     ellipse.StrokeThickness = 4;
                     ellipse.Stroke = new SolidColorBrush(Colors.Black);
                     StartPulsingAnimation(ellipse);
+                    ellipse.Opacity = 1;
                     if ((stepCount == 1 || stepCount == 6) && hasPawnOnSpawn(colors[colorIndex - 1]) && hasPawnOnBoard(colors[colorIndex - 1]))
                     {
                         MarkCurrentPlayerTurnChoice(colors[colorIndex - 1]);
@@ -1201,17 +1203,7 @@ namespace FiaMedKnuff
             if (isSoundOn) musicPlayer.Play();
         }
 
-        /// <summary>
-        /// Changes the visibility of the about view when the user clicks on the questionmark
-        /// </summary>
-        //private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
-        //{
 
-        //    aboutIn.Begin();
-        //    aboutView.Visibility = (aboutView.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-        //    mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
-        //    imageSource.Visibility = Visibility.Collapsed;
-        //}
 
         private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
         ///<summary>
