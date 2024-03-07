@@ -28,7 +28,7 @@ namespace FiaMedKnuff
         {
             string name = winnerNameTextBox.Text;
 
-            
+            HighscorePage.instance.tryAddRecord(name, winnerMoves);
         }
 
         public void loadPage(string winnerColor, int moves)
