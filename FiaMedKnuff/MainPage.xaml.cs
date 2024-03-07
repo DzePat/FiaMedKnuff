@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -1057,6 +1055,7 @@ namespace FiaMedKnuff
                 {
                     ellipse.StrokeThickness = 4;
                     ellipse.Stroke = new SolidColorBrush(Colors.Black);
+                    StartPulsingAnimation(ellipse);
                     if ((stepCount == 1 || stepCount == 6) && hasPawnOnSpawn(colors[colorIndex - 1]) && hasPawnOnBoard(colors[colorIndex - 1]))
                     {
                         MarkCurrentPlayerTurnChoice(colors[colorIndex - 1]);
@@ -1327,6 +1326,50 @@ namespace FiaMedKnuff
         {
             highScoreIn.Begin();
         }
+
+        // Method to create and start the pulsing animation for an ellipse's stroke thickness
+        private void StartPulsingAnimation(UIElement targetElement)
+        {
+
+            // Create the storyboard
+            var storyboard = new Storyboard();
+
+            // Create scale transform and apply to the target element if not already applied
+            if (targetElement.RenderTransform as ScaleTransform == null)
+            {
+                targetElement.RenderTransform = new ScaleTransform();
+                targetElement.RenderTransformOrigin = new Point(0.5, 0.5); // Center the scaling
+            }
+
+            var pulsingScaleXAnimation = new DoubleAnimation
+            {
+                From = 1.0, // Start scale
+                To = 1.2, // End scale (20% larger)
+                Duration = TimeSpan.FromSeconds(1),
+                AutoReverse = true
+            };
+
+            var pulsingScaleYAnimation = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 1.2,
+                Duration = TimeSpan.FromSeconds(1),
+                AutoReverse = true
+
+            };
+
+            Storyboard.SetTarget(pulsingScaleXAnimation, targetElement);
+            Storyboard.SetTargetProperty(pulsingScaleXAnimation, "(UIElement.RenderTransform).(ScaleTransform.ScaleX)");
+
+            Storyboard.SetTarget(pulsingScaleYAnimation, targetElement);
+            Storyboard.SetTargetProperty(pulsingScaleYAnimation, "(UIElement.RenderTransform).(ScaleTransform.ScaleY)");
+
+            storyboard.Children.Add(pulsingScaleXAnimation);
+            storyboard.Children.Add(pulsingScaleYAnimation);
+
+            storyboard.Begin();
+        }
+
 
     }
 }
