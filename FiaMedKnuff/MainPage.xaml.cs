@@ -54,10 +54,8 @@ namespace FiaMedKnuff
         public Image ImageSource { get { return imageSource; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
 
-
         public MainPage()
         {
-
             this.InitializeComponent();
             Instance = this;
             populateBoard();
@@ -68,7 +66,6 @@ namespace FiaMedKnuff
             InitializeAnimationTimer();
             initMusicPlayer();
         }
-
 
         public void initializePlayers()
         {
@@ -348,7 +345,6 @@ namespace FiaMedKnuff
             goalTiles.Add("Grön-2", (6, 9));
             goalTiles.Add("Grön-3", (6, 8));
             goalTiles.Add("Grön-4", (6, 7));
-
         }
 
         /// <summary>
@@ -709,7 +705,6 @@ namespace FiaMedKnuff
             stepCount = 0;
             await checkForEnemyPawns(row, column, rectangle.Name);
             imageSource.IsHitTestVisible = true;
-
         }
 
         /// <summary>
@@ -1121,15 +1116,6 @@ namespace FiaMedKnuff
             //    }
             //}
         }
-        /// <summary>
-        /// Highlights the current player's turn by visually accentuating their game pieces on the game board.
-        /// </summary>
-        /// <remarks>
-        /// This method removes all previous visual indications from game pieces, loops through all children of the game board,
-        /// and highlights the game pieces belonging to the current player that have not yet reached the goal.
-        /// Game pieces are highlighted with a gold border and an animation that lifts the piece.
-        /// </remarks>
-        /// <param name="currentPlayer">The identifier for the current player. The method searches for game pieces with this name.</param>
         private void MarkCurrentPlayerTurnChoice(string currentPlayer)
         {
             // Ta bort tidigare markeringar
@@ -1148,14 +1134,7 @@ namespace FiaMedKnuff
             }
 
         }
-        /// <summary>
-        /// Clears previous visual indications from the game pieces on the game board.
-        /// </summary>
-        /// <remarks>
-        /// This method loops through all children of the game board and resets the visual effects for each game piece,
-        /// which includes making the border transparent and setting the border thickness to 0.
-        /// Used to prepare for the next player's turn.
-        /// </remarks>
+
         private void ClearPreviousPlayerChoiceIndications()
         {
             foreach (var child in Board.Children)
@@ -1321,7 +1300,7 @@ namespace FiaMedKnuff
                     aboutView.Visibility = Visibility.Collapsed;
                     BlurdGridFadeOut.Begin();
                     blurGrid.Visibility = Visibility.Collapsed;
-                    highScoreIn.Begin();
+                    StartHighScoreAnimation();
                     imageSource.Visibility = (MainMenu.Instance.MainMenuContent.Visibility == Visibility.Visible || MainMenu.Instance.HighScoreMenu.Visibility == Visibility.Visible || MainMenu.Instance.SelectPlayerMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
                 };
                 isAboutVisible = false;
