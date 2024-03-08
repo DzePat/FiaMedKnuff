@@ -48,52 +48,110 @@ x:Name="aboutOut">
                 <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="highScoreIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="scoreBoard" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-253.968"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="-1.716"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Page.Resources>
 
     <Grid Name="mainGrid">
         <Grid.Background>
             <ImageBrush ImageSource="/Assets/bgfuamedknuff1500.png" Stretch="UniformToFill"></ImageBrush>
         </Grid.Background>
-        <StackPanel x:Name="scoreBoard" CornerRadius="20" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#AA000000" Padding="10" Margin="10" Visibility="Collapsed">
-            <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="42" Foreground="#FFF" TextAlignment="Center" Margin="0, 0, 0, 10">Highscore</TextBlock>
-            <Grid x:Name="yellowPlayerScore" Visibility="Collapsed">
+        <Grid Margin="80, 0, 80, 0">
+
+            <!--Sound Control Container-->
+            <StackPanel x:Name="soundColntrolContainer" Orientation="Horizontal" Margin="0, 30, 150, 0" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,0,30,0">
+                    <Image.Source>
+                        <BitmapImage UriSource="Assets/soundon.png"/>
+                    </Image.Source>
+                </Image>
+                <Image x:Name="musicImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="musicImageSource_Tapped"  Margin="0,0,30,0">
+                    <Image.Source>
+                        <BitmapImage UriSource="Assets/music-icon.png"/>
+                    </Image.Source>
+                </Image>
+            </StackPanel>
+
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Yellow</TextBlock>
-                <TextBlock Grid.Column="1" x:Name="OneScore" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Text="0" FontSize="24" TextAlignment="Left" Margin="50, 0, 0, 0"/>
+                <!--Highscore-->
+                <StackPanel Grid.Column="0" x:Name="scoreBoard" CornerRadius="20" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#AA000000" Padding="10" Margin="10" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+                    <StackPanel.RenderTransform>
+                        <CompositeTransform/>
+                    </StackPanel.RenderTransform>
+                    <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="42" Foreground="#FFF" TextAlignment="Center" Margin="0, 0, 0, 10">Highscore</TextBlock>
+                    <Grid x:Name="yellowPlayerScore" Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Yellow</TextBlock>
+                        <TextBlock Grid.Column="1" x:Name="OneScore" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Text="0" FontSize="24" TextAlignment="Left" Margin="50, 0, 0, 0"/>
+                    </Grid>
+                    <Grid x:Name="bluePlayerScore" Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Blue</TextBlock>
+                        <TextBlock Grid.Column="1" x:Name="TwoScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
+                    </Grid>
+                    <Grid x:Name="redPlayerScore" Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Red</TextBlock>
+                        <TextBlock Grid.Column="1" x:Name="ThreeScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
+                    </Grid>
+                    <Grid x:Name="greenPlayerScore" Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Green</TextBlock>
+                        <TextBlock Grid.Column="1" x:Name="FourScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
+                    </Grid>
+                </StackPanel>
+
+                <!--Board-->
+                <Grid Grid.Column="1" Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
+
+                <!--Dice-->
+                <Image Grid.Column="2" x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0" Visibility="Collapsed">
+                    <Image.Source>
+                        <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
+                    </Image.Source>
+                </Image>
+
             </Grid>
-            <Grid x:Name="bluePlayerScore" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Blue</TextBlock>
-                <TextBlock Grid.Column="1" x:Name="TwoScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
+
+            <!--BlurEffect when about is open-->
+            <Grid x:Name="blurGrid" Visibility="Collapsed" Margin="-80, 0, -80, 0">
+                <Grid.Background>
+                    <AcrylicBrush BackgroundSource="Backdrop" TintColor="#FFFFFF" TintOpacity="0.6" FallbackColor="#FFFFFF"/>
+                </Grid.Background>
             </Grid>
-            <Grid x:Name="redPlayerScore" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Red</TextBlock>
-                <TextBlock Grid.Column="1" x:Name="ThreeScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
+            
+            <!--About Button-->
+            <Grid x:Name="aboutButton" Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0, 0, 150, 30" PointerReleased="Grid_PointerReleased">
+                <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
+                <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
+               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
             </Grid>
-            <Grid x:Name="greenPlayerScore" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" FontSize="24" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" TextAlignment="Right">Green</TextBlock>
-                <TextBlock Grid.Column="1" x:Name="FourScore" Text="0" FontSize="24" TextAlignment="Left" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="50, 0, 0, 0"/>
-            </Grid>
-        </StackPanel>
-        <Grid Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
-        <Grid x:Name="blurGrid" Visibility="Collapsed">
-            <Grid.Background>
-                <AcrylicBrush BackgroundSource="Backdrop" TintColor="#FFFFFF" TintOpacity="0.6" FallbackColor="#FFFFFF"/>
-            </Grid.Background>
+        </Grid>
+
+        <!--Menu and Views-->
+        <Grid x:Name="splashScreen" Visibility="Collapsed">
+            <local:SplashScreen VerticalAlignment="Center" HorizontalAlignment="center" Margin="0,0,0,0"/>
         </Grid>
         <Grid x:Name="mainMenu" Visibility="Visible">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -105,7 +163,7 @@ x:Name="aboutOut">
             <Grid.RenderTransform>
                 <CompositeTransform/>
             </Grid.RenderTransform>
-            
+
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
         <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">

@@ -20,6 +20,9 @@
         <StackPanel x:Name="mainMenuContent" VerticalAlignment="Center" Visibility="Visible">
             <TextBlock FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" Foreground="#FFF" TextAlignment="Center" Margin="0,0,0,90">Fia med knuff</TextBlock>
             <Grid x:Name="startButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,0,0,20" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="StartNewGameSession">
+                <Grid.Shadow>
+                    <ThemeShadow/>
+                </Grid.Shadow>
                 <TextBlock x:Name="startButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Start</TextBlock>
             </Grid>
             <Grid x:Name="highScoreButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="ShowHighscore">
