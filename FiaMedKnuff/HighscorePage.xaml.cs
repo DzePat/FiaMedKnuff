@@ -20,7 +20,7 @@ namespace FiaMedKnuff
         private int maxRecords = 5;
         private string fileName = "highscore.txt";
         private StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-
+        public static HighscorePage instance { get; private set; }
         /// <summary>
         /// Interal class to keep track of records
         /// </summary>
@@ -40,7 +40,7 @@ namespace FiaMedKnuff
         public HighscorePage()
         {
             this.InitializeComponent();
-
+            instance = this;
 
             //executableDirectory=Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             //tryAddRecord("hej1", 2);
@@ -100,6 +100,7 @@ namespace FiaMedKnuff
             {
                 //sort the whole list
                 recordList.Sort((record1, record2) => record1.moves.CompareTo(record2.moves));
+                SaveHighscoreToFile();
                 return true;
             }
             else //did not add any new record
