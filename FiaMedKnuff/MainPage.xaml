@@ -98,6 +98,9 @@ x:Name="aboutOut">
         <Grid x:Name="mainMenu" Visibility="Visible">
             <local:MainMenu VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
+        <Grid x:Name="victoryView" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <local:VictoryPage />
+        </Grid>
         <Grid x:Name="aboutView" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <CompositeTransform/>
@@ -125,6 +128,8 @@ x:Name="aboutOut">
             <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
                VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
         </Grid>
+        <!-- BUTTON ONLY FOR DEBUG... REMOVE FOR RELEASE -->
+        <Button Margin="10,10,0,0" VerticalAlignment="Top" Background="Black" Canvas.ZIndex="10" Click="DEBUG_Win_Button_Click">SIMULATE WIN</Button>
 
 
     </Grid>

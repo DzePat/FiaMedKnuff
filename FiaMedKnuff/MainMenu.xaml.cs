@@ -47,6 +47,7 @@ namespace FiaMedKnuff
         /// </summary>
         private void ShowHighscore(object sender, PointerRoutedEventArgs e)
         {
+            HighscorePage.instance.loadPage();
             Instance.MainMenuContent.Visibility = Visibility.Collapsed;
             Instance.HighScoreMenu.Visibility = Visibility.Visible;
 
@@ -56,6 +57,8 @@ namespace FiaMedKnuff
         /// </summary>
         public void ShowMainMenu()
         {
+
+            Instance.Visibility= Visibility.Visible;
             Instance.MainMenuContent.Visibility = Visibility.Visible;
             Instance.HighScoreMenu.Visibility = Visibility.Collapsed;
             Instance.SelectPlayerMenu.Visibility = Visibility.Collapsed;
