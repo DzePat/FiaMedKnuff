@@ -47,6 +47,7 @@ namespace FiaMedKnuff
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
+        public Grid VictoryScreen { get { return victoryView; } }
 
         public MainPage()
         {
@@ -808,6 +809,7 @@ namespace FiaMedKnuff
                 while (playerHasWon(colors[playerturn - 1]) && Winners.Length != 1)
                 {
                     Winners.Append(playerturn);
+                    showVictoryView(colors[playerturn - 1], Players[playerturn].Item2);
                     playerturn++;
                 }
             }
@@ -1159,6 +1161,23 @@ namespace FiaMedKnuff
             mainMenu.Visibility = (mainMenu.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
             FadeinMainMenu.Begin();
             //imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+
+        /// <summary>
+        /// ***REPLACE THIS METHOD FOR RELEASE***
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DEBUG_Win_Button_Click(object sender, RoutedEventArgs e)
+        {
+            showVictoryView(colors[random.Next(4)], random.Next(75));
+        }
+
+        private void showVictoryView(string color, int moves)
+        {
+            VictoryPage.instance.loadPage(color, moves);
+            victoryView.Visibility = Visibility.Visible;
         }
     }
 }

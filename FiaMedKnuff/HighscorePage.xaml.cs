@@ -100,6 +100,7 @@ namespace FiaMedKnuff
             {
                 //sort the whole list
                 recordList.Sort((record1, record2) => record1.moves.CompareTo(record2.moves));
+                SaveHighscoreToFile();
                 return true;
             }
             else //did not add any new record
