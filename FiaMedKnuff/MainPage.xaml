@@ -166,26 +166,6 @@ x:Name="aboutOut">
 
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
-        <Image x:Name="soundImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="soundImageSource_Tapped"  Margin="0,30,30,0">
-            <Image.Source>
-                <BitmapImage UriSource="Assets/soundon.png"/>
-            </Image.Source>
-        </Image>
-        <Image x:Name="musicImageSource" Width="40" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="musicImageSource_Tapped"  Margin="0,30,90,0">
-            <Image.Source>
-                <BitmapImage UriSource="Assets/music-icon.png"/>
-            </Image.Source>
-        </Image>
-        <Image x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0" Visibility="Collapsed">
-            <Image.Source>
-                <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
-            </Image.Source>
-        </Image>
-        <Grid Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="5" PointerReleased="Grid_PointerReleased">
-            <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
-            <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
-               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
-        </Grid>
         <!-- BUTTON ONLY FOR DEBUG... REMOVE FOR RELEASE -->
         <Button Margin="10,10,0,0" VerticalAlignment="Top" Background="Black" Canvas.ZIndex="10" Click="DEBUG_Win_Button_Click">SIMULATE WIN</Button>
 
