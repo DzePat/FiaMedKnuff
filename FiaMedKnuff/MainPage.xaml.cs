@@ -569,7 +569,7 @@ namespace FiaMedKnuff
                                     {
                                         (string identity, int score) = Players[player];
                                         result += $"Player {player} won with {score}\n";
-                                        showVictoryView(identity, score));
+                                        showVictoryView(identity, score);
                                     }
                                     var dialog = new MessageDialog(result);
                                     await dialog.ShowAsync();
