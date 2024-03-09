@@ -42,7 +42,7 @@ namespace FiaMedKnuff
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         private int stepCount;
-        private int stepCount2;
+        private int currentDiceResult;
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
@@ -340,7 +340,6 @@ namespace FiaMedKnuff
                                 if (playerHasWon(pawn.Name) == true)
                                 {
                                     Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
-                                    playerturn++;
                                 }
                                 MarkPlayerSpawns(playerturn);
                                 var dialog2 = new MessageDialog("" + (Players.Count - 1) + "winnercount: " + Winners.Count);
@@ -357,14 +356,7 @@ namespace FiaMedKnuff
                                     var dialog = new MessageDialog(result);
                                     await dialog.ShowAsync();
                                 }
-                                while (playerHasWon(colors[playerturn - 1]))
-                                {
-                                    playerturn++;
-                                    if (playerturn == Players.Count)
-                                    {
-                                        playerturn = 1;
-                                    }
-                                }
+                                turnHandler();
                             }
                         }
                         // if the boardpath contains the next position of the clicked pawn
@@ -399,11 +391,6 @@ namespace FiaMedKnuff
                 }
 
             }
-            //if (stepCount == 0 && hasPawnOnBoard(colors[playerturn - 1]))
-            //{
-            //    MarkPlayerSpawns(playerturn);
-            //}
-
         }
 
         private int checkNextGoalTileIndex(string color, int currentrow, int currentcolumn)
@@ -609,7 +596,7 @@ namespace FiaMedKnuff
             // Randomly generate a dice result and display the static image
             int result = random.Next(1, 7);
             stepCount = result;
-            stepCount2 = result;
+            currentDiceResult = result;
 
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
@@ -649,18 +636,34 @@ namespace FiaMedKnuff
             CountScore();
             //MessageDialog dialog = new MessageDialog($"steps {stepCount} playerturn: {playerturn}");
             //await dialog.ShowAsync();
-            if (stepCount == 6)
+            turnHandler();
+        }
+
+
+        private void turnHandler()
+        {
+            if (currentDiceResult == 6)
             {
-                //go again
+                //player goes again
             }
-            else if (playerturn == Players.Count)
+            else if (currentDiceResult < 6 && currentDiceResult > 0)
             {
-                playerturn = 1;
+                playerturn = nextplayerturn(playerturn);
             }
-            else
+            while (playerHasWon(colors[playerturn - 1]) && Winners.Count != (Players.Count - 1))
             {
-                playerturn++;
+                playerturn = nextplayerturn(playerturn);
             }
+        }
+
+        private int nextplayerturn(int playerID)
+        {
+            int newid = playerID + 1;
+            if (newid > Players.Count)
+            {
+                newid = 1;
+            }
+            return newid;
         }
 
         private void CountScore()
