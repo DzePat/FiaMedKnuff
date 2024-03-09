@@ -17,18 +17,21 @@ namespace FiaMedKnuff
     public sealed partial class VictoryPage : Page
     {
         private int winnerMoves;
+        public static VictoryPage instance { get; private set; }
         public VictoryPage()
         {
             this.InitializeComponent();
-
+            instance = this;
 
         }
         
         private void uploadToHighscore()
         {
             string name = winnerNameTextBox.Text;
-
-            
+            if (name != string.Empty)
+            {
+                HighscorePage.instance.tryAddRecord(name, winnerMoves);
+            }
         }
 
         public void loadPage(string winnerColor, int moves)
@@ -46,6 +49,17 @@ namespace FiaMedKnuff
         {
             Design.ChangeButtonColorBackToDefault(sender);
         }
+        private void BackToMenu(object sender, PointerRoutedEventArgs e)
+        {
+            MainMenu.Instance.ShowMainMenu();
+            MainPage.Instance.VictoryScreen.Visibility = Visibility.Collapsed;
+            uploadToHighscore();
+        }
 
+        private void continuePlaying(object sender, PointerRoutedEventArgs e)
+        {
+            MainPage.Instance.VictoryScreen.Visibility = Visibility.Collapsed;
+            uploadToHighscore();
+        }
     }
 }
