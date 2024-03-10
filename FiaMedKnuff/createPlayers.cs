@@ -10,7 +10,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Media;
-using System.Drawing;
+using Windows.UI.Xaml.Shapes;
+using Windows.Foundation;
 
 namespace FiaMedKnuff
 {
@@ -87,10 +88,44 @@ namespace FiaMedKnuff
             };
 
             string workingdirectory = Directory.GetCurrentDirectory();
-            MainPage.Instance.addPawn(row, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Bottom, nameID);
-            MainPage.Instance.addPawn(row, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Bottom, nameID);
-            MainPage.Instance.addPawn(row + 1, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Top, nameID);
-            MainPage.Instance.addPawn(row + 1, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID);
+            addPawn(row, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Bottom, nameID);
+            addPawn(row, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Bottom, nameID);
+            addPawn(row + 1, column, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Right, VerticalAlignment.Top, nameID);
+            addPawn(row + 1, column + 1, workingdirectory + pawnPaths[playerID - 1], HorizontalAlignment.Left, VerticalAlignment.Top, nameID);
+        }
+
+        /// <summary>
+        /// adds a Pawn to the Board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="imagePath"></param>
+        /// <param name="horizontalAlignment"></param>
+        /// <param name="verticalAlignment"></param>
+        /// <param name="NameID"></param>
+        public void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, string NameID)
+        {
+            Rectangle rectangle = new Rectangle
+            {
+                Width = 30,
+                Height = 40
+            };
+
+            rectangle.RenderTransform = new ScaleTransform();
+            rectangle.RenderTransformOrigin = new Point(0.5, 0.5);
+            rectangle.Margin = new Thickness(0, 8, 0, 0);
+            rectangle.PointerPressed += MainPage.Instance.Pawn_Clicked;
+            ImageBrush imageBrush = new ImageBrush();
+            imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
+
+            rectangle.Fill = imageBrush;
+
+            rectangle.HorizontalAlignment = horizontalAlignment;
+            rectangle.VerticalAlignment = verticalAlignment;
+            rectangle.Name = NameID;
+            Grid.SetRow(rectangle, row);
+            Grid.SetColumn(rectangle, column);
+            MainPage.Instance.BoardInstance.Children.Add(rectangle);
         }
 
     }

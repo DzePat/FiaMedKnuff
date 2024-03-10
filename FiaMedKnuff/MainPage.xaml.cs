@@ -103,40 +103,6 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// adds a Pawn to the Board
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <param name="imagePath"></param>
-        /// <param name="horizontalAlignment"></param>
-        /// <param name="verticalAlignment"></param>
-        /// <param name="NameID"></param>
-        public void addPawn(int row, int column, string imagePath, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, string NameID)
-        {
-            Rectangle rectangle = new Rectangle
-            {
-                Width = 30,
-                Height = 40
-            };
-
-            rectangle.RenderTransform = new ScaleTransform();
-            rectangle.RenderTransformOrigin = new Point(0.5, 0.5);
-            rectangle.Margin = new Thickness(0, 8, 0, 0);
-            rectangle.PointerPressed += Pawn_Clicked;
-            ImageBrush imageBrush = new ImageBrush();
-            imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
-
-            rectangle.Fill = imageBrush;
-
-            rectangle.HorizontalAlignment = horizontalAlignment;
-            rectangle.VerticalAlignment = verticalAlignment;
-            rectangle.Name = NameID;
-            Grid.SetRow(rectangle, row);
-            Grid.SetColumn(rectangle, column);
-            Board.Children.Add(rectangle);
-        }
-
-        /// <summary>
         /// Click event handler for pawns on the board
         /// </summary>
         /// <param name="sender"></param>
