@@ -153,6 +153,10 @@
     <Content Include="Assets\backgroundMusic.mp3" />
     <Content Include="Assets\bgfuamedknuff1500.png" />
     <Content Include="Assets\Blå.png" />
+    <Content Include="Assets\Bombs\bombState-0.png" />
+    <Content Include="Assets\Bombs\bombState-1.png" />
+    <Content Include="Assets\Bombs\bombState-2.png" />
+    <Content Include="Assets\Bombs\bombState-3.png" />
     <Content Include="Assets\dice-1.png" />
     <Content Include="Assets\dice-2.png" />
     <Content Include="Assets\dice-3.png" />
