@@ -161,6 +161,7 @@
     <Content Include="Assets\Bombs\bombState-1.png" />
     <Content Include="Assets\Bombs\bombState-2.png" />
     <Content Include="Assets\Bombs\bombState-3.png" />
+    <Content Include="Assets\Bombs\explotion.png" />
     <Content Include="Assets\dice-1.png" />
     <Content Include="Assets\dice-2.png" />
     <Content Include="Assets\dice-3.png" />
