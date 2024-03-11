@@ -46,6 +46,7 @@ namespace FiaMedKnuff
             victoryText.Text = winnerColor + " har vunnit med "+moves+" drag!";
             winnerNameTextBox.Text = "";
             winnerMoves = moves;
+            MainPage.Instance.PlaySound("win");
         }
 
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)

@@ -1100,7 +1100,7 @@ namespace FiaMedKnuff
             }
         }
 
-        private async Task PlaySound(string sound)
+        public async Task PlaySound(string sound)
         {
             var element = new MediaElement();
             var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
