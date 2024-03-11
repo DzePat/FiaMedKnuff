@@ -81,6 +81,11 @@ x:Name="aboutOut">
                     <BitmapImage UriSource="Assets/Bombs/bombState-0.png"/>
                 </Image.Source>
             </Image>
+            <Image x:Name="explotionImage" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0" Visibility="Collapsed">
+                <Image.Source>
+                    <BitmapImage UriSource="Assets/Bombs/explotion.png"/>
+                </Image.Source>
+            </Image>
 
             <Grid>
                 <Grid.ColumnDefinitions>
