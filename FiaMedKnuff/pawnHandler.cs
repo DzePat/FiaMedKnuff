@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace FiaMedKnuff
 {
-    internal class pawnHandler
+    public class pawnHandler
     {
         public int checkNextGoalTileIndex(string color, int currentrow, int currentcolumn)
         {
