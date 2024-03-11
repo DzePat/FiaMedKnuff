@@ -37,8 +37,8 @@ namespace FiaMedKnuff
         /// A list of all the ellipses on the board with a string of the color and boolean if it is a goaltile or not
         /// </summary>
         public Dictionary<Ellipse, string> listOfAllGoalTileEllipses = new Dictionary<Ellipse, string>();
-        List<int> Winners = new List<int>();
-        private string[] colors = { "Gul", "Blå", "Röd", "Grön" };
+        public List<int> Winners = new List<int>();
+        public string[] colors = { "Gul", "Blå", "Röd", "Grön" };
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         public int stepCount;
@@ -46,7 +46,7 @@ namespace FiaMedKnuff
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
-        private int playerturn = 1;
+        public int playerturn = 1;
 
         /// <summary>
         /// for access to objects from another files
@@ -110,6 +110,16 @@ namespace FiaMedKnuff
         public async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
             ClearPreviousPlayerChoiceIndications();
+            await pawnEvent(sender);
+        }
+
+        /// <summary>
+        /// Moves a pawn depending on its position on the board and dice roll
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        private async Task pawnEvent(object sender)
+        {
             if (sender is Rectangle pawn)
             {
                 pawn.IsHitTestVisible = false;
@@ -161,8 +171,6 @@ namespace FiaMedKnuff
                                     Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
                                 }
                                 MarkPlayerSpawns(playerturn);
-                                var dialog2 = new MessageDialog("" + (Players.Count - 1) + "winnercount: " + Winners.Count);
-                                await dialog2.ShowAsync();
                                 if (Winners.Count == Players.Count - 1)
                                 {
                                     int index = 0;
@@ -201,7 +209,6 @@ namespace FiaMedKnuff
                             await PawnHandler.linkEndToStartPath(pawn);
                         }
                     }
-
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
                 else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
@@ -333,7 +340,7 @@ namespace FiaMedKnuff
             }
         }
 
-        private void turnHandler()
+        public void turnHandler()
         {
             if (currentDiceResult == 6)
             {
@@ -394,7 +401,7 @@ namespace FiaMedKnuff
             }
         }
 
-        private bool playerHasWon(string color)
+        public bool playerHasWon(string color)
         {
             int pawnsOnGoalTile = 0;
             foreach (string key in pawnsOnGoalTiles.Keys)
@@ -414,7 +421,7 @@ namespace FiaMedKnuff
             }
         }
 
-        private void AnimatePawnLift(Rectangle pawn)
+        public void AnimatePawnLift(Rectangle pawn)
         {
             var storyboard = new Storyboard();
 
@@ -718,7 +725,7 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="color"></param>
         /// <param name="moves"></param>
-        private void showVictoryView(string color, int moves)
+        public void showVictoryView(string color, int moves)
         {
             VictoryPage.instance.loadPage(color, moves);
             victoryView.Visibility = Visibility.Visible;
