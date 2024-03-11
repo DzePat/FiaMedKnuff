@@ -35,6 +35,7 @@ namespace FiaMedKnuff
                     MainPage.Instance.PawnHandler.resetPawn(pawn);
                 }
             }
+            ChangeBombImage(0, MainPage.Instance.BombImage);
             MainPage.Instance.ExplotionImage.Visibility = Visibility.Collapsed;
         }
     }
