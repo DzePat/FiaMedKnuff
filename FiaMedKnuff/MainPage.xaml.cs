@@ -713,6 +713,11 @@ namespace FiaMedKnuff
             showVictoryView(colors[random.Next(4)], random.Next(75));
         }
 
+        /// <summary>
+        /// initializes the victoryr page and makes it visible.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="moves"></param>
         private void showVictoryView(string color, int moves)
         {
             VictoryPage.instance.loadPage(color, moves);
