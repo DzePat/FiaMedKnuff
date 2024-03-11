@@ -126,7 +126,7 @@ x:Name="aboutOut">
                 <Grid Grid.Column="1" Name="Board" MaxWidth="1280" MaxHeight="720" VerticalAlignment="Center" HorizontalAlignment="Center"></Grid>
 
                 <!--Dice-->
-                <Image Grid.Column="2" x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Tapped="Image_Tapped" Loaded="gifDice" Margin="0,0,30,0" Visibility="Collapsed">
+                <Image Grid.Column="2" x:Name="imageSource" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Tapped="Dice_Clicked" Loaded="gifDice" Margin="0,0,30,0" Visibility="Collapsed">
                     <Image.Source>
                         <BitmapImage UriSource="Assets/dice-despeed.gif"  AutoPlay="False"/>
                     </Image.Source>

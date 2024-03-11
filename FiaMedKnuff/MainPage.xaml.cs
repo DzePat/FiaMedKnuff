@@ -267,7 +267,7 @@ namespace FiaMedKnuff
         /// - Shows a message dialog with the dice result.
         /// Note: This method assumes the presence of specific assets in the application's Assets folder.
         /// </remarks>
-        private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void Dice_Clicked(object sender, TappedRoutedEventArgs e)
         {
             imageSource.IsHitTestVisible = false;
             PawnHandler.disableAllPawns();
