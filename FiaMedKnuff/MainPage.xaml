@@ -76,7 +76,7 @@ x:Name="aboutOut">
                 </Image>
             </StackPanel>
 
-            <Image x:Name="bombImage" Width="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0">
+            <Image x:Name="bombImage" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0" Visibility="Collapsed">
                 <Image.Source>
                     <BitmapImage UriSource="Assets/Bombs/bombState-0.png"/>
                 </Image.Source>

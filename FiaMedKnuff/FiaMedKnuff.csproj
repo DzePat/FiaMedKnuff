@@ -122,6 +122,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BombHandler.cs" />
     <Compile Include="createBoard.cs" />
     <Compile Include="createPlayers.cs" />
     <Compile Include="Design.cs" />

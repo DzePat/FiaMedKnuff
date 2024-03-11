@@ -47,12 +47,14 @@ namespace FiaMedKnuff
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         public int playerturn = 1;
+        public int numberOfSixInARow = 0;
 
         /// <summary>
         /// for access to objects from another files
         /// </summary>
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
+        public Image BombImage { get { return bombImage; } }
         public Grid BoardInstance { get { return Board;}}
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
@@ -61,7 +63,7 @@ namespace FiaMedKnuff
         public Grid redScore { get { return redPlayerScore; } }
         public Grid greenScore { get { return greenPlayerScore; } }
 
-        private pawnHandler PawnHandler = new pawnHandler();
+        public pawnHandler PawnHandler = new pawnHandler();
         private createBoard createBoard = new createBoard();
 
         public MainPage()
@@ -294,7 +296,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(1, 7);
+            int result = random.Next(5, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -344,7 +346,8 @@ namespace FiaMedKnuff
         {
             if (currentDiceResult == 6)
             {
-                //player goes again
+                numberOfSixInARow++;
+                BombHandler.ChangeBombImage(numberOfSixInARow, bombImage);
             }
             else if (currentDiceResult < 6 && currentDiceResult > 0)
             {
@@ -363,6 +366,8 @@ namespace FiaMedKnuff
             {
                 newid = 1;
             }
+            numberOfSixInARow = 0;
+            BombHandler.ChangeBombImage(numberOfSixInARow, bombImage);
             return newid;
         }
 
@@ -453,7 +458,6 @@ namespace FiaMedKnuff
 
         public void MarkPlayerSpawns(int colorIndex)
         {
-            Debug.WriteLine($"playerturn: {playerturn}, colors: {colors[playerturn - 1]}, hasPawns: {PawnHandler.hasPawnOnBoard(colors[playerturn - 1])}");
             foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
             {
                 ellipse.StrokeThickness = 1;

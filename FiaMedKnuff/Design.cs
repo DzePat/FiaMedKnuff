@@ -65,11 +65,5 @@ namespace FiaMedKnuff
                 textBlock.Foreground = new SolidColorBrush(Colors.Black);
             }
         }
-
-        public static void ChangeBombImage(int numberOfSix, Image bombImage)
-        {
-            var bombImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri($"ms-appx:///Assets/Bombs/bombState-{numberOfSix}.png"));
-            bombImage.Source = bombImageSource;
-        }
     }
 }

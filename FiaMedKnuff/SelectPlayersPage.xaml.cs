@@ -216,6 +216,7 @@ namespace FiaMedKnuff
             {
                 MainMenu.Instance.Visibility = Visibility.Collapsed;
                 MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
+                MainPage.Instance.BombImage.Visibility = Visibility.Visible;
                 createPlayers players = new createPlayers();
                 players.initializePlayers();
                 MainPage.Instance.ScoreBoard.Visibility = Visibility.Visible;
