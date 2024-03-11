@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -53,13 +52,16 @@ namespace FiaMedKnuff
         /// </summary>
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
-        public Grid BoardInstance { get { return Board;}}
+        public Grid BoardInstance { get { return Board; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
         public Grid yellowScore { get { return yellowPlayerScore; } }
         public Grid blueScore { get { return bluePlayerScore; } }
         public Grid redScore { get { return redPlayerScore; } }
         public Grid greenScore { get { return greenPlayerScore; } }
+        public Grid BlurGrid { get { return blurGrid; } }
+        //public Storyboard BlurdGridFadeIn { get { return blurGridFadeIn; } }
+
 
         private pawnHandler PawnHandler = new pawnHandler();
         private createBoard createBoard = new createBoard();
@@ -629,7 +631,7 @@ namespace FiaMedKnuff
 
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            //BUG: The Dice shows on aboutview when game is on. when hide aboutview, the dice is not visible
+            //BUG: The Dice shows on about when game is on. when hide aboutview, the dice is not visible
             if (isAboutVisible)
             {
                 // Start aboutOut animation

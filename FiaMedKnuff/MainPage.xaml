@@ -166,6 +166,9 @@ x:Name="aboutOut">
 
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
+        <Grid x:Name="About" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <local:About />
+        </Grid>
         <!-- BUTTON ONLY FOR DEBUG... REMOVE FOR RELEASE -->
         <Button Margin="10,10,0,0" VerticalAlignment="Top" Background="Black" Canvas.ZIndex="10" Click="DEBUG_Win_Button_Click">SIMULATE WIN</Button>
 
