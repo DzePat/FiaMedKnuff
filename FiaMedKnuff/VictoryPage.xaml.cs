@@ -44,6 +44,7 @@ namespace FiaMedKnuff
         public void loadPage(string winnerColor, int moves)
         {
             victoryText.Text = winnerColor + " har vunnit med "+moves+" drag!";
+            winnerNameTextBox.Text = "";
             winnerMoves = moves;
         }
 
