@@ -150,6 +150,7 @@ namespace FiaMedKnuff
             {
                 await checkForEnemyPawns(row, column, rectangle.Name);
                 MainPage.Instance.ImageSource.IsHitTestVisible = true;
+                MainPage.Instance.turnHasEnded = true;
             }
         }
 
