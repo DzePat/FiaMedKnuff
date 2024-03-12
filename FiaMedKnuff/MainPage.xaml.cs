@@ -54,7 +54,7 @@ namespace FiaMedKnuff
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
         public Image BombImage { get { return bombImage; } }
-        public Image ExplotionImage { get { return explotionImage; } }
+        public Image ExplosionImage { get { return explosionImage; } }
         public Grid BoardInstance { get { return Board;}}
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }

@@ -174,13 +174,13 @@ x:Name="aboutOut">
             </Grid>
         </Grid>
 
-        <!--Explotion-->
-        <Image x:Name="explotionImage" Width="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+        <!--Explosion-->
+        <Image x:Name="explosionImage" Width="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
             <Image.RenderTransform>
                 <CompositeTransform/>
             </Image.RenderTransform>
             <Image.Source>
-                <BitmapImage UriSource="Assets/Bombs/explotion.png"/>
+                <BitmapImage UriSource="Assets/Bombs/explosion.png"/>
             </Image.Source>
         </Image>
 

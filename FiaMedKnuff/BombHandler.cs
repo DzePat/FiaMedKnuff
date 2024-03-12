@@ -21,12 +21,14 @@ namespace FiaMedKnuff
             switch (numberOfSix)
             {
                 case 0:
+                    file = null;
                     break;
                 case 1:
                 case 2:
                     file = await folder.GetFileAsync("fuse.mp3");
                     break;
                 case 3:
+                    file = await folder.GetFileAsync("explosion.mp3");
                     break;
                 default:
                     break;
@@ -40,14 +42,14 @@ namespace FiaMedKnuff
             }
             else if (numberOfSix == 3)
             {
-                BombExplotion();
+                BombExplosion();
                 MainPage.Instance.numberOfSixInARow = 0;
             }
         }
 
-        public static async void BombExplotion()
+        public static async void BombExplosion()
         {
-            MainPage.Instance.ExplotionImage.Visibility = Visibility.Visible;
+            MainPage.Instance.ExplosionImage.Visibility = Visibility.Visible;
             await Task.Delay(1000);
             foreach (object Object in MainPage.Instance.BoardInstance.Children)
             {
@@ -58,7 +60,7 @@ namespace FiaMedKnuff
                 }
             }
             ChangeBombImage(0, MainPage.Instance.BombImage);
-            MainPage.Instance.ExplotionImage.Visibility = Visibility.Collapsed;
+            MainPage.Instance.ExplosionImage.Visibility = Visibility.Collapsed;
         }
     }
 }
