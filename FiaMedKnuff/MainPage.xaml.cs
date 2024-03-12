@@ -124,6 +124,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Pawn movment event for both AI and player
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         private async Task pawn_Event(Rectangle pawn)
         {
             disableDiceClick();
@@ -243,16 +248,8 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Disables the automatic playback of GIF animations for a BitmapImage, if the AutoPlay property is available.
+        /// Explosion animation for when player rolls 6 three times in a row
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event data that provides information about the event.</param>
-        /// <remarks>
-        /// This method checks if the AutoPlay property is present for the BitmapImage class. If present, it attempts to get
-        /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
-        /// the playback of GIF animations manually.
-        /// </remarks>
-
         public async void bigboom()
         {
             bigExplosion.Begin();
@@ -265,6 +262,11 @@ namespace FiaMedKnuff
 
         }
 
+        /// <summary>
+        /// checks if bitmapimage has propery "autoplay" and if it does disables it
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -317,6 +319,10 @@ namespace FiaMedKnuff
             await RunAi();
         }
 
+        /// <summary>
+        /// Executes diceroll and turnhandler for AI
+        /// </summary>
+        /// <returns></returns>
         private async Task RunAi()
         {
             while (AITurn == true)
@@ -327,6 +333,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// rolls the dice if its Ai turn then it even moves the pawn
+        /// </summary>
+        /// <returns></returns>
         private async Task Dice_Event()
         {
             AITurn = false;
@@ -349,7 +359,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(6, 7);
+            int result = random.Next(1, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -369,6 +379,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// makes the players pawns clickable
+        /// </summary>
+        /// <returns></returns>
         private async Task enablePlayerTurnAsync()
         {
             if ((currentDiceResult == 1 | currentDiceResult == 6) && PawnHandler.hasPawnOnSpawn(colors[playerturn - 1]) == true)
@@ -412,6 +426,9 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// turns of the dice click function if the current turn is Ai
+        /// </summary>
         private void disableDiceClick()
         {
             (string identity, int score) = Players[CheckNextplayerturn(playerturn)];
@@ -421,6 +438,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// handles player turns depending on current roll
+        /// </summary>
+        /// <returns></returns>
         public async Task turnHandler()
         {
             if (currentDiceResult == 6)
@@ -451,6 +472,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// takes turn as arugment and returns true if the current turn is AIs turn
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <returns></returns>
         public bool isAiTurn(int turn) 
         { 
             (string identity, int score) = Players[turn];
@@ -461,6 +487,11 @@ namespace FiaMedKnuff
             else {  return false; }
         }
 
+        /// <summary>
+        /// Returns next playerturn number additionaly resets bomb counter
+        /// </summary>
+        /// <param name="playerID"></param>
+        /// <returns></returns>
         private int nextplayerturn(int playerID)
         {
             int newid = playerID + 1;
@@ -473,6 +504,11 @@ namespace FiaMedKnuff
             return newid;
         }
 
+        /// <summary>
+        /// returns next playerturn number
+        /// </summary>
+        /// <param name="playerID"></param>
+        /// <returns></returns>
         private int CheckNextplayerturn(int playerID)
         {
             int newid = playerID + 1;
@@ -483,6 +519,9 @@ namespace FiaMedKnuff
             return newid;
         }
 
+        /// <summary>
+        /// adds +1 depending on players turn
+        /// </summary>
         private void CountScore()
         {
             switch (playerturn)
@@ -518,6 +557,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// checks if the player has all of its pawns on goal tiles if it does returns true else false
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public bool playerHasWon(string color)
         {
             int pawnsOnGoalTile = 0;
@@ -538,6 +582,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// handles animation for pawn movment
+        /// </summary>
+        /// <param name="pawn"></param>
         public void AnimatePawnLift(Rectangle pawn)
         {
             var storyboard = new Storyboard();
@@ -567,7 +615,11 @@ namespace FiaMedKnuff
 
             storyboard.Begin();
         }
-
+        
+        /// <summary>
+        /// marks player spawn points
+        /// </summary>
+        /// <param name="colorIndex"></param>
         public void MarkPlayerSpawns(int colorIndex)
         {
             foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
@@ -593,6 +645,10 @@ namespace FiaMedKnuff
 
         }
 
+        /// <summary>
+        /// marks player pawns
+        /// </summary>
+        /// <param name="currentPlayer"></param>
         private void MarkCurrentPlayerTurnChoice(string currentPlayer)
         {
             // Ta bort tidigare markeringar
@@ -612,6 +668,10 @@ namespace FiaMedKnuff
 
         }
 
+
+        /// <summary>
+        /// clears all strokes from the pawns
+        /// </summary>
         private void ClearPreviousPlayerChoiceIndications()
         {
             foreach (var child in Board.Children)
@@ -625,6 +685,12 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// takes string as argument and plays the sound from the assets
+        /// </summary>
+        /// <param name="sound"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public async Task PlaySound(string sound)
         {
             var element = new MediaElement();
@@ -670,8 +736,6 @@ namespace FiaMedKnuff
         /// This method uses isSoundOn to track and toggle the sound state.
         /// The visual state of the sound (on/off) is represented by switching the icon on the Image control.
         /// </remarks>
-
-
         private void soundImageSource_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
@@ -785,6 +849,7 @@ namespace FiaMedKnuff
             backButton.Visibility = Visibility.Collapsed;
             MainMenu.Instance.ShowMainMenu();
         }
+
         public void StartHighScoreAnimation()
         {
             highScoreIn.Begin();
