@@ -9,6 +9,6 @@
     Background="#fbce39">
 
     <Grid>
-        <Image Width="1280" Source="Assets/splashscreen3.png" />
+        <Image Width="1280" Source="Assets/splashscreenbg.png" />
     </Grid>
 </Page>
