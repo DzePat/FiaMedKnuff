@@ -64,6 +64,7 @@ namespace FiaMedKnuff
 
         private pawnHandler PawnHandler = new pawnHandler();
         private createBoard createBoard = new createBoard();
+        private AIHandler AI_Handler = new AIHandler();
 
         public MainPage()
         {
@@ -147,7 +148,6 @@ namespace FiaMedKnuff
                         {
                             stepCount = 0;
                             imageSource.IsHitTestVisible = true;
-                            turnHasEnded = true;
                         }
                         else
                         {
@@ -213,15 +213,34 @@ namespace FiaMedKnuff
             // place the pawn on the board if the clicked pawn is in the nest
             else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
             {
+                if (stepCount == 1) 
+                {
+                    turnHasEnded = true;
+                }
                 await PawnHandler.placepawnOnTheBoard(pawn);
                 MarkPlayerSpawns(playerturn);
             }
-            (string id, int unusued) = Players[playerturn];
+            (string id, int sc) = Players[playerturn];
+            var messagedialog = new MessageDialog($"playerturn: {playerturn} Identity: {id} turnhasended: {turnHasEnded}");
+            await messagedialog.ShowAsync();
             if (turnHasEnded == true && id == "AI")
             {
-                Dice_Event();
-                //do AI move
+                int tempturn = playerturn;
+                string AIColor = colors[playerturn - 1];
+                await Dice_Event();
+                if(currentDiceResult == 6) 
+                {
+                    playerturn = tempturn;
+                }
+                Rectangle pawnAI = AI_Handler.pawnToMove(AIColor);
+                if (pawnAI != null)
+                {
+                    var messagedialog1 = new MessageDialog($"playerturn: {playerturn} Identity: {id} pawncolor: {pawnAI.Name}");
+                    await messagedialog1.ShowAsync();
+                    await pawn_Event(pawnAI);
+                }
             }
+            
         }
 
         /// <summary>
@@ -334,14 +353,20 @@ namespace FiaMedKnuff
             }
             else
             {
-                turnHasEnded = true;
-                (string identity, int score) = Players[playerturn+1];
-                var messagedialog = new MessageDialog($"playerturn: {playerturn} Identity: {identity}");
+                (string identity, int score) = Players[nextplayerturn(playerturn)];
+                var messagedialog = new MessageDialog($"playerturn: {nextplayerturn(playerturn)} Identity: {identity}");
                 messagedialog.ShowAsync();
-                if(identity == "AI") 
+                if (identity == "AI")
                 {
+                    string AIColor = colors[nextplayerturn(playerturn) -1];
                     Dice_Event();
-                    //do something with AI
+                    Rectangle pawnAI = AI_Handler.pawnToMove(AIColor);
+                    if (pawnAI != null)
+                    {
+                        var messagedialog1 = new MessageDialog($"playerturn: {nextplayerturn(playerturn)} Identity: {identity} pawncolor: {pawnAI.Name}");
+                        messagedialog1.ShowAsync();
+                        pawn_Event(pawnAI);
+                    }
                 }
                 ImageSource.IsHitTestVisible = true;
             }
@@ -372,11 +397,13 @@ namespace FiaMedKnuff
                 while (playerHasWon(colors[playerturn - 1]) && Winners.Count != (Players.Count - 1))
                 {
                     playerturn = nextplayerturn(playerturn);
+                    turnHasEnded = true;
                 }
             }
             while (playerHasWon(colors[playerturn - 1]) && Winners.Count != (Players.Count - 1))
             {
                 playerturn = nextplayerturn(playerturn);
+                turnHasEnded = true;
             }
         }
 
