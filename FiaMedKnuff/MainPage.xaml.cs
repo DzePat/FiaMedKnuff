@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -55,7 +54,7 @@ namespace FiaMedKnuff
         public Image ImageSource { get { return imageSource; } }
         public Image BombImage { get { return bombImage; } }
         public Image ExplotionImage { get { return explotionImage; } }
-        public Grid BoardInstance { get { return Board;}}
+        public Grid BoardInstance { get { return Board; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
         public Grid yellowScore { get { return yellowPlayerScore; } }
@@ -234,6 +233,19 @@ namespace FiaMedKnuff
         /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
         /// the playback of GIF animations manually.
         /// </remarks>
+
+        public async void bigboom()
+        {
+            bigExplotion.Begin();
+            blurGrid.Visibility = Visibility.Visible;
+            BlurdGridFadeIn.Begin();
+            await Task.Delay(800);
+
+            blurGrid.Visibility = Visibility.Collapsed;
+
+
+        }
+
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -299,7 +311,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(5, 7);
+            int result = random.Next(6, 7);
             stepCount = result;
             currentDiceResult = result;
 
