@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -42,12 +43,12 @@ namespace FiaMedKnuff
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         public int stepCount;
-        private int currentDiceResult;
+        public int currentDiceResult;
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         public int playerturn = 1;
-        public int numberOfSixInARow = 0;
+        public bool AITurn;
 
         /// <summary>
         /// for access to objects from another files
@@ -65,6 +66,7 @@ namespace FiaMedKnuff
 
         public pawnHandler PawnHandler = new pawnHandler();
         private createBoard createBoard = new createBoard();
+        private AIHandler AI_Handler = new AIHandler();
 
         public MainPage()
         {
@@ -112,113 +114,128 @@ namespace FiaMedKnuff
         public async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
             ClearPreviousPlayerChoiceIndications();
-            await pawnEvent(sender);
-        }
-
-        /// <summary>
-        /// Moves a pawn depending on its position on the board and dice roll
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <returns></returns>
-        private async Task pawnEvent(object sender)
-        {
             if (sender is Rectangle pawn)
             {
-                pawn.IsHitTestVisible = false;
-                int currentRow = Grid.GetRow(pawn);
-                int currentColumn = Grid.GetColumn(pawn);
-                int foundKey;
-                // if the position of the pawn exists in the gameboard
-                if (boardPath.ContainsValue((currentRow, currentColumn)) | goalTiles.ContainsValue((currentRow, currentColumn)))
+                await pawn_Event(pawn);
+            }
+        }
+
+        private async Task pawn_Event(Rectangle pawn)
+        {
+            disableDiceClick();
+            pawn.IsHitTestVisible = false;
+            int currentRow = Grid.GetRow(pawn);
+            int currentColumn = Grid.GetColumn(pawn);
+            int foundKey;
+            // if the position of the pawn exists in the gameboard
+            if (boardPath.ContainsValue((currentRow, currentColumn)) | goalTiles.ContainsValue((currentRow, currentColumn)))
+            {
+                while (stepCount != null & stepCount != 0)
                 {
-                    while (stepCount != null & stepCount != 0)
+                    // get the pawn position
+                    currentRow = Grid.GetRow(pawn);
+                    currentColumn = Grid.GetColumn(pawn);
+                    // 'foundKey' is the current position number on the board of the clicked pawn
+                    foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
+                    // if the pawn is on the last tile of the boardpath
+                    //Ljud
+                    await PlaySound("walk");
+                    await Task.Delay(300);
+                    AnimatePawnLift(pawn);
+                    if (goalTiles.ContainsValue((currentRow, currentColumn)) && goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key.Contains(pawn.Name))
                     {
-                        // get the pawn position
-                        currentRow = Grid.GetRow(pawn);
-                        currentColumn = Grid.GetColumn(pawn);
-                        // 'foundKey' is the current position number on the board of the clicked pawn
-                        foundKey = boardPath.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key;
-                        // if the pawn is on the last tile of the boardpath
-                        //Ljud
-                        await PlaySound("walk");
-                        await Task.Delay(300);
-                        AnimatePawnLift(pawn);
-                        if (goalTiles.ContainsValue((currentRow, currentColumn)) && goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key.Contains(pawn.Name))
+                        int targetTile = PawnHandler.checkNextGoalTileIndex(pawn.Name, currentRow, currentColumn);
+                        int currentTile = int.Parse((goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key).Split('-')[1]);
+                        int next = PawnHandler.checkNextAvailablePosition(pawn.Name, targetTile, currentTile);
+                        if (next == currentTile)
                         {
-                            int targetTile = PawnHandler.checkNextGoalTileIndex(pawn.Name, currentRow, currentColumn);
-                            int currentTile = int.Parse((goalTiles.FirstOrDefault(x => x.Value == (currentRow, currentColumn)).Key).Split('-')[1]);
-                            int next = PawnHandler.checkNextAvailablePosition(pawn.Name, targetTile, currentTile);
-                            if (next == currentTile)
-                            {
-                                stepCount = 0;
-                                imageSource.IsHitTestVisible = true;
-                            }
-                            else
-                            {
-                                stepCount--;
-                                imageSource.IsHitTestVisible = true;
-                                (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile + 1)];
-                                Grid.SetRow(pawn, row);
-                                Grid.SetColumn(pawn, column);
-                                currentTile += 1;
-                            }
-                            if (currentTile == targetTile)
-                            {
-                                stepCount = 0;
-                                pawn.IsHitTestVisible = false;
-                                imageSource.IsHitTestVisible = true;
-                                pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
-                                if (playerHasWon(pawn.Name) == true)
-                                {
-                                    Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
-                                }
-                                MarkPlayerSpawns(playerturn);
-                                if (Winners.Count == Players.Count - 1)
-                                {
-                                    int index = 0;
-                                    string result = "";
-                                    foreach (int player in Winners)
-                                    {
-                                        (string identity, int score) = Players[player];
-                                        result += $"Player {player} won with {score}\n";
-                                        showVictoryView(identity, score);
-                                    }
-                                    var dialog = new MessageDialog(result);
-                                    await dialog.ShowAsync();
-                                }
-                                turnHandler();
-                            }
-                        }
-                        // if the boardpath contains the next position of the clicked pawn
-                        else if (boardPath.ContainsKey(foundKey + 1))
-                        {
-                            // move the pawn to the next position in the boardpath
-                            (int row, int column) = boardPath[foundKey + 1];
-                            Grid.SetRow(pawn, row);
-                            Grid.SetColumn(pawn, column);
-                            stepCount -= 1;
-                            // update 'foundKey' to the new current position number
-                            foundKey += 1;
-                            if (stepCount == 0)
-                            {
-                                await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
-                                imageSource.IsHitTestVisible = true;
-                                MarkPlayerSpawns(playerturn);
-                            }
+                            stepCount = 0;
+                            imageSource.IsHitTestVisible = true;
                         }
                         else
                         {
-                            await PawnHandler.linkEndToStartPath(pawn);
+                            stepCount--;
+                            imageSource.IsHitTestVisible = true;
+                            (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile + 1)];
+                            Grid.SetRow(pawn, row);
+                            Grid.SetColumn(pawn, column);
+                            currentTile += 1;
+                        }
+                        if (currentTile == targetTile)
+                        {
+                            stepCount = 0;
+                            pawn.IsHitTestVisible = false;
+                            imageSource.IsHitTestVisible = true;
+                            pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
+                            if (playerHasWon(pawn.Name) == true)
+                            {
+                                Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
+                            }
+                            MarkPlayerSpawns(playerturn);
+                            if (Winners.Count == Players.Count - 1)
+                            {
+                                int index = 0;
+                                string result = "";
+                                foreach (int player in Winners)
+                                {
+                                    (string identity, int score) = Players[playerturn - 1];
+                                    result += $"Player {player} won with {score}\n";
+                                    showVictoryView(identity, score);
+                                }
+                                var dialog = new MessageDialog(result);
+                                await dialog.ShowAsync();
+                            }
+                            if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
+                            {
+                                AITurn = true;
+                            }
                         }
                     }
-                }
-                // place the pawn on the board if the clicked pawn is in the nest
-                else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
-                {
-                    await PawnHandler.placepawnOnTheBoard(pawn);
-                    MarkPlayerSpawns(playerturn);
+                    // if the boardpath contains the next position of the clicked pawn
+                    else if (boardPath.ContainsKey(foundKey + 1))
+                    {
+                        // move the pawn to the next position in the boardpath
+                        (int row, int column) = boardPath[foundKey + 1];
+                        Grid.SetRow(pawn, row);
+                        Grid.SetColumn(pawn, column);
+                        stepCount -= 1;
+                        // update 'foundKey' to the new current position number
+                        foundKey += 1;
+                        if (stepCount == 0)
+                        {
+                            await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
+                            MarkPlayerSpawns(playerturn);
+                            if(colors[playerturn-1] != pawn.Name && isAiTurn(playerturn))
+                            {
+                                AITurn = true;
+                            }
+                            else
+                            {
+                                imageSource.IsHitTestVisible = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await PawnHandler.linkEndToStartPath(pawn);
+                    }
                 }
             }
+            // place the pawn on the board if the clicked pawn is in the nest
+            else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
+            {
+                if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn) && stepCount == 1)
+                {
+                    AITurn = true;
+                }
+                else
+                {
+                    imageSource.IsHitTestVisible = true;
+                }
+                await PawnHandler.placepawnOnTheBoard(pawn);
+                MarkPlayerSpawns(playerturn);
+            }
+            await RunAi();
         }
 
         /// <summary>
@@ -278,6 +295,25 @@ namespace FiaMedKnuff
         /// </remarks>
         private async void Dice_Clicked(object sender, TappedRoutedEventArgs e)
         {
+            await Dice_Event();
+            await turnHandler();
+            await RunAi();
+        }
+
+        private async Task RunAi()
+        {
+            while (AITurn == true)
+            {
+                await Task.Delay(500);
+                await Dice_Event();
+                await turnHandler();
+            }
+        }
+
+        private async Task Dice_Event()
+        {
+            AITurn = false;
+            disableDiceClick();
             imageSource.IsHitTestVisible = false;
             PawnHandler.disableAllPawns();
             ClearPreviousPlayerChoiceIndications();
@@ -302,12 +338,21 @@ namespace FiaMedKnuff
 
             var staticImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/dice-{result}.png"));
             imageSource.Source = staticImageSource;
-            enablePlayerTurn();
+            await enablePlayerTurnAsync();
             CountScore();
-            turnHandler();
+            (string identity, int score) = Players[playerturn];
+            if (identity == "AI")
+            {
+                string AIColor = colors[playerturn - 1];
+                Rectangle pawnAI = AI_Handler.pawnToMove(AIColor);
+                if (pawnAI != null)
+                {
+                    await pawn_Event(pawnAI);
+                }
+            }
         }
 
-        private void enablePlayerTurn()
+        private async Task enablePlayerTurnAsync()
         {
             if ((currentDiceResult == 1 | currentDiceResult == 6) && PawnHandler.hasPawnOnSpawn(colors[playerturn - 1]) == true)
             {
@@ -317,7 +362,7 @@ namespace FiaMedKnuff
                 PawnHandler.enablePlayerBoardPawns(colors[playerturn - 1]);
                 MarkPlayerSpawns(playerturn);
             }
-            else if (PawnHandler.hasPawnOnBoard(colors[playerturn - 1]) == true)
+            else if (PawnHandler.hasPawnOnBoard(colors[playerturn - 1]) == true | PawnHandler.hasMovablePawnOnGoalTiles(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
                 PawnHandler.enablePlayerBoardPawns(colors[playerturn - 1]);
@@ -325,7 +370,15 @@ namespace FiaMedKnuff
             }
             else
             {
-                ImageSource.IsHitTestVisible = true;
+                (string identity, int score) = Players[nextplayerturn(playerturn)];
+                if (identity == "AI")
+                {
+                    AITurn = true;
+                }
+                else
+                {
+                    imageSource.IsHitTestVisible = true;
+                }
             }
 
             if (!PawnHandler.hasPawnOnBoard(colors[playerturn - 1]) && (stepCount != 1 && stepCount != 6))
@@ -342,21 +395,53 @@ namespace FiaMedKnuff
             }
         }
 
-        public void turnHandler()
+        private void disableDiceClick()
+        {
+            (string identity, int score) = Players[nextplayerturn(playerturn)];
+            if (identity == "AI")
+            {
+                imageSource.IsHitTestVisible = false;
+            }
+        }
+
+        public async Task turnHandler()
         {
             if (currentDiceResult == 6)
             {
+                if (isAiTurn(playerturn) && stepCount == 0)
+                {
+                    AITurn = true;
+                }
+                //player goes again
                 numberOfSixInARow++;
                 BombHandler.ChangeBombImage(numberOfSixInARow, bombImage);
             }
             else if (currentDiceResult < 6 && currentDiceResult > 0)
             {
                 playerturn = nextplayerturn(playerturn);
+                if (isAiTurn(playerturn) && stepCount == 0)
+                {
+                    AITurn = true;
+                }
             }
             while (playerHasWon(colors[playerturn - 1]) && Winners.Count != (Players.Count - 1))
             {
                 playerturn = nextplayerturn(playerturn);
+                if (isAiTurn(playerturn) && stepCount == 0)
+                {
+                    AITurn = true;
+                }
             }
+        }
+
+        public bool isAiTurn(int turn) 
+        { 
+            (string identity, int score) = Players[turn];
+            if(identity == "AI") 
+            {
+                return true;
+            }
+            else {  return false; }
         }
 
         private int nextplayerturn(int playerID)
