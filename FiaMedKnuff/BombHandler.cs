@@ -33,18 +33,21 @@ namespace FiaMedKnuff
                 default:
                     break;
             }
-            if (MainPage.Instance.isSoundOn == true && file != null)
-            {
-                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                element.SetSource(stream, file.ContentType);
-
-                element.Play();
-            }
             if (numberOfSix == 3)
             {
                 BombExplosion();
                 MainPage.Instance.bigboom();
                 MainPage.Instance.numberOfSixInARow = 0;
+            }
+            if (MainPage.Instance.isSoundOn == true && file != null)
+            {
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, file.ContentType);
+                element.Play();
+
+                await Task.Delay(2000);
+
+                element.Stop();
             }
         }
 
