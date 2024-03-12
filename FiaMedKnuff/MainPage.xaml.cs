@@ -341,6 +341,7 @@ namespace FiaMedKnuff
                 await Dice_Event();
                 await turnHandler();
                 MarkPlayerSpawns(playerturn);
+                ClearPreviousPlayerChoiceIndications();
             }
         }
 
