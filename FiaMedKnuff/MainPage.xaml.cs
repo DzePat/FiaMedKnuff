@@ -340,6 +340,7 @@ namespace FiaMedKnuff
                 await Task.Delay(500);
                 await Dice_Event();
                 await turnHandler();
+                MarkPlayerSpawns(playerturn);
             }
         }
 
@@ -369,7 +370,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(6, 7);
+            int result = random.Next(1, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -415,6 +416,7 @@ namespace FiaMedKnuff
                 if (identity == "AI")
                 {
                     AITurn = true;
+                    MarkPlayerSpawns(playerturn);
                 }
                 else
                 {
