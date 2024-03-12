@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Popups;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
 namespace FiaMedKnuff
@@ -273,6 +267,43 @@ namespace FiaMedKnuff
                 }
             }
             return false;
-        }             
+        }
+        public int CountOwnPawnsOnTile(int row, int column, string color)
+        {
+            int count = 0;
+            foreach (object obj in MainPage.Instance.BoardInstance.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color) && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public void AdjustPawnPositions(int row, int column, string color)
+        {
+            var pawnsOnTile = new List<Rectangle>();
+            foreach (object obj in MainPage.Instance.BoardInstance.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color) && Grid.GetRow(pawn) == row && Grid.GetColumn(pawn) == column)
+                {
+                    pawnsOnTile.Add(pawn);
+                }
+            }
+
+            int count = pawnsOnTile.Count;
+            int offset = 10;
+            for (int i = 0; i < count; i++)
+            {
+                int startOffset = i * offset;
+                pawnsOnTile[i].Margin = new Thickness(startOffset, 0, 0, 0);
+            }
+        }
+        public void ResetPawnMargin(Rectangle pawn)
+        {
+            pawn.Margin = new Thickness(0, 0, 0, 0);
+        }
+
     }
 }

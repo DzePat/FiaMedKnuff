@@ -54,7 +54,7 @@ namespace FiaMedKnuff
         public Image ImageSource { get { return imageSource; } }
         public Image BombImage { get { return bombImage; } }
         public Image ExplosionImage { get { return explosionImage; } }
-        public Grid BoardInstance { get { return Board;}}
+        public Grid BoardInstance { get { return Board; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
         public Grid yellowScore { get { return yellowPlayerScore; } }
@@ -207,6 +207,7 @@ namespace FiaMedKnuff
                                 await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
                                 imageSource.IsHitTestVisible = true;
                                 MarkPlayerSpawns(playerturn);
+                                changePawnMargin(pawn);
                             }
                         }
                         else
@@ -220,8 +221,20 @@ namespace FiaMedKnuff
                 {
                     await PawnHandler.placepawnOnTheBoard(pawn);
                     MarkPlayerSpawns(playerturn);
+
+                    //Fytta på pawn om det är samma färg
+                    changePawnMargin(pawn);
                 }
             }
+        }
+
+        private void changePawnMargin(Rectangle pawn)
+        {
+            int row = Grid.GetRow(pawn);
+            int column = Grid.GetColumn(pawn);
+            string color = pawn.Name;
+            int numberOfPawns = PawnHandler.CountOwnPawnsOnTile(row, column, color);
+            PawnHandler.AdjustPawnPositions(row, column, color);
         }
 
         /// <summary>
