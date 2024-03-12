@@ -9,6 +9,13 @@ namespace FiaMedKnuff
 {
     public class pawnHandler
     {
+        /// <summary>
+        /// returns last tile from the goaltiles that is not occupied
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="currentrow"></param>
+        /// <param name="currentcolumn"></param>
+        /// <returns></returns>
         public int checkNextGoalTileIndex(string color, int currentrow, int currentcolumn)
         {
             for (int i = 4; i > 0; i--)
@@ -26,6 +33,13 @@ namespace FiaMedKnuff
             return 0;
         }
 
+        /// <summary>
+        /// returns index of next available goal position for the pawn
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="targetTile"></param>
+        /// <param name="currentposition"></param>
+        /// <returns></returns>
         public int checkNextAvailablePosition(string color, int targetTile, int currentposition)
         {
             if (MainPage.Instance.stepCount >= targetTile - currentposition)
@@ -184,6 +198,9 @@ namespace FiaMedKnuff
             await checkForEnemyPawns(row, column, rectangle.Name);
         }
 
+        /// <summary>
+        /// disables click events for all the pawns
+        /// </summary>
         public void disableAllPawns()
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)
@@ -195,6 +212,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Enables player pawns on the boartpath
+        /// </summary>
+        /// <param name="color"></param>
         public void enablePlayerBoardPawns(string color)
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)
@@ -210,6 +231,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// returns true if given pawn is on spawn tile
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         public bool isAtSpawn(Rectangle pawn)
         {
             if (MainPage.Instance.spawnTiles.ContainsValue((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
@@ -222,6 +248,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Enables click event for player pawns on spawn tiles
+        /// </summary>
+        /// <param name="color"></param>
         public void enablePlayerSpawnPawns(string color)
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)
@@ -237,6 +267,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// returns true if given pawn has reached last available goal position
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <returns></returns>
         public bool pawnHasReachedGoal(Rectangle pawn)
         {
             if (MainPage.Instance.pawnsOnGoalTiles.ContainsValue((Grid.GetRow(pawn), Grid.GetColumn(pawn))))
@@ -249,6 +284,11 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// returns true if player has pawn on the boardpath
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public bool hasPawnOnBoard(string color)
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)
@@ -261,6 +301,11 @@ namespace FiaMedKnuff
             return false;
         }
 
+        /// <summary>
+        /// returns true if player has a pawn on the spawn position
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public bool hasPawnOnSpawn(string color)
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)
@@ -272,7 +317,12 @@ namespace FiaMedKnuff
             }
             return false;
         }             
-
+        
+        /// <summary>
+        /// Returns true if the player of given color has a pawn at goal tiles but its not on the last position
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public bool hasMovablePawnOnGoalTiles(string color) 
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)

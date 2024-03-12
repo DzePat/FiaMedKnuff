@@ -10,6 +10,11 @@ namespace FiaMedKnuff
 {
     public class BombHandler
     {
+        /// <summary>
+        /// Change Bomb image depending on how many times in a row player has rolled a six
+        /// </summary>
+        /// <param name="numberOfSix"></param>
+        /// <param name="bombImage"></param>
         public static async void ChangeBombImage(int numberOfSix, Image bombImage)
         {
             var element = new MediaElement();
@@ -51,6 +56,9 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Resets the pawns for all players but the player that managed to roll 6 for three times in a row
+        /// </summary>
         public static async void BombExplosion()
         {
             MainPage.Instance.ExplosionImage.Visibility = Visibility.Visible;

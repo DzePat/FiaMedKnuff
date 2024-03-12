@@ -12,15 +12,12 @@ namespace FiaMedKnuff
     internal class AIHandler
     {
         private pawnHandler  PawnHandler = new pawnHandler();
-        private void isEnemyPawnAvailable(int AI_ID) 
-        {
-            int steps = MainPage.Instance.currentDiceResult;
-            if (steps == 1 | steps == 6) 
-            { 
-                
-            }
-        }
 
+        /// <summary>
+        /// returns available pawn for the AI to move with
+        /// </summary>
+        /// <param name="AIColor"></param>
+        /// <returns></returns>
         public Rectangle pawnToMove(string AIColor) 
         {
             if (PawnHandler.hasPawnOnBoard(AIColor) == true) 
