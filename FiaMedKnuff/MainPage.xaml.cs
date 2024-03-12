@@ -42,13 +42,12 @@ namespace FiaMedKnuff
         private Random random = new Random();
         public int stepCount;
         public int currentDiceResult;
-        private bool isSoundOn = true; //sound is on by default
-        private int currentDiceResult;
         public bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         public int playerturn = 1;
         public bool AITurn;
+        public int numberOfSixInARow = 0;
 
         /// <summary>
         /// for access to objects from another files
@@ -388,7 +387,7 @@ namespace FiaMedKnuff
             }
             else
             {
-                (string identity, int score) = Players[nextplayerturn(playerturn)];
+                (string identity, int score) = Players[CheckNextplayerturn(playerturn)];
                 if (identity == "AI")
                 {
                     AITurn = true;
@@ -415,7 +414,7 @@ namespace FiaMedKnuff
 
         private void disableDiceClick()
         {
-            (string identity, int score) = Players[nextplayerturn(playerturn)];
+            (string identity, int score) = Players[CheckNextplayerturn(playerturn)];
             if (identity == "AI")
             {
                 imageSource.IsHitTestVisible = false;
@@ -471,6 +470,16 @@ namespace FiaMedKnuff
             }
             numberOfSixInARow = 0;
             BombHandler.ChangeBombImage(numberOfSixInARow, bombImage);
+            return newid;
+        }
+
+        private int CheckNextplayerturn(int playerID)
+        {
+            int newid = playerID + 1;
+            if (newid > Players.Count)
+            {
+                newid = 1;
+            }
             return newid;
         }
 
@@ -722,6 +731,8 @@ namespace FiaMedKnuff
         }
 
         private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
+        
+
         ///<summary>
         ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
         ///aboutView depending on its current state.If the aboutView is visible, it starts the aboutOut animation 
