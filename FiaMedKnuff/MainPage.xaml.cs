@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -37,8 +36,8 @@ namespace FiaMedKnuff
         /// A list of all the ellipses on the board with a string of the color and boolean if it is a goaltile or not
         /// </summary>
         public Dictionary<Ellipse, string> listOfAllGoalTileEllipses = new Dictionary<Ellipse, string>();
-        List<int> Winners = new List<int>();
-        private string[] colors = { "Gul", "Blå", "Röd", "Grön" };
+        public List<int> Winners = new List<int>();
+        public string[] colors = { "Gul", "Blå", "Röd", "Grön" };
         private DispatcherTimer _animationTimer;
         private Random random = new Random();
         public int stepCount;
@@ -46,13 +45,16 @@ namespace FiaMedKnuff
         private bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
-        private int playerturn = 1;
+        public int playerturn = 1;
+        public int numberOfSixInARow = 0;
 
         /// <summary>
         /// for access to objects from another files
         /// </summary>
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
+        public Image BombImage { get { return bombImage; } }
+        public Image ExplotionImage { get { return explotionImage; } }
         public Grid BoardInstance { get { return Board;}}
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
@@ -60,8 +62,11 @@ namespace FiaMedKnuff
         public Grid blueScore { get { return bluePlayerScore; } }
         public Grid redScore { get { return redPlayerScore; } }
         public Grid greenScore { get { return greenPlayerScore; } }
+        public Grid BlurGrid { get { return blurGrid; } }
+        //public Storyboard BlurdGridFadeIn { get { return blurGridFadeIn; } }
 
-        private pawnHandler PawnHandler = new pawnHandler();
+
+        public pawnHandler PawnHandler = new pawnHandler();
         private createBoard createBoard = new createBoard();
 
         public MainPage()
@@ -110,6 +115,16 @@ namespace FiaMedKnuff
         public async void Pawn_Clicked(object sender, PointerRoutedEventArgs e)
         {
             ClearPreviousPlayerChoiceIndications();
+            await pawnEvent(sender);
+        }
+
+        /// <summary>
+        /// Moves a pawn depending on its position on the board and dice roll
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        private async Task pawnEvent(object sender)
+        {
             if (sender is Rectangle pawn)
             {
                 pawn.IsHitTestVisible = false;
@@ -161,8 +176,6 @@ namespace FiaMedKnuff
                                     Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
                                 }
                                 MarkPlayerSpawns(playerturn);
-                                var dialog2 = new MessageDialog("" + (Players.Count - 1) + "winnercount: " + Winners.Count);
-                                await dialog2.ShowAsync();
                                 if (Winners.Count == Players.Count - 1)
                                 {
                                     int index = 0;
@@ -201,7 +214,6 @@ namespace FiaMedKnuff
                             await PawnHandler.linkEndToStartPath(pawn);
                         }
                     }
-
                 }
                 // place the pawn on the board if the clicked pawn is in the nest
                 else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
@@ -267,7 +279,7 @@ namespace FiaMedKnuff
         /// - Shows a message dialog with the dice result.
         /// Note: This method assumes the presence of specific assets in the application's Assets folder.
         /// </remarks>
-        private async void Image_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void Dice_Clicked(object sender, TappedRoutedEventArgs e)
         {
             imageSource.IsHitTestVisible = false;
             PawnHandler.disableAllPawns();
@@ -287,7 +299,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(1, 7);
+            int result = random.Next(5, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -333,11 +345,12 @@ namespace FiaMedKnuff
             }
         }
 
-        private void turnHandler()
+        public void turnHandler()
         {
             if (currentDiceResult == 6)
             {
-                //player goes again
+                numberOfSixInARow++;
+                BombHandler.ChangeBombImage(numberOfSixInARow, bombImage);
             }
             else if (currentDiceResult < 6 && currentDiceResult > 0)
             {
@@ -356,6 +369,8 @@ namespace FiaMedKnuff
             {
                 newid = 1;
             }
+            numberOfSixInARow = 0;
+            BombHandler.ChangeBombImage(numberOfSixInARow, bombImage);
             return newid;
         }
 
@@ -394,7 +409,7 @@ namespace FiaMedKnuff
             }
         }
 
-        private bool playerHasWon(string color)
+        public bool playerHasWon(string color)
         {
             int pawnsOnGoalTile = 0;
             foreach (string key in pawnsOnGoalTiles.Keys)
@@ -414,7 +429,7 @@ namespace FiaMedKnuff
             }
         }
 
-        private void AnimatePawnLift(Rectangle pawn)
+        public void AnimatePawnLift(Rectangle pawn)
         {
             var storyboard = new Storyboard();
 
@@ -446,7 +461,6 @@ namespace FiaMedKnuff
 
         public void MarkPlayerSpawns(int colorIndex)
         {
-            Debug.WriteLine($"playerturn: {playerturn}, colors: {colors[playerturn - 1]}, hasPawns: {PawnHandler.hasPawnOnBoard(colors[playerturn - 1])}");
             foreach (Ellipse ellipse in listOfAllGoalTileEllipses.Keys)
             {
                 ellipse.StrokeThickness = 1;
@@ -622,7 +636,7 @@ namespace FiaMedKnuff
 
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            //BUG: The Dice shows on aboutview when game is on. when hide aboutview, the dice is not visible
+            //BUG: The Dice shows on about when game is on. when hide aboutview, the dice is not visible
             if (isAboutVisible)
             {
                 // Start aboutOut animation
@@ -718,7 +732,7 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="color"></param>
         /// <param name="moves"></param>
-        private void showVictoryView(string color, int moves)
+        public void showVictoryView(string color, int moves)
         {
             VictoryPage.instance.loadPage(color, moves);
             victoryView.Visibility = Visibility.Visible;
