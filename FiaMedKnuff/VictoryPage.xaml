@@ -9,14 +9,14 @@
     d:DesignWidth="600" Height="592" Background="#B2000000">
     <StackPanel Name="mainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" >
         <TextBlock Name="victoryText" HorizontalAlignment="Center" FontSize="64" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="0,0,0,35" Foreground="White">#########</TextBlock>
-        <TextBlock HorizontalAlignment="Center" FontSize="45" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="0,0,0,5" Foreground="White">Ange vinnarens namn</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontSize="45" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="0,0,0,5" Foreground="White">Enter winner name</TextBlock>
 
         <TextBox Name="winnerNameTextBox" FontSize="64" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" Margin="35,5,35,35" Foreground="White" VerticalAlignment="Top" Background="#FFCC6A9F"/>
         <Grid x:Name="ContinueButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,10,0,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerReleased="continuePlaying">
-            <TextBlock x:Name="ContinueButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Fortsätt Spela</TextBlock>
+            <TextBlock x:Name="ContinueButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Continue Playing</TextBlock>
         </Grid>
         <Grid x:Name="mainMenuButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,10,0,10" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerReleased="BackToMenu" >
-            <TextBlock x:Name="mainMenuButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Huvudmeny</TextBlock>
+            <TextBlock x:Name="mainMenuButtonText" FontSize="64" Foreground="#000" VerticalAlignment="Center" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon">Main Menu</TextBlock>
         </Grid>
 
     </StackPanel>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -43,7 +44,27 @@ namespace FiaMedKnuff
         /// <param name="moves"></param>
         public void loadPage(string winnerColor, int moves)
         {
-            victoryText.Text = winnerColor + " har vunnit med "+moves+" drag!";
+            string englishColourName;
+            //translate to english
+            switch (winnerColor)
+            {
+                case "Röd":
+                    englishColourName= "Red";
+                    break;
+                case "Gul":
+                    englishColourName = "Yellow";
+                    break;
+                case "Grön":
+                    englishColourName = "Green";
+                    break;
+                case "Blå":
+                    englishColourName = "Blue";
+                    break;
+                default:
+                    englishColourName= winnerColor;
+                    break;
+            }
+            victoryText.Text = englishColourName + " has won with "+moves+" moves!";
             winnerNameTextBox.Text = "";
             winnerMoves = moves;
             MainPage.Instance.PlaySound("win");
