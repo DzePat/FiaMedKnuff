@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -12,11 +10,35 @@ namespace FiaMedKnuff
 {
     public class BombHandler
     {
-        public static void ChangeBombImage(int numberOfSix, Image bombImage)
+        public static async void ChangeBombImage(int numberOfSix, Image bombImage)
         {
+            var element = new MediaElement();
             var bombImageSource = new BitmapImage(new Uri($"ms-appx:///Assets/Bombs/bombState-{numberOfSix}.png"));
             bombImage.Source = bombImageSource;
-            if (numberOfSix == 3)
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+            StorageFile file = null;
+
+            switch (numberOfSix)
+            {
+                case 0:
+                    break;
+                case 1:
+                case 2:
+                    file = await folder.GetFileAsync("fuse.mp3");
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
+            if (MainPage.Instance.isSoundOn == true && file != null)
+            {
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                element.SetSource(stream, file.ContentType);
+
+                element.Play();
+            }
+            else if (numberOfSix == 3)
             {
                 BombExplotion();
                 MainPage.Instance.numberOfSixInARow = 0;

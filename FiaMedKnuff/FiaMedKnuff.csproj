@@ -165,6 +165,7 @@
     <Content Include="Assets\Bombs\bombState-2.png" />
     <Content Include="Assets\Bombs\bombState-3.png" />
     <Content Include="Assets\Bombs\explotion.png" />
+    <Content Include="Assets\Bombs\Sound\sparkler_fuse_nmwav-14738.mp3" />
     <Content Include="Assets\dice-1.png" />
     <Content Include="Assets\dice-2.png" />
     <Content Include="Assets\dice-3.png" />
@@ -193,6 +194,7 @@
     <Content Include="Assets\SmallTile.scale-400.png" />
     <Content Include="Assets\soundoff.png" />
     <Content Include="Assets\soundon.png" />
+    <Content Include="Assets\fuse.mp3" />
     <Content Include="Assets\splashscreen.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-125.png" />

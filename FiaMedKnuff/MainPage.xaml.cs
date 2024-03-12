@@ -42,7 +42,7 @@ namespace FiaMedKnuff
         private Random random = new Random();
         public int stepCount;
         private int currentDiceResult;
-        private bool isSoundOn = true; //sound is on by default
+        public bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         public int playerturn = 1;
