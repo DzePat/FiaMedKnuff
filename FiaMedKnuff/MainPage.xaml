@@ -171,6 +171,12 @@ x:Name="aboutOut">
                 <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
                VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
             </Grid>
+            <!--Back Button-->
+            <Grid x:Name="backButton" Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,220,30" PointerReleased="BackButton_PointerReleased" Visibility="Collapsed">
+                <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
+                <TextBlock Text="&lt;-" FontFamily="Cascadia Code" FontSize="24" FontWeight="Bold"
+               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
+            </Grid>
         </Grid>
 
         <Image x:Name="explotionImage" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
