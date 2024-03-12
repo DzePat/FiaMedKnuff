@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -63,6 +62,7 @@ namespace FiaMedKnuff
         public Grid redScore { get { return redPlayerScore; } }
         public Grid greenScore { get { return greenPlayerScore; } }
         public Grid BlurGrid { get { return blurGrid; } }
+        public Grid BackButton { get { return backButton; } }
         //public Storyboard BlurdGridFadeIn { get { return blurGridFadeIn; } }
 
 
@@ -234,6 +234,19 @@ namespace FiaMedKnuff
         /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
         /// the playback of GIF animations manually.
         /// </remarks>
+
+        public async void bigboom()
+        {
+            bigExplosion.Begin();
+            blurGrid.Visibility = Visibility.Visible;
+            BlurdGridFadeIn.Begin();
+            await Task.Delay(800);
+
+            blurGrid.Visibility = Visibility.Collapsed;
+
+
+        }
+
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -299,7 +312,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(5, 7);
+            int result = random.Next(6, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -669,6 +682,11 @@ namespace FiaMedKnuff
             //imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
 
+        private void BackButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            backButton.Visibility = Visibility.Collapsed;
+            MainMenu.Instance.ShowMainMenu();
+        }
         public void StartHighScoreAnimation()
         {
             highScoreIn.Begin();

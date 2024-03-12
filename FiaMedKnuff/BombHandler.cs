@@ -43,6 +43,7 @@ namespace FiaMedKnuff
             else if (numberOfSix == 3)
             {
                 BombExplosion();
+                MainPage.Instance.bigboom();
                 MainPage.Instance.numberOfSixInARow = 0;
             }
         }

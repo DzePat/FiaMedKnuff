@@ -11,22 +11,22 @@
 
     <Grid Background="#AA000000" Padding="10">
         <StackPanel>
-            <TextBlock Text="Regler" HorizontalAlignment="Center" FontSize="48" Foreground="White" Margin="10" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon"/>
+            <TextBlock Text="Rules" HorizontalAlignment="Center" FontSize="48" Foreground="White" Margin="10" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon"/>
             <StackPanel Orientation="Horizontal">
                 <Ellipse Fill="White" Width="10" Height="10" Margin="5"/>
-                <TextBlock Text="Slå 6 för att gå ut ur boet" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
+                <TextBlock Text="Roll a 1 or 6 to leave the start" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Ellipse Fill="White" Width="10" Height="10" Margin="5"/>
-                <TextBlock Text="gå antalet steg på tärningen" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
+                <TextBlock Text="Walk the number of steps shown on the dice" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Ellipse Fill="White" Width="10" Height="10" Margin="5"/>
-                <TextBlock Text="flytta tillbaka andras pjäser vid krock" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
+                <TextBlock Text="Move back opponents pieces on collision" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Ellipse Fill="White" Width="10" Height="10" Margin="5"/>
-                <TextBlock Text="först med alla pjäser i mål vinner" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
+                <TextBlock Text="First player to get all the pices into the goal wins" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="32"/>
             </StackPanel>
         </StackPanel>
     </Grid>

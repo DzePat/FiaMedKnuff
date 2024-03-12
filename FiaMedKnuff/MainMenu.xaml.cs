@@ -45,6 +45,12 @@ namespace FiaMedKnuff
 
         }
 
+        private void CloseButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            MainMenu.Instance.Visibility = Visibility.Collapsed;
+            MainPage.Instance.BackButton.Visibility = Visibility.Visible;
+        }
+
         /// <summary>
         /// shows the highscore session when the user clicks the button. The main menu is hidden and the <see cref="HighscorePage"/> is shown.
         /// </summary>
