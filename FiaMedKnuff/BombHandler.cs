@@ -40,7 +40,7 @@ namespace FiaMedKnuff
 
                 element.Play();
             }
-            else if (numberOfSix == 3)
+            if (numberOfSix == 3)
             {
                 BombExplosion();
                 MainPage.Instance.bigboom();
