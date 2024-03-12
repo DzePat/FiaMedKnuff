@@ -121,6 +121,7 @@ namespace FiaMedKnuff
 
         private async Task pawn_Event(Rectangle pawn)
         {
+            disableDiceClick();
             pawn.IsHitTestVisible = false;
             int currentRow = Grid.GetRow(pawn);
             int currentColumn = Grid.GetColumn(pawn);
@@ -183,7 +184,6 @@ namespace FiaMedKnuff
                                 var dialog = new MessageDialog(result);
                                 await dialog.ShowAsync();
                             }
-                            turnHandler();
                             if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
                             {
                                 AITurn = true;
@@ -203,11 +203,14 @@ namespace FiaMedKnuff
                         if (stepCount == 0)
                         {
                             await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
-                            imageSource.IsHitTestVisible = true;
                             MarkPlayerSpawns(playerturn);
                             if(colors[playerturn-1] != pawn.Name && isAiTurn(playerturn))
                             {
                                 AITurn = true;
+                            }
+                            else
+                            {
+                                imageSource.IsHitTestVisible = true;
                             }
                         }
                     }
@@ -220,12 +223,13 @@ namespace FiaMedKnuff
             // place the pawn on the board if the clicked pawn is in the nest
             else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
             {
-                (string id, int notused) = Players[playerturn];
-                var message = new MessageDialog($"current player = {playerturn} playerID = {id} ");
-                await message.ShowAsync();
-                if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
+                if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn) && stepCount == 1)
                 {
                     AITurn = true;
+                }
+                else
+                {
+                    imageSource.IsHitTestVisible = true;
                 }
                 await PawnHandler.placepawnOnTheBoard(pawn);
                 MarkPlayerSpawns(playerturn);
@@ -308,6 +312,7 @@ namespace FiaMedKnuff
         private async Task Dice_Event()
         {
             AITurn = false;
+            disableDiceClick();
             imageSource.IsHitTestVisible = false;
             PawnHandler.disableAllPawns();
             ClearPreviousPlayerChoiceIndications();
@@ -326,7 +331,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(1, 7);
+            int result = random.Next(5, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -356,7 +361,7 @@ namespace FiaMedKnuff
                 PawnHandler.enablePlayerBoardPawns(colors[playerturn - 1]);
                 MarkPlayerSpawns(playerturn);
             }
-            else if (PawnHandler.hasPawnOnBoard(colors[playerturn - 1]) == true)
+            else if (PawnHandler.hasPawnOnBoard(colors[playerturn - 1]) == true | PawnHandler.hasMovablePawnOnGoalTiles(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
                 PawnHandler.enablePlayerBoardPawns(colors[playerturn - 1]);
@@ -369,7 +374,10 @@ namespace FiaMedKnuff
                 {
                     AITurn = true;
                 }
-                imageSource.IsHitTestVisible = true;
+                else
+                {
+                    imageSource.IsHitTestVisible = true;
+                }
             }
 
             if (!PawnHandler.hasPawnOnBoard(colors[playerturn - 1]) && (stepCount != 1 && stepCount != 6))
@@ -386,11 +394,20 @@ namespace FiaMedKnuff
             }
         }
 
+        private void disableDiceClick()
+        {
+            (string identity, int score) = Players[nextplayerturn(playerturn)];
+            if (identity == "AI")
+            {
+                imageSource.IsHitTestVisible = false;
+            }
+        }
+
         public async Task turnHandler()
         {
             if (currentDiceResult == 6)
             {
-                if (isAiTurn(playerturn))
+                if (isAiTurn(playerturn) && stepCount == 0)
                 {
                     AITurn = true;
                 }

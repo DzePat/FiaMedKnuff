@@ -188,7 +188,6 @@ namespace FiaMedKnuff
             rectangle.VerticalAlignment = VerticalAlignment.Center;
             MainPage.Instance.stepCount = 0;
             await checkForEnemyPawns(row, column, rectangle.Name);
-            MainPage.Instance.ImageSource.IsHitTestVisible = true;
         }
 
         public void disableAllPawns()
