@@ -63,6 +63,7 @@ namespace FiaMedKnuff
         public Grid redScore { get { return redPlayerScore; } }
         public Grid greenScore { get { return greenPlayerScore; } }
         public Grid BlurGrid { get { return blurGrid; } }
+        public Grid BackButton { get { return backButton; } }
         //public Storyboard BlurdGridFadeIn { get { return blurGridFadeIn; } }
 
 
@@ -669,6 +670,11 @@ namespace FiaMedKnuff
             //imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
 
+        private void BackButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            backButton.Visibility = Visibility.Collapsed;
+            MainMenu.Instance.ShowMainMenu();
+        }
         public void StartHighScoreAnimation()
         {
             highScoreIn.Begin();
