@@ -125,6 +125,9 @@ namespace FiaMedKnuff
             MainPage.Instance.goalTiles.Add("Grön-4", (6, 7));
         }
 
+        /// <summary>
+        /// Sum function of all the generate paths above to call on them with one function
+        /// </summary>
         public void generateAllPaths() 
         {
             generatePath();
@@ -132,6 +135,9 @@ namespace FiaMedKnuff
             generateSpawnTiles();
         }
 
+        /// <summary>
+        /// Creates a board grid
+        /// </summary>
         public void generateBoard() 
         {
             MainPage.Instance.BoardInstance.RowDefinitions.Clear();

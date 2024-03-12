@@ -380,7 +380,7 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// makes the players pawns clickable
+        /// enables player pawns during players turn
         /// </summary>
         /// <returns></returns>
         private async Task enablePlayerTurnAsync()
@@ -808,7 +808,6 @@ namespace FiaMedKnuff
         ///<remarks>
         ///The method checks if isAboutVisible is true. If so, it starts the aboutOut animation and sets the visibility of aboutView to Collapsed once the animation completes. If isAboutVisible is false, it sets the visibility of aboutView to Visible, starts the aboutIn animation, and updates isAboutVisible to true. It also toggles the visibility of the mainMenu and sets the visibility of imageSource to Collapsed.
         ///</remarks>
-
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             //BUG: The Dice shows on about when game is on. when hide aboutview, the dice is not visible
@@ -844,18 +843,29 @@ namespace FiaMedKnuff
             //imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
 
+        /// <summary>
+        /// hides backButton and shows main menu view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackButton_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             backButton.Visibility = Visibility.Collapsed;
             MainMenu.Instance.ShowMainMenu();
         }
 
+        /// <summary>
+        /// Plays highscore animation
+        /// </summary>
         public void StartHighScoreAnimation()
         {
             highScoreIn.Begin();
         }
 
-        // Method to create and start the pulsing animation for an ellipse's stroke thickness
+        /// <summary>
+        /// Method to create and start the pulsing animation for an ellipse's stroke thickness
+        /// </summary>
+        /// <param name="targetElement"></param>
         private void StartPulsingAnimation(UIElement targetElement)
         {
 
