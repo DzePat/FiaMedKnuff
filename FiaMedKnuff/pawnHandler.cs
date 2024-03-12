@@ -142,8 +142,13 @@ namespace FiaMedKnuff
             MainPage.Instance.stepCount -= 1;
             if (MainPage.Instance.stepCount == 0)
             {
+                if (MainPage.Instance.colors[MainPage.Instance.playerturn - 1] != rectangle.Name && MainPage.Instance.isAiTurn(MainPage.Instance.playerturn))
+                {
+                    MainPage.Instance.AITurn = true;
+                }
                 await checkForEnemyPawns(row, column, rectangle.Name);
                 MainPage.Instance.ImageSource.IsHitTestVisible = true;
+                MainPage.Instance.AITurn = true;
             }
         }
 
@@ -177,7 +182,6 @@ namespace FiaMedKnuff
             rectangle.VerticalAlignment = VerticalAlignment.Center;
             MainPage.Instance.stepCount = 0;
             await checkForEnemyPawns(row, column, rectangle.Name);
-            MainPage.Instance.ImageSource.IsHitTestVisible = true;
         }
 
         public void disableAllPawns()
@@ -267,7 +271,20 @@ namespace FiaMedKnuff
                 }
             }
             return false;
+        }             
+
+        public bool hasMovablePawnOnGoalTiles(string color) 
+        {
+            foreach (object obj in MainPage.Instance.BoardInstance.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color) && MainPage.Instance.goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))) && !pawnHasReachedGoal(pawn))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
+        
         public int CountOwnPawnsOnTile(int row, int column, string color)
         {
             int count = 0;
@@ -300,6 +317,7 @@ namespace FiaMedKnuff
                 pawnsOnTile[i].Margin = new Thickness(startOffset, 0, 0, 0);
             }
         }
+
         public void ResetPawnMargin(Rectangle pawn)
         {
             pawn.Margin = new Thickness(0, 0, 0, 0);
