@@ -335,6 +335,13 @@ namespace FiaMedKnuff
             return false;
         }
         
+        /// <summary>
+        /// returns the number of pawns on the tile
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public int CountOwnPawnsOnTile(int row, int column, string color)
         {
             int count = 0;
@@ -348,6 +355,12 @@ namespace FiaMedKnuff
             return count;
         }
 
+        /// <summary>
+        /// adjusts pawn positions if there is multiple on single tile
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="color"></param>
         public void AdjustPawnPositions(int row, int column, string color)
         {
             var pawnsOnTile = new List<Rectangle>();
@@ -368,6 +381,10 @@ namespace FiaMedKnuff
             }
         }
 
+        /// <summary>
+        /// Resets margin for pawn
+        /// </summary>
+        /// <param name="pawn"></param>
         public void ResetPawnMargin(Rectangle pawn)
         {
             pawn.Margin = new Thickness(0, 0, 0, 0);
