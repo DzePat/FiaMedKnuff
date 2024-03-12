@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -56,7 +55,7 @@ namespace FiaMedKnuff
         public Image ImageSource { get { return imageSource; } }
         public Image BombImage { get { return bombImage; } }
         public Image ExplosionImage { get { return explosionImage; } }
-        public Grid BoardInstance { get { return Board;}}
+        public Grid BoardInstance { get { return Board; } }
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
         public Grid yellowScore { get { return yellowPlayerScore; } }
@@ -214,7 +213,8 @@ namespace FiaMedKnuff
                         {
                             await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
                             MarkPlayerSpawns(playerturn);
-                            if(colors[playerturn-1] != pawn.Name && isAiTurn(playerturn))
+                            changePawnMargin(pawn);
+                            if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
                             {
                                 AITurn = true;
                             }
@@ -243,8 +243,18 @@ namespace FiaMedKnuff
                 }
                 await PawnHandler.placepawnOnTheBoard(pawn);
                 MarkPlayerSpawns(playerturn);
+                changePawnMargin(pawn);
             }
             await RunAi();
+        }
+
+        private void changePawnMargin(Rectangle pawn)
+        {
+            int row = Grid.GetRow(pawn);
+            int column = Grid.GetColumn(pawn);
+            string color = pawn.Name;
+            int numberOfPawns = PawnHandler.CountOwnPawnsOnTile(row, column, color);
+            PawnHandler.AdjustPawnPositions(row, column, color);
         }
 
         /// <summary>
@@ -359,7 +369,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(1, 7);
+            int result = random.Next(6, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -477,14 +487,14 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="turn"></param>
         /// <returns></returns>
-        public bool isAiTurn(int turn) 
-        { 
+        public bool isAiTurn(int turn)
+        {
             (string identity, int score) = Players[turn];
-            if(identity == "AI") 
+            if (identity == "AI")
             {
                 return true;
             }
-            else {  return false; }
+            else { return false; }
         }
 
         /// <summary>
@@ -615,7 +625,7 @@ namespace FiaMedKnuff
 
             storyboard.Begin();
         }
-        
+
         /// <summary>
         /// marks player spawn points
         /// </summary>
@@ -795,7 +805,7 @@ namespace FiaMedKnuff
         }
 
         private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
-        
+
 
         ///<summary>
         ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
