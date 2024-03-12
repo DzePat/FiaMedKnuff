@@ -33,10 +33,18 @@ namespace FiaMedKnuff
                     }
                 }
             }
+            else if (PawnHandler.hasMovablePawnOnGoalTiles(AIColor)) 
+            {
+                foreach (object obj in MainPage.Instance.BoardInstance.Children)
+                {
+                    if (obj is Rectangle pawn && pawn.Name == AIColor && MainPage.Instance.goalTiles.ContainsValue((Grid.GetRow(pawn), Grid.GetColumn(pawn))) && !PawnHandler.pawnHasReachedGoal(pawn))
+                    {
+                        return pawn;
+                    }
+                }
+            }
             else if((MainPage.Instance.currentDiceResult == 1 | MainPage.Instance.currentDiceResult == 6) && PawnHandler.hasPawnOnSpawn(AIColor)) 
             {
-                var messagedialog = new MessageDialog($"currentdice: {MainPage.Instance.currentDiceResult} color {AIColor}");
-                messagedialog.ShowAsync();
                 foreach (object obj in MainPage.Instance.BoardInstance.Children)
                 {
                     if (obj is Rectangle pawn && pawn.Name == AIColor && MainPage.Instance.spawnTiles.ContainsValue((Grid.GetRow(pawn), Grid.GetColumn(pawn))))

@@ -148,9 +148,13 @@ namespace FiaMedKnuff
             MainPage.Instance.stepCount -= 1;
             if (MainPage.Instance.stepCount == 0)
             {
+                if (MainPage.Instance.colors[MainPage.Instance.playerturn - 1] != rectangle.Name && MainPage.Instance.isAiTurn(MainPage.Instance.playerturn))
+                {
+                    MainPage.Instance.AITurn = true;
+                }
                 await checkForEnemyPawns(row, column, rectangle.Name);
                 MainPage.Instance.ImageSource.IsHitTestVisible = true;
-                MainPage.Instance.turnHasEnded = true;
+                MainPage.Instance.AITurn = true;
             }
         }
 
@@ -275,5 +279,17 @@ namespace FiaMedKnuff
             }
             return false;
         }             
+
+        public bool hasMovablePawnOnGoalTiles(string color) 
+        {
+            foreach (object obj in MainPage.Instance.BoardInstance.Children)
+            {
+                if (obj is Rectangle pawn && pawn.Name.Contains(color) && MainPage.Instance.goalTiles.Values.Contains((Grid.GetRow(pawn), Grid.GetColumn(pawn))) && !pawnHasReachedGoal(pawn))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
