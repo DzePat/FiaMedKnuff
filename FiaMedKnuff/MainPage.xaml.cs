@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -214,7 +213,8 @@ namespace FiaMedKnuff
                         {
                             await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
                             MarkPlayerSpawns(playerturn);
-                            if(colors[playerturn-1] != pawn.Name && isAiTurn(playerturn))
+                            changePawnMargin(pawn);
+                            if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
                             {
                                 AITurn = true;
                             }
@@ -243,6 +243,7 @@ namespace FiaMedKnuff
                 }
                 await PawnHandler.placepawnOnTheBoard(pawn);
                 MarkPlayerSpawns(playerturn);
+                changePawnMargin(pawn);
             }
             await RunAi();
         }
@@ -486,14 +487,14 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="turn"></param>
         /// <returns></returns>
-        public bool isAiTurn(int turn) 
-        { 
+        public bool isAiTurn(int turn)
+        {
             (string identity, int score) = Players[turn];
-            if(identity == "AI") 
+            if (identity == "AI")
             {
                 return true;
             }
-            else {  return false; }
+            else { return false; }
         }
 
         /// <summary>
@@ -624,7 +625,7 @@ namespace FiaMedKnuff
 
             storyboard.Begin();
         }
-        
+
         /// <summary>
         /// marks player spawn points
         /// </summary>
@@ -804,7 +805,7 @@ namespace FiaMedKnuff
         }
 
         private bool isAboutVisible = false; // Lägg till denna medlemsvariabel i din klass
-        
+
 
         ///<summary>
         ///Handles the PointerReleased event on the Grid.This method toggles the visibility of the 
