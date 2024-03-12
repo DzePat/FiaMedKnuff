@@ -224,7 +224,7 @@ namespace FiaMedKnuff
                 MainMenu.Instance.SelectPlayerMenu.Visibility = Visibility.Collapsed;
                 MainMenu.Instance.HighScoreMenu.Visibility = Visibility.Collapsed;
                 MainPage.Instance.StartHighScoreAnimation();
-
+                MainPage.Instance.BackButton.Visibility = Visibility.Visible;
             }
             else
             {

@@ -1,0 +1,48 @@
+﻿<UserControl
+    x:Class="FiaMedKnuff.About"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FiaMedKnuff"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Height="694" Width="619">
+
+    <Grid Padding="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="602*"/>
+            <ColumnDefinition Width="17*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.ColumnSpan="2" Margin="11,11,9,9">
+            <TextBlock Text="About the game" HorizontalAlignment="Center" FontSize="30" Foreground="White" Margin="10" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon"/>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Welcome to our version of Ludo, a project by students from Agile Project Development 2 at Mölk YH.
+               We, Dzedas Patapovas, Louise Norrsén, Amir Hebib, and Gustav Holmström, have combined our skills to create this game for UWP (Universal Windows Platform), with the goal of offering a reinterpretation of a classic board game with modern technology." Margin="5" TextWrapping="Wrap" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+            </StackPanel>
+
+            <TextBlock Text="Team" HorizontalAlignment="Center" FontSize="30" Foreground="White" Margin="10" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon"/>
+            <StackPanel Orientation="Horizontal">
+
+                <TextBlock Text="Dzedas Patapovas - " Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+                <TextBlock Text="Innovation and Function" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Amir Hebib - " Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+                <TextBlock Text="Design and User Experience" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Louise Norrsén - " Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+                <TextBlock Text="Strategy and Problem Solving" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Gustav Holmström - " Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+                <TextBlock Text="Technology Expert" Margin="5" Foreground="White" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="20"/>
+            </StackPanel>
+            <Grid x:Name="backButton" Background="#CC6A9F" CornerRadius="20" HorizontalAlignment="Center" Padding="20,10" Margin="0,20,0,0" PointerEntered="ChangeColorOnHover" PointerExited="ChangeBackColorToDefault" PointerPressed="backButton_PointerPressed">
+                <TextBlock x:Name="backButtonText" Foreground="#000" FontFamily="Assets/Fonts/Kavoon-Regular.ttf#Kavoon" FontSize="64" VerticalAlignment="Center">Back</TextBlock>
+            </Grid>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

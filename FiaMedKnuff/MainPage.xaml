@@ -54,6 +54,24 @@ x:Name="aboutOut">
                 <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="-1.716"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="bigExplosion">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="explosionImage" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0.174"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="explosionImage" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0.147"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="explosionImage" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-9.609"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="explosionImage" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-37.749"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Page.Resources>
 
     <Grid Name="mainGrid">
@@ -146,14 +164,30 @@ x:Name="aboutOut">
                     <AcrylicBrush BackgroundSource="Backdrop" TintColor="#FFFFFF" TintOpacity="0.6" FallbackColor="#FFFFFF"/>
                 </Grid.Background>
             </Grid>
-            
+
             <!--About Button-->
             <Grid x:Name="aboutButton" Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0, 0, 150, 30" PointerReleased="Grid_PointerReleased">
                 <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
                 <TextBlock Text="&#xE11B;" FontFamily="Segoe MDL2 Assets" FontSize="24" FontWeight="Bold"
                VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
             </Grid>
+            <!--Back Button-->
+            <Grid x:Name="backButton" Width="48" Height="48" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,220,30" PointerReleased="BackButton_PointerReleased" Visibility="Collapsed">
+                <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
+                <TextBlock Text="&lt;-" FontFamily="Cascadia Code" FontSize="24" FontWeight="Bold"
+               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />
+            </Grid>
         </Grid>
+
+        <!--Explosion-->
+        <Image x:Name="explosionImage" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30,30,0,0" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <CompositeTransform/>
+            </Image.RenderTransform>
+            <Image.Source>
+                <BitmapImage UriSource="Assets/Bombs/explosion.png"/>
+            </Image.Source>
+        </Image>
 
         <!--Menu and Views-->
         <Grid x:Name="splashScreen" Visibility="Collapsed">
@@ -171,6 +205,9 @@ x:Name="aboutOut">
             </Grid.RenderTransform>
 
             <local:AboutPage VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Grid>
+        <Grid x:Name="About" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <local:About />
         </Grid>
         <!-- BUTTON ONLY FOR DEBUG... REMOVE FOR RELEASE -->
         <Button Margin="10,10,0,0" VerticalAlignment="Top" Background="Black" Canvas.ZIndex="10" Click="DEBUG_Win_Button_Click">SIMULATE WIN</Button>

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -45,6 +43,8 @@ namespace FiaMedKnuff
         public int stepCount;
         public int currentDiceResult;
         private bool isSoundOn = true; //sound is on by default
+        private int currentDiceResult;
+        public bool isSoundOn = true; //sound is on by default
         private bool isMusicOn = true;
         private MediaElement musicPlayer = new MediaElement();
         public int playerturn = 1;
@@ -56,6 +56,7 @@ namespace FiaMedKnuff
         public static MainPage Instance { get; private set; }
         public Image ImageSource { get { return imageSource; } }
         public Image BombImage { get { return bombImage; } }
+        public Image ExplosionImage { get { return explosionImage; } }
         public Grid BoardInstance { get { return Board;}}
         public StackPanel ScoreBoard { get { return scoreBoard; } }
         public Grid VictoryScreen { get { return victoryView; } }
@@ -63,6 +64,10 @@ namespace FiaMedKnuff
         public Grid blueScore { get { return bluePlayerScore; } }
         public Grid redScore { get { return redPlayerScore; } }
         public Grid greenScore { get { return greenPlayerScore; } }
+        public Grid BlurGrid { get { return blurGrid; } }
+        public Grid BackButton { get { return backButton; } }
+        //public Storyboard BlurdGridFadeIn { get { return blurGridFadeIn; } }
+
 
         public pawnHandler PawnHandler = new pawnHandler();
         private createBoard createBoard = new createBoard();
@@ -248,6 +253,19 @@ namespace FiaMedKnuff
         /// the current image source as a BitmapImage and disables its AutoPlay functionality. This is useful for controlling
         /// the playback of GIF animations manually.
         /// </remarks>
+
+        public async void bigboom()
+        {
+            bigExplosion.Begin();
+            blurGrid.Visibility = Visibility.Visible;
+            BlurdGridFadeIn.Begin();
+            await Task.Delay(800);
+
+            blurGrid.Visibility = Visibility.Collapsed;
+
+
+        }
+
         private void gifDice(object sender, RoutedEventArgs e)
         {
 
@@ -332,7 +350,7 @@ namespace FiaMedKnuff
             // Wait a bit to simulate "spinning"
             await Task.Delay(1000);
             // Randomly generate a dice result and display the static image
-            int result = random.Next(5, 7);
+            int result = random.Next(6, 7);
             stepCount = result;
             currentDiceResult = result;
 
@@ -718,7 +736,7 @@ namespace FiaMedKnuff
 
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            //BUG: The Dice shows on aboutview when game is on. when hide aboutview, the dice is not visible
+            //BUG: The Dice shows on about when game is on. when hide aboutview, the dice is not visible
             if (isAboutVisible)
             {
                 // Start aboutOut animation
@@ -751,6 +769,11 @@ namespace FiaMedKnuff
             //imageSource.Visibility = (imageSource.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
         }
 
+        private void BackButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            backButton.Visibility = Visibility.Collapsed;
+            MainMenu.Instance.ShowMainMenu();
+        }
         public void StartHighScoreAnimation()
         {
             highScoreIn.Begin();

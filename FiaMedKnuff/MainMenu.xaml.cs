@@ -13,6 +13,9 @@ namespace FiaMedKnuff
         public StackPanel MainMenuContent { get { return mainMenuContent; } }
         public Grid SelectPlayerMenu { get { return selectPlayerMenu; } }
         public Grid HighScoreMenu { get { return highscoreMenu; } }
+        public Grid AboutMenu { get { return aboutMenu; } }
+
+
 
         public MainMenu()
         {
@@ -42,6 +45,12 @@ namespace FiaMedKnuff
 
         }
 
+        private void CloseButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            MainMenu.Instance.Visibility = Visibility.Collapsed;
+            MainPage.Instance.BackButton.Visibility = Visibility.Visible;
+        }
+
         /// <summary>
         /// shows the highscore session when the user clicks the button. The main menu is hidden and the <see cref="HighscorePage"/> is shown.
         /// </summary>
@@ -58,10 +67,20 @@ namespace FiaMedKnuff
         public void ShowMainMenu()
         {
 
-            Instance.Visibility= Visibility.Visible;
+            Instance.Visibility = Visibility.Visible;
             Instance.MainMenuContent.Visibility = Visibility.Visible;
             Instance.HighScoreMenu.Visibility = Visibility.Collapsed;
             Instance.SelectPlayerMenu.Visibility = Visibility.Collapsed;
         }
+        private void ShowAbout(object sender, PointerRoutedEventArgs e)
+        {
+
+            AboutMenu.Visibility = Visibility.Visible;
+            MainPage.Instance.BlurGrid.Visibility = Visibility.Visible;
+            mainMenuContent.Visibility = Visibility.Collapsed;
+        }
+
+
+
     }
 }

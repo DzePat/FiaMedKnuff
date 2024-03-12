@@ -116,6 +116,9 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,8 @@
     <Content Include="Assets\Bombs\bombState-1.png" />
     <Content Include="Assets\Bombs\bombState-2.png" />
     <Content Include="Assets\Bombs\bombState-3.png" />
+    <Content Include="Assets\Bombs\explosion.png" />
+    <Content Include="Assets\Bombs\Sound\sparkler_fuse_nmwav-14738.mp3" />
     <Content Include="Assets\dice-1.png" />
     <Content Include="Assets\dice-2.png" />
     <Content Include="Assets\dice-3.png" />
@@ -172,6 +177,7 @@
     <Content Include="Assets\dice-fast.gif" />
     <Content Include="Assets\dice-sound.mp3" />
     <Content Include="Assets\eatPlayerSound.mp3" />
+    <Content Include="Assets\explosion.mp3" />
     <Content Include="Assets\Grön.png" />
     <Content Include="Assets\Gul.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
@@ -190,6 +196,7 @@
     <Content Include="Assets\SmallTile.scale-400.png" />
     <Content Include="Assets\soundoff.png" />
     <Content Include="Assets\soundon.png" />
+    <Content Include="Assets\fuse.mp3" />
     <Content Include="Assets\splashscreen.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-125.png" />
@@ -197,6 +204,7 @@
     <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\splashscreen2.png" />
     <Content Include="Assets\splashscreen3.png" />
+    <Content Include="Assets\splashscreenbg.png" />
     <Content Include="Assets\Square150x150Logo.scale-100.png" />
     <Content Include="Assets\Square150x150Logo.scale-125.png" />
     <Content Include="Assets\Square150x150Logo.scale-150.png" />
@@ -244,6 +252,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AboutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
