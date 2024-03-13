@@ -18,7 +18,7 @@
     </UserControl.Resources>
     <Grid x:Name="grid" Width="600" Height="600" Background="#CC000000" HorizontalAlignment="Right" VerticalAlignment="Top">
         <!--Close Menu Button-->
-        <Grid x:Name="backButton" Width="48" Height="48" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,30" PointerReleased="CloseButton_PointerReleased" Visibility="Visible">
+        <Grid x:Name="backButton" Width="48" Height="48" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,30" PointerReleased="CloseButton_PointerReleased" Visibility="Collapsed">
             <Ellipse Fill="White" Width="48" Height="48" StrokeThickness="2" Stroke="Black"/>
             <TextBlock Text="X" FontFamily="Cascadia Code" FontSize="24" FontWeight="Bold"
                VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" />

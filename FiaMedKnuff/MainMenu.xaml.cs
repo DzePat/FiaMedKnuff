@@ -14,6 +14,7 @@ namespace FiaMedKnuff
         public Grid SelectPlayerMenu { get { return selectPlayerMenu; } }
         public Grid HighScoreMenu { get { return highscoreMenu; } }
         public Grid AboutMenu { get { return aboutMenu; } }
+        public Grid CloseButton { get { return backButton; } }
 
 
 

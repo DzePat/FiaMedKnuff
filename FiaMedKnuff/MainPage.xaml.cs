@@ -864,6 +864,7 @@ namespace FiaMedKnuff
         private void BackButton_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             backButton.Visibility = Visibility.Collapsed;
+            MainMenu.Instance.CloseButton.Visibility = Visibility.Visible;
             MainMenu.Instance.ShowMainMenu();
         }
 
@@ -940,6 +941,32 @@ namespace FiaMedKnuff
         {
             VictoryPage.instance.loadPage(color, moves);
             victoryView.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Resets the whole game state to the initial values.
+        /// Rebuilds the entire board structure.
+        /// Needs to be called before starting a new game.
+        /// </summary>
+        public void ResetGame()
+        {
+            Players.Clear();
+            pawnsOnGoalTiles.Clear();
+            Winners.Clear();
+            stepCount= 0;
+            playerturn = 1;
+            numberOfSixInARow= 0;
+            OneScore.Text = "0";
+            TwoScore.Text = "0";
+            ThreeScore.Text = "0";
+            FourScore.Text = "0";
+
+            BoardInstance.Children.Clear();
+            boardPath.Clear();
+            goalTiles.Clear();
+            spawnTiles.Clear();
+            createBoard.generateAllPaths();
+            createBoard.generateBoard();
         }
     }
 }

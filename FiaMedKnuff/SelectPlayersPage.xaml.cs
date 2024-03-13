@@ -214,6 +214,7 @@ namespace FiaMedKnuff
         {
             if (Players.Count > 1)
             {
+                MainPage.Instance.ResetGame();
                 MainMenu.Instance.Visibility = Visibility.Collapsed;
                 MainPage.Instance.ImageSource.Visibility = Visibility.Visible;
                 MainPage.Instance.BombImage.Visibility = Visibility.Visible;
