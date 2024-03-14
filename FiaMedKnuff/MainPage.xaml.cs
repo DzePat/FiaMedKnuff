@@ -927,6 +927,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private void DEBUG_Win_Button_Click(object sender, RoutedEventArgs e)
         {
+            Winners.Add(1);
             showVictoryView("Player", colors[random.Next(4)], random.Next(75));
         }
 
@@ -943,7 +944,8 @@ namespace FiaMedKnuff
             {
                 allowContinue = true;
             }
-            VictoryPage.instance.loadPage(PlayerType, color, moves, allowContinue);
+
+            VictoryPage.instance.loadPage(PlayerType, color, moves, Winners.Count, allowContinue);
             victoryView.Visibility = Visibility.Visible;
         }
 
