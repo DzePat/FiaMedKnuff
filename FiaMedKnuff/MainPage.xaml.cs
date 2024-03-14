@@ -6,7 +6,9 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -47,6 +49,8 @@ namespace FiaMedKnuff
         public int playerturn = 1;
         public bool AITurn;
         public int numberOfSixInARow = 0;
+        private double minWinSizeWidth = 1400; //minimum width for the window
+        private double minWinSizeHeight = 800; //minimum height for the window
 
         /// <summary>
         /// for access to objects from another files
@@ -79,6 +83,8 @@ namespace FiaMedKnuff
             createBoard.generateBoard();
             InitializeAnimationTimer();
             initMusicPlayer();
+            Window.Current.SizeChanged += Current_SizeChanged; //force the window size to be big enough
+            Window.Current.Activated += Current_Activated; //force the window size to be big enough
         }
 
         /// <summary>
@@ -967,6 +973,39 @@ namespace FiaMedKnuff
             spawnTiles.Clear();
             createBoard.generateAllPaths();
             createBoard.generateBoard();
+        }
+
+        /// <summary>
+        /// Handles the SizeChanged event of the window and enforces the minimum window size.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An object that contains the event data.</param>
+        private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+        {
+
+            // Ensure the window doesn't go below the minimum size
+            if (Window.Current.Bounds.Width < minWinSizeWidth)
+            {
+                ApplicationView.GetForCurrentView().TryResizeView(new Windows.Foundation.Size(minWinSizeWidth, Window.Current.Bounds.Height));
+            }
+            if (Window.Current.Bounds.Height < minWinSizeHeight)
+            {
+                ApplicationView.GetForCurrentView().TryResizeView(new Windows.Foundation.Size(Window.Current.Bounds.Width, minWinSizeHeight));
+            }
+        }
+
+        /// <summary>
+        /// Handles the Activated event of the window and restores the window size to minimum if it becomes active and its size is less than the minimum.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An object that contains the event data.</param>
+        private void Current_Activated(object sender, WindowActivatedEventArgs e)
+        {
+            // Restore the window size to minimum if it becomes active and its size is less than minimum
+            if (Window.Current.Bounds.Width < minWinSizeWidth || Window.Current.Bounds.Height < minWinSizeHeight)
+            {
+                ApplicationView.GetForCurrentView().TryResizeView(new Windows.Foundation.Size(minWinSizeWidth, minWinSizeHeight));
+            }
         }
     }
 }
