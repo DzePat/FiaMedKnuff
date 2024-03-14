@@ -966,6 +966,7 @@ namespace FiaMedKnuff
             TwoScore.Text = "0";
             ThreeScore.Text = "0";
             FourScore.Text = "0";
+            imageSource.IsHitTestVisible = true;
 
             BoardInstance.Children.Clear();
             boardPath.Clear();

@@ -316,14 +316,14 @@ namespace FiaMedKnuff
                 }
             }
             return false;
-        }             
-        
+        }
+
         /// <summary>
         /// Returns true if the player of given color has a pawn at goal tiles but its not on the last position
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public bool hasMovablePawnOnGoalTiles(string color) 
+        public bool hasMovablePawnOnGoalTiles(string color)
         {
             foreach (object obj in MainPage.Instance.BoardInstance.Children)
             {
@@ -334,7 +334,7 @@ namespace FiaMedKnuff
             }
             return false;
         }
-        
+
         /// <summary>
         /// returns the number of pawns on the tile
         /// </summary>
@@ -377,7 +377,7 @@ namespace FiaMedKnuff
             for (int i = 0; i < count; i++)
             {
                 int startOffset = i * offset;
-                pawnsOnTile[i].Margin = new Thickness(startOffset, 0, 0, 0);
+                pawnsOnTile[i].Margin = new Thickness(startOffset, 8, 0, 0);
             }
         }
 
