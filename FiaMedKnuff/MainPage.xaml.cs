@@ -183,22 +183,14 @@ namespace FiaMedKnuff
                             pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
                             if (playerHasWon(pawn.Name) == true)
                             {
-                                Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
+                                int newWinnerID = Array.IndexOf(colors, pawn.Name) + 1;
+                                Winners.Add(newWinnerID);
+                                (string identity, int score) = Players[newWinnerID];
+                                string color = colors[newWinnerID - 1];
+                                showVictoryView(identity, color, score);
                             }
                             MarkPlayerSpawns(playerturn);
-                            if (Winners.Count == Players.Count - 1)
-                            {
-                                int index = 0;
-                                string result = "";
-                                foreach (int player in Winners)
-                                {
-                                    (string identity, int score) = Players[playerturn - 1];
-                                    result += $"Player {player} won with {score}\n";
-                                    showVictoryView(identity, score);
-                                }
-                                var dialog = new MessageDialog(result);
-                                await dialog.ShowAsync();
-                            }
+
                             if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
                             {
                                 AITurn = true;
@@ -935,7 +927,7 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private void DEBUG_Win_Button_Click(object sender, RoutedEventArgs e)
         {
-            showVictoryView(colors[random.Next(4)], random.Next(75));
+            showVictoryView("Player", colors[random.Next(4)], random.Next(75));
         }
 
         /// <summary>
@@ -943,9 +935,9 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="color"></param>
         /// <param name="moves"></param>
-        public void showVictoryView(string color, int moves)
+        public void showVictoryView(string PlayerType, string color, int moves)
         {
-            VictoryPage.instance.loadPage(color, moves);
+            VictoryPage.instance.loadPage(PlayerType, color, moves);
             victoryView.Visibility = Visibility.Visible;
         }
 

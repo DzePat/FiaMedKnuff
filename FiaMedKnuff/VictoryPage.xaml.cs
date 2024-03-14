@@ -42,7 +42,7 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="winnerColor"></param>
         /// <param name="moves"></param>
-        public void loadPage(string winnerColor, int moves)
+        public void loadPage(string playerType, string winnerColor, int moves)
         {
             string englishColourName;
             //translate to english
@@ -64,7 +64,7 @@ namespace FiaMedKnuff
                     englishColourName= winnerColor;
                     break;
             }
-            victoryText.Text = englishColourName + " has won with "+moves+" moves!";
+            victoryText.Text = englishColourName +" "+ playerType+ " has won with "+moves+" moves!";
             winnerNameTextBox.Text = "";
             winnerMoves = moves;
             MainPage.Instance.PlaySound("win");
