@@ -937,7 +937,13 @@ namespace FiaMedKnuff
         /// <param name="moves"></param>
         public void showVictoryView(string PlayerType, string color, int moves)
         {
-            VictoryPage.instance.loadPage(PlayerType, color, moves);
+            bool allowContinue = false;
+            int playersRemaining = Players.Count - Winners.Count;
+            if (playersRemaining >= 2)
+            {
+                allowContinue = true;
+            }
+            VictoryPage.instance.loadPage(PlayerType, color, moves, allowContinue);
             victoryView.Visibility = Visibility.Visible;
         }
 
