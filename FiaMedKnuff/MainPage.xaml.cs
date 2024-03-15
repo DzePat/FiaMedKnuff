@@ -7,7 +7,9 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -48,6 +50,8 @@ namespace FiaMedKnuff
         public int playerturn = 1;
         public bool AITurn;
         public int numberOfSixInARow = 0;
+        private double minWinSizeWidth = 1400; //minimum width for the window
+        private double minWinSizeHeight = 800; //minimum height for the window
 
         /// <summary>
         /// for access to objects from another files
@@ -80,6 +84,8 @@ namespace FiaMedKnuff
             createBoard.generateBoard();
             InitializeAnimationTimer();
             initMusicPlayer();
+            Window.Current.SizeChanged += Current_SizeChanged; //force the window size to be big enough
+            Window.Current.Activated += Current_Activated; //force the window size to be big enough
         }
 
         /// <summary>
@@ -177,12 +183,19 @@ namespace FiaMedKnuff
                             pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
                             if (playerHasWon(pawn.Name) == true)
                             {
-                                Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
+                                int newWinnerID = Array.IndexOf(colors, pawn.Name) + 1;
+                                Winners.Add(newWinnerID);
+                                (string identity, int score) = Players[newWinnerID];
+                                string color = colors[newWinnerID - 1];
+                                showVictoryView(identity, color, score);
                                 await turnHandler();
                             }
                             MarkPlayerSpawns(playerturn);
-                            enableDiceClick();
-                            await haveAllPlayersWon();
+
+                            if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
+                            {
+                                AITurn = true;
+                            }
                         }
                     }
                     // if the boardpath contains the next position of the clicked pawn
@@ -259,7 +272,7 @@ namespace FiaMedKnuff
                 {
                     (string identity, int score) = Players[playerturn - 1];
                     result += $"Player {player} won with {score}\n";
-                    showVictoryView(identity, score);
+                    showVictoryView(identity, colors[playerturn], score);
                 }
                 var dialog = new MessageDialog(result);
                 await dialog.ShowAsync();
@@ -953,7 +966,8 @@ namespace FiaMedKnuff
         /// <param name="e"></param>
         private void DEBUG_Win_Button_Click(object sender, RoutedEventArgs e)
         {
-            showVictoryView(colors[random.Next(4)], random.Next(75));
+            Winners.Add(1);
+            showVictoryView("Player", colors[random.Next(4)], random.Next(75));
         }
 
         /// <summary>
@@ -961,9 +975,16 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="color"></param>
         /// <param name="moves"></param>
-        public void showVictoryView(string color, int moves)
+        public void showVictoryView(string PlayerType, string color, int moves)
         {
-            VictoryPage.instance.loadPage(color, moves);
+            bool allowContinue = false;
+            int playersRemaining = Players.Count - Winners.Count;
+            if (playersRemaining >= 2)
+            {
+                allowContinue = true;
+            }
+
+            VictoryPage.instance.loadPage(PlayerType, color, moves, Winners.Count, allowContinue);
             victoryView.Visibility = Visibility.Visible;
         }
 
@@ -992,6 +1013,39 @@ namespace FiaMedKnuff
             spawnTiles.Clear();
             createBoard.generateAllPaths();
             createBoard.generateBoard();
+        }
+
+        /// <summary>
+        /// Handles the SizeChanged event of the window and enforces the minimum window size.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An object that contains the event data.</param>
+        private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+        {
+
+            // Ensure the window doesn't go below the minimum size
+            if (Window.Current.Bounds.Width < minWinSizeWidth)
+            {
+                ApplicationView.GetForCurrentView().TryResizeView(new Windows.Foundation.Size(minWinSizeWidth, Window.Current.Bounds.Height));
+            }
+            if (Window.Current.Bounds.Height < minWinSizeHeight)
+            {
+                ApplicationView.GetForCurrentView().TryResizeView(new Windows.Foundation.Size(Window.Current.Bounds.Width, minWinSizeHeight));
+            }
+        }
+
+        /// <summary>
+        /// Handles the Activated event of the window and restores the window size to minimum if it becomes active and its size is less than the minimum.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An object that contains the event data.</param>
+        private void Current_Activated(object sender, WindowActivatedEventArgs e)
+        {
+            // Restore the window size to minimum if it becomes active and its size is less than minimum
+            if (Window.Current.Bounds.Width < minWinSizeWidth || Window.Current.Bounds.Height < minWinSizeHeight)
+            {
+                ApplicationView.GetForCurrentView().TryResizeView(new Windows.Foundation.Size(minWinSizeWidth, minWinSizeHeight));
+            }
         }
     }
 }

@@ -42,7 +42,7 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="winnerColor"></param>
         /// <param name="moves"></param>
-        public void loadPage(string winnerColor, int moves)
+        public void loadPage(string playerType, string winnerColor, int moves, int placement, Boolean allowContinue)
         {
             string englishColourName;
             //translate to english
@@ -64,10 +64,40 @@ namespace FiaMedKnuff
                     englishColourName= winnerColor;
                     break;
             }
-            victoryText.Text = englishColourName + " has won with "+moves+" moves!";
+
+            string placementText;
+            switch (placement)
+            {
+                case 1:
+                    placementText = "has won";
+                    break;
+                case 2:
+                    placementText = "came second";
+                    break;
+                case 3:
+                    placementText = "came third";
+                    break;
+                case 4:
+                    placementText = "came fourth";
+                    break;
+                default:
+                    placementText = "UNKNOWN PLACEMENT";
+                    break;
+            }
+
+            victoryText.Text = englishColourName +" "+ playerType+" "+ placementText+" with " +moves+" moves!";
             winnerNameTextBox.Text = "";
             winnerMoves = moves;
             MainPage.Instance.PlaySound("win");
+
+            if (allowContinue)
+            {
+                ContinueButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ContinueButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void ChangeColorOnHover(object sender, PointerRoutedEventArgs e)
