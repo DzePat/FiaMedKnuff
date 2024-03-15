@@ -73,6 +73,8 @@ namespace FiaMedKnuff
             Instance.HighScoreMenu.Visibility = Visibility.Collapsed;
             Instance.SelectPlayerMenu.Visibility = Visibility.Collapsed;
         }
+
+
         private void ShowAbout(object sender, PointerRoutedEventArgs e)
         {
 

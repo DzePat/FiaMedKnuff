@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -158,12 +159,12 @@ namespace FiaMedKnuff
                         if (next == currentTile)
                         {
                             stepCount = 0;
-                            imageSource.IsHitTestVisible = true;
+                            enableDiceClick();
                         }
                         else
                         {
                             stepCount--;
-                            imageSource.IsHitTestVisible = true;
+                            enableDiceClick();
                             (int row, int column) = goalTiles[pawn.Name + "-" + (currentTile + 1)];
                             Grid.SetRow(pawn, row);
                             Grid.SetColumn(pawn, column);
@@ -173,30 +174,15 @@ namespace FiaMedKnuff
                         {
                             stepCount = 0;
                             pawn.IsHitTestVisible = false;
-                            imageSource.IsHitTestVisible = true;
                             pawnsOnGoalTiles.Add(pawn.Name + "-" + targetTile, (Grid.GetRow(pawn), Grid.GetColumn(pawn)));
                             if (playerHasWon(pawn.Name) == true)
                             {
                                 Winners.Add(Array.IndexOf(colors, pawn.Name) + 1);
+                                await turnHandler();
                             }
                             MarkPlayerSpawns(playerturn);
-                            if (Winners.Count == Players.Count - 1)
-                            {
-                                int index = 0;
-                                string result = "";
-                                foreach (int player in Winners)
-                                {
-                                    (string identity, int score) = Players[playerturn - 1];
-                                    result += $"Player {player} won with {score}\n";
-                                    showVictoryView(identity, score);
-                                }
-                                var dialog = new MessageDialog(result);
-                                await dialog.ShowAsync();
-                            }
-                            if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
-                            {
-                                AITurn = true;
-                            }
+                            enableDiceClick();
+                            await haveAllPlayersWon();
                         }
                     }
                     // if the boardpath contains the next position of the clicked pawn
@@ -214,11 +200,11 @@ namespace FiaMedKnuff
                             await PawnHandler.checkForEnemyPawns(row, column, pawn.Name);
                             MarkPlayerSpawns(playerturn);
                             changePawnMargin(pawn);
-                            if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn))
+                            if (colors[playerturn-1] != pawn.Name && isAiTurn(playerturn) == true)
                             {
                                 AITurn = true;
                             }
-                            else
+                            else if(isAiTurn(playerturn) == false)
                             {
                                 imageSource.IsHitTestVisible = true;
                             }
@@ -233,11 +219,11 @@ namespace FiaMedKnuff
             // place the pawn on the board if the clicked pawn is in the nest
             else if (stepCount == 6 || stepCount == 1 && !goalTiles.ContainsValue((currentRow, currentColumn)))
             {
-                if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn) && stepCount == 1)
+                if (colors[playerturn - 1] != pawn.Name && isAiTurn(playerturn) == true && stepCount == 1)
                 {
                     AITurn = true;
                 }
-                else
+                else if(isAiTurn(playerturn) == false)
                 {
                     imageSource.IsHitTestVisible = true;
                 }
@@ -246,6 +232,38 @@ namespace FiaMedKnuff
                 changePawnMargin(pawn);
             }
             await RunAi();
+        }
+
+        /// <summary>
+        /// enables diceClick
+        /// </summary>
+        private void enableDiceClick()
+        {
+            if (isAiTurn(playerturn) == false)
+            {
+                imageSource.IsHitTestVisible = true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private async Task haveAllPlayersWon()
+        {
+            if (Winners.Count == Players.Count - 1)
+            {
+                int index = 0;
+                string result = "";
+                foreach (int player in Winners)
+                {
+                    (string identity, int score) = Players[playerturn - 1];
+                    result += $"Player {player} won with {score}\n";
+                    showVictoryView(identity, score);
+                }
+                var dialog = new MessageDialog(result);
+                await dialog.ShowAsync();
+            }
         }
 
         private void changePawnMargin(Rectangle pawn)
@@ -333,13 +351,17 @@ namespace FiaMedKnuff
         /// Executes diceroll and turnhandler for AI
         /// </summary>
         /// <returns></returns>
-        private async Task RunAi()
+        public async Task RunAi()
         {
             while (AITurn == true)
             {
                 await Task.Delay(500);
                 await Dice_Event();
                 await turnHandler();
+                if (!isAiTurn(playerturn)) 
+                {
+                    imageSource.IsHitTestVisible = true;
+                }
                 MarkPlayerSpawns(playerturn);
                 ClearPreviousPlayerChoiceIndications();
             }
@@ -397,6 +419,7 @@ namespace FiaMedKnuff
         /// <returns></returns>
         private async Task enablePlayerTurnAsync()
         {
+            await Task.Delay(10);
             if ((currentDiceResult == 1 | currentDiceResult == 6) && PawnHandler.hasPawnOnSpawn(colors[playerturn - 1]) == true)
             {
                 imageSource.IsHitTestVisible = false;
@@ -457,6 +480,7 @@ namespace FiaMedKnuff
         /// <returns></returns>
         public async Task turnHandler()
         {
+            await Task.Delay(10);
             if (currentDiceResult == 6)
             {
                 if (isAiTurn(playerturn) && stepCount == 0)

@@ -226,6 +226,12 @@ namespace FiaMedKnuff
                 MainMenu.Instance.HighScoreMenu.Visibility = Visibility.Collapsed;
                 MainPage.Instance.StartHighScoreAnimation();
                 MainPage.Instance.BackButton.Visibility = Visibility.Visible;
+                (string identity, int unused) = MainPage.Instance.Players[1];
+                if(identity == "AI") 
+                {
+                    MainPage.Instance.AITurn = true;
+                    MainPage.Instance.RunAi();
+                }
             }
             else
             {
